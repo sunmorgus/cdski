@@ -21,6 +21,9 @@ GameAssistant.prototype.canvasHeight = null;
 GameAssistant.prototype.keypressHandlerBind = null;
 GameAssistant.prototype.skier = null;
 GameAssistant.prototype.score = null;
+GameAssistant.prototype.increaseDiffScore = null;
+GameAssistant.prototype.speed = null;
+GameAssistant.prototype.increaseSpeedScore = null;
 
 GameAssistant.prototype.setup = function(){
     if (this.canvas) {
@@ -35,9 +38,12 @@ GameAssistant.prototype.setup = function(){
     
     this.divScoreBoard = $("scoreboard");
     this.score = 0;
+	this.increaseDiffScore = 50;
+	
+	this.speed = 2.5;
+	this.increaseSpeedScore = 1000;
     
     this.setupObstacles();
-	this.addObstacles(6);
     
     //skier draw goes here
     
@@ -65,15 +71,12 @@ GameAssistant.prototype.setupObstacles = function(){
         width: this.stoneWidth,
         height: this.stoneHeight
     };
+    
+    this.addObstacle(6);
 }
 
-GameAssistant.prototype.addObstacles = function(numObstacles){
-	var l = 0;
-	if(this.obstacles.length > 0){
-		l = this.obstacles.length - 1;
-	}
-	
-	for (var i = l; i < numObstacles; i++) {
+GameAssistant.prototype.addObstacle = function(num){
+    for (i = 0; i < num; i++) {
         this.randNum1 = Math.floor(Math.random() * 100);
         if (this.randNum1 <= this.treeWidth) {
             this.randNum1 = false;
@@ -83,35 +86,41 @@ GameAssistant.prototype.addObstacles = function(numObstacles){
         }
         
         var randomObstacle = Math.round(Math.random());
-        
-        this.obstacles[i] = {
+		
+		var currentObstacle = this.obsArray[randomObstacle];
+		var startPosition = (this.canvasHeight - currentObstacle.height - 2);
+		
+        var obstacle = {
             img: new Image(),
-            x: Math.floor(Math.random() * (this.canvasWidth - this.obsArray[randomObstacle].width - 2)),
-            y: Math.floor(Math.random() * (this.canvasHeight - this.obsArray[randomObstacle].height - 2)),
-            width: this.obsArray[randomObstacle].width,
-            height: this.obsArray[randomObstacle].height,
+            x: Math.floor(Math.random() * (this.canvasWidth - currentObstacle.width - 2)),
+            y: startPosition + currentObstacle.height + Math.floor(Math.random() * 100),
+            width: currentObstacle.width,
+            height: currentObstacle.height,
             vDir: this.randNum1,
-            maxX: (this.canvasWidth - this.obsArray[randomObstacle].width - 2),
-            maxY: (this.canvasHeight - this.obsArray[randomObstacle].height - 2)
+            maxX: (this.canvasWidth - currentObstacle.width - 2),
+            maxY: startPosition
         };
         
-        this.obstacles[i].img.src = this.obsArray[randomObstacle].imgSrc;
+        obstacle.img.src = this.obsArray[randomObstacle].imgSrc;
+        
+        this.obstacles.push(obstacle);
     }
 }
 
 GameAssistant.prototype.mainLoop = function(){
     this.context.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
     
-	var l = this.obstacles.length;
+    var l = this.obstacles.length;
+    var currentSpeed = this.speed;
 	
     //draw trees
-    for (var i = 0; i < l; i++) {
-		var currentObs = this.obstacles[i];
-		
+    for (var i = 1; i < l; i++) {
+        var currentObs = this.obstacles[i];
+        
         this.context.drawImage(currentObs.img, currentObs.x, currentObs.y, currentObs.width, currentObs.height);
         
         if (currentObs.vDir) {
-            currentObs.y = currentObs.y - 2.5;
+            currentObs.y = currentObs.y - currentSpeed;
         }
         else {
             currentObs.y = currentObs.maxY + currentObs.height + Math.floor(Math.random() * 100);
@@ -127,7 +136,22 @@ GameAssistant.prototype.mainLoop = function(){
     //draw skier
     
     this.score += .3;
-    this.divScoreBoard.innerHTML = "Score: " + Math.round(this.score);
+	var printScore = Math.round(this.score);
+    this.divScoreBoard.innerHTML = "Score: " + Math.round(printScore);
+	
+	if(printScore == this.increaseDiffScore){
+		this.stopMainLoop();
+		this.addObstacle(1);
+		this.startMainLoop();
+		
+		this.increaseDiffScore += 50;
+	}
+	
+	if(printScore == this.increaseSpeedScore){
+		this.speed += 2.5;
+		
+		this.increaseSpeedScore += 1000;
+	}
 }
 
 GameAssistant.prototype.startMainLoop = function(){
