@@ -1,0 +1,9 @@
+{
+	"id": "com.rjamdev.skipre",
+	"version": "1.0.0",
+	"vendor": "RJAMDev",
+	"type": "web",
+	"main": "index.html",
+	"title": "SkiPre",
+	"icon": "icon.png"
+}

@@ -1,0 +1,13 @@
+.slope{
+	position: absolute;
+	left: 0px;
+	top: 0px;
+}
+
+.scoreboard{
+	position: absolute;
+	left: 0px;
+	top: 420px;
+	width: 100%;
+	text-align: center;
+}
