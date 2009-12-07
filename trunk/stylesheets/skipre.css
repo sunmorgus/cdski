@@ -1,13 +1,20 @@
 .slope{
 	position: absolute;
 	left: 0px;
-	top: 0px;
+	top: 35px;
 }
 
 .scoreboard{
 	position: absolute;
-	left: 0px;
-	top: 420px;
-	width: 100%;
-	text-align: center;
+	left: 10px;
+	top: 5px;
+	width: 200px;
+	text-align: left;
+}
+
+.lives{
+	position: absolute;
+	left: 235px;
+	top: 5px;
+	width: 100px;
 }
