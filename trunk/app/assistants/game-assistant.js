@@ -4,7 +4,7 @@ function GameAssistant(){
 GameAssistant.prototype.obsArray = new Array();
 GameAssistant.prototype.randNum1 = null;
 GameAssistant.prototype.numObstacles = null;
-GameAssistant.prototype.obstacles = new Array(1);
+GameAssistant.prototype.obstacles = new Array();
 GameAssistant.prototype.obstacleWidth = null;
 GameAssistant.prototype.obstacleHeight = null;
 GameAssistant.prototype.canvas = null;
@@ -22,20 +22,40 @@ GameAssistant.prototype.speed = null;
 GameAssistant.prototype.increaseSpeedScore = null;
 GameAssistant.prototype.divLives = null;
 GameAssistant.prototype.lives = null;
+GameAssistant.prototype.isPaused = null;
 
 GameAssistant.prototype.setup = function(){
+    this.appMenuModel = {
+        visible: true,
+        items: [Mojo.Menu.editItem, {
+            label: $L('New Game'),
+            command: 'newGame'
+        }, {
+            label: $L('About...'),
+            command: 'about'
+        }]
+    };
+    
+    this.controller.setupWidget(Mojo.Menu.appMenu, {
+        omitDefaultItems: true
+    }, this.appMenuModel);
+    
     if (this.canvas) {
         return;
     }
     
     this.keypressHandlerBind = this.keypressHandler.bind(this);
     Mojo.Event.listen(this.controller.document, Mojo.Event.keypress, this.keypressHandlerBind, true);
-    
+	
     this.canvas = $("slope");
     this.context = this.canvas.getContext("2d");
     this.context.fillStyle = "rgb(255,255,255)";
     this.canvasWidth = this.canvas.getAttribute("width");
     this.canvasHeight = this.canvas.getAttribute("height");
+	
+	this.isPaused = false;
+	var tapHandler = this.tapEvent.bind(this);
+	this.controller.listen("slope", Mojo.Event.tap, tapHandler);
     
     this.divScoreBoard = $("scoreboard");
     this.score = 0;
@@ -53,18 +73,35 @@ GameAssistant.prototype.setup = function(){
     this.skier = {
         img: new Image(),
         x: 150,
-        y: 100,
-        width: 21,
-        height: 39,
-        maxX: (this.canvasWidth - 39 - 2),
-        maxY: (this.canvasHeight - 21 - 2)
+        y: 10,
+        width: 15,
+        height: 32,
+        maxX: (this.canvasWidth - 15 - 2),
+        maxY: (this.canvasHeight - 32 - 2)
     };
     
     this.skier.img.src = "images/sprites/skier.png";
     
     this.context.drawImage(this.skier.img, this.skier.x, this.skier.y, this.skier.width, this.skier.height);
+	
+	
     
     this.mainLoopBind = this.mainLoop.bind(this);
+}
+
+GameAssistant.prototype.handleCommand = function(event){
+    this.controller = Mojo.Controller.stageController.activeScene();
+    if (event.type == Mojo.Event.command) {
+        switch (event.command) {
+            case 'newGame':
+				this.obstacles = null;
+				this.controller.stageController.assistant.showScene("game", 'game');
+                break;
+            case 'about':
+                this.controller.stageController.assistant.showScene("About", 'About');
+                break;
+        }
+    }
 }
 
 GameAssistant.prototype.activate = function(event){
@@ -92,7 +129,7 @@ GameAssistant.prototype.setupObstacles = function(){
     this.obsArray[2] = {
         imgSrc: "images/sprites/obstacles/snowman.png",
         width: 20,
-        height: 39
+        height: 40
     };
     
     this.addObstacle(6);
@@ -140,21 +177,25 @@ GameAssistant.prototype.mainLoop = function(){
     
     var l = this.obstacles.length;
     var currentSpeed = this.speed;
-	
-	var hitObstacle = false;
-    
+        
     //draw trees
     for (var i = 1; i < l; i++) {
         var currentObs = this.obstacles[i];
         
         this.context.drawImage(currentObs.img, currentObs.x, currentObs.y, currentObs.width, currentObs.height);
-		
-		var x = ((currentObs.x >= this.skier.x) && (currentObs.x <= this.skier.x));
-		var y = ((currentObs.y >= this.skier.y) && (currentObs.y <= this.skier.y));
-		
-		if(x && y){
-			hitObstacle = true;
+        
+        var x = ((currentObs.x <= this.skier.x) && ((currentObs.x + currentObs.width) >= this.skier.x));
+		if(!x){
+			x = ((currentObs.x <= (this.skier.x + this.skier.width)) && ((currentObs.x + currentObs.width) >= (this.skier.x + this.skier.width)));
 		}
+        var y = ((Math.floor(currentObs.y) <= (this.skier.y + this.skier.height - 2)));
+        
+        if (x && y) {
+			this.stopMainLoop();
+        }
+        
+        //draw skier
+        this.context.drawImage(this.skier.img, this.skier.x, this.skier.y, this.skier.width, this.skier.height);
         
         if (currentObs.vDir) {
             currentObs.y = currentObs.y - currentSpeed;
@@ -176,13 +217,6 @@ GameAssistant.prototype.mainLoop = function(){
             currentObs.vDir = !currentObs.vDir;
         }
     }
-    
-	if(hitObstacle){
-		this.stopMainLoop();
-	}
-	
-    //draw skier
-    this.context.drawImage(this.skier.img, this.skier.x, this.skier.y, this.skier.width, this.skier.height);
     
     this.score += .3;
     var printScore = Math.round(this.score);
@@ -231,4 +265,15 @@ GameAssistant.prototype.keypressHandler = function(event){
             }
             break;
     }
+}
+
+GameAssistant.prototype.tapEvent = function(event){
+	if(this.isPaused){
+		this.startMainLoop();
+		this.isPaused = false;
+	}
+	else{
+		this.stopMainLoop();
+		this.isPaused = true;
+	}
 }
