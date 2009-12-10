@@ -6,10 +6,10 @@
 
 .scoreboard{
 	position: absolute;
-	left: 10px;
+	left: 0px;
 	top: 5px;
-	width: 200px;
-	text-align: left;
+	width: 100%;
+	text-align: center;
 }
 
 .lives{

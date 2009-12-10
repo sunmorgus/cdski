@@ -1,4 +1,5 @@
-function GameAssistant(){
+function GameAssistant(chosen){
+    this.chosenSkier = chosen;
 }
 
 GameAssistant.prototype.obsArray = new Array();
@@ -16,6 +17,7 @@ GameAssistant.prototype.canvasWidth = null;
 GameAssistant.prototype.canvasHeight = null;
 GameAssistant.prototype.keypressHandlerBind = null;
 GameAssistant.prototype.skier = null;
+GameAssistant.prototype.chosenSkier = null;
 GameAssistant.prototype.score = null;
 GameAssistant.prototype.increaseDiffScore = null;
 GameAssistant.prototype.speed = null;
@@ -30,32 +32,43 @@ GameAssistant.prototype.setup = function(){
         items: [Mojo.Menu.editItem, {
             label: $L('New Game'),
             command: 'newGame'
-        }, {
-            label: $L('About...'),
-            command: 'about'
         }]
     };
     
     this.controller.setupWidget(Mojo.Menu.appMenu, {
         omitDefaultItems: true
     }, this.appMenuModel);
-    
+}
+
+GameAssistant.prototype.handleCommand = function(event){
+    this.controller = Mojo.Controller.stageController.activeScene();
+    if (event.type == Mojo.Event.command) {
+        switch (event.command) {
+            case 'newGame':
+                this.obstacles.splice(0, this.obstacles.length);
+                this.controller.stageController.assistant.showScene("start", 'start');
+                break;
+        }
+    }
+}
+
+GameAssistant.prototype.activate = function(event){
     if (this.canvas) {
-        return;
+        //return;
     }
     
     this.keypressHandlerBind = this.keypressHandler.bind(this);
     Mojo.Event.listen(this.controller.document, Mojo.Event.keypress, this.keypressHandlerBind, true);
-	
+    
     this.canvas = $("slope");
     this.context = this.canvas.getContext("2d");
     this.context.fillStyle = "rgb(255,255,255)";
     this.canvasWidth = this.canvas.getAttribute("width");
     this.canvasHeight = this.canvas.getAttribute("height");
-	
-	this.isPaused = false;
-	var tapHandler = this.tapEvent.bind(this);
-	this.controller.listen("slope", Mojo.Event.tap, tapHandler);
+    
+    this.isPaused = false;
+    var tapHandler = this.tapEvent.bind(this);
+    this.controller.listen("slope", Mojo.Event.tap, tapHandler);
     
     this.divScoreBoard = $("scoreboard");
     this.score = 0;
@@ -64,47 +77,15 @@ GameAssistant.prototype.setup = function(){
     this.speed = 2.5;
     this.increaseSpeedScore = 100;
     
-    this.divLives = $("lives");
-    this.lives = 3;
-    
     this.setupObstacles();
     
     //skier draw goes here
-    this.skier = {
-        img: new Image(),
-        x: 150,
-        y: 10,
-        width: 15,
-        height: 32,
-        maxX: (this.canvasWidth - 15 - 2),
-        maxY: (this.canvasHeight - 32 - 2)
-    };
-    
-    this.skier.img.src = "images/sprites/skier.png";
+    this.setupSkierEasy("initial");
     
     this.context.drawImage(this.skier.img, this.skier.x, this.skier.y, this.skier.width, this.skier.height);
-	
-	
     
     this.mainLoopBind = this.mainLoop.bind(this);
-}
-
-GameAssistant.prototype.handleCommand = function(event){
-    this.controller = Mojo.Controller.stageController.activeScene();
-    if (event.type == Mojo.Event.command) {
-        switch (event.command) {
-            case 'newGame':
-				this.obstacles = null;
-				this.controller.stageController.assistant.showScene("game", 'game');
-                break;
-            case 'about':
-                this.controller.stageController.assistant.showScene("About", 'About');
-                break;
-        }
-    }
-}
-
-GameAssistant.prototype.activate = function(event){
+    
     this.startMainLoop();
 }
 
@@ -113,21 +94,58 @@ GameAssistant.prototype.deactivate = function(event){
     this.stopMainLoop();
 }
 
+GameAssistant.prototype.setupSkierEasy = function(state){
+    var chosen = this.chosenSkier;
+    switch (state) {
+        case "initial":
+            this.setupSkier(150, 20, 14, 32, chosen + "_down");
+            break;
+        case "down":
+            this.setupSkier(this.skier.x, 20, 14, 32, chosen + "_down");
+            break;
+        case "right":
+            this.setupSkier(this.skier.x + 2, 20, 16, 33, chosen + "_right");
+            break;
+        case "left":
+            this.setupSkier(this.skier.x - 2, 20, 18, 31, chosen + "_left");
+            break;
+        case "crash":
+            this.setupSkier(this.skier.x - 2, 20, 18, 22, chosen + "_crash");
+    }
+}
+
+GameAssistant.prototype.setupSkier = function(x, y, width, height, imgSrc){
+    this.skier = {
+        img: new Image(),
+        x: x,
+        y: y,
+        width: width,
+        height: height,
+        maxX: (this.canvasWidth - width - 2),
+        maxY: (this.canvasHeight - height - 2)
+    };
+    
+    this.skier.img.src = "images/sprites/" + this.chosenSkier.substr(0, 1) + "/" + imgSrc + ".png";
+}
+
 GameAssistant.prototype.setupObstacles = function(){
     this.obsArray[0] = {
-        imgSrc: "images/sprites/obstacles/tree.png",
+        name: "tree",
+        imgSrc: "images/obstacles/tree.png",
         width: 30,
         height: 44
     };
     
     this.obsArray[1] = {
-        imgSrc: "images/sprites/obstacles/stone.png",
+        name: "stone",
+        imgSrc: "images/obstacles/stone.png",
         width: 25,
         height: 10
     };
     
     this.obsArray[2] = {
-        imgSrc: "images/sprites/obstacles/snowman.png",
+        name: "snowman",
+        imgSrc: "images/obstacles/snowman.png",
         width: 20,
         height: 40
     };
@@ -177,25 +195,33 @@ GameAssistant.prototype.mainLoop = function(){
     
     var l = this.obstacles.length;
     var currentSpeed = this.speed;
-        
+    
     //draw trees
     for (var i = 1; i < l; i++) {
         var currentObs = this.obstacles[i];
         
-        this.context.drawImage(currentObs.img, currentObs.x, currentObs.y, currentObs.width, currentObs.height);
-        
+        //check for obstacle collision
         var x = ((currentObs.x <= this.skier.x) && ((currentObs.x + currentObs.width) >= this.skier.x));
-		if(!x){
-			x = ((currentObs.x <= (this.skier.x + this.skier.width)) && ((currentObs.x + currentObs.width) >= (this.skier.x + this.skier.width)));
-		}
-        var y = ((Math.floor(currentObs.y) <= (this.skier.y + this.skier.height - 2)));
+        if (!x) {
+            x = ((currentObs.x <= (this.skier.x + this.skier.width)) && ((currentObs.x + currentObs.width) >= (this.skier.x + this.skier.width)));
+        }
+        var y = ((Math.floor(currentObs.y) <= (this.skier.y + this.skier.height - 12)));
         
-        if (x && y) {
-			this.stopMainLoop();
+        if (x && y) {//skier has collided with obstacle
+            this.context.fillRect(this.skier.x, this.skier.y, this.skier.width, this.skier.height);
+            this.setupSkierEasy("crash");
+            this.context.drawImage(this.skier.img, this.skier.x, this.skier.y, this.skier.width, this.skier.height);
+            
+			var t = setTimeout(this.showAlert.bind(this), 1000);
+            this.stopMainLoop();
+            
+            
+        }
+        else {
+            this.context.drawImage(this.skier.img, this.skier.x, this.skier.y, this.skier.width, this.skier.height);
         }
         
-        //draw skier
-        this.context.drawImage(this.skier.img, this.skier.x, this.skier.y, this.skier.width, this.skier.height);
+        this.context.drawImage(currentObs.img, currentObs.x, currentObs.y, currentObs.width, currentObs.height);
         
         if (currentObs.vDir) {
             currentObs.y = currentObs.y - currentSpeed;
@@ -221,7 +247,7 @@ GameAssistant.prototype.mainLoop = function(){
     this.score += .3;
     var printScore = Math.round(this.score);
     this.divScoreBoard.innerHTML = "Score: " + Math.round(printScore);
-    this.divLives.innerHTML = "Live(s): " + this.lives;
+    //this.divLives.innerHTML = "Live(s): " + this.lives;
     
     if (printScore == this.increaseDiffScore) {
         this.stopMainLoop();
@@ -247,13 +273,40 @@ GameAssistant.prototype.stopMainLoop = function(){
     this.mainLoopInterval = null;
 }
 
+GameAssistant.prototype.showAlert = function(){
+	this.controller.showAlertDialog({
+                onChoose: function(value){
+                    this.obstacles.splice(0, this.obstacles.length);
+                    switch (value) {
+                        case 'retry':
+                            this.controller.stageController.assistant.showScene("game", 'game');
+                            break;
+                        case 'quit':
+                            this.controller.stageController.assistant.showScene("start", 'start');
+                            break;
+                    }
+                },
+                title: $L("You crashed!"),
+                message: $L("Your score was " + Math.round(this.score + .3)),
+                choices: [{
+                    label: $L('Retry'),
+                    value: 'retry',
+                    type: 'affirmative'
+                }, {
+                    label: $L('Quit'),
+                    value: 'quit',
+                    type: ''
+                }]
+            })
+}
+
 GameAssistant.prototype.keypressHandler = function(event){
     switch (event.originalEvent.keyCode) {
         // Left.
         case Mojo.Char.a:
         case Mojo.Char.a + 32:
             if (this.skier.x > 2) {
-                this.skier.x = this.skier.x - 2;
+                this.setupSkierEasy("left");
             }
             break;
             
@@ -261,19 +314,25 @@ GameAssistant.prototype.keypressHandler = function(event){
         case Mojo.Char.d:
         case Mojo.Char.d + 32:
             if (this.skier.x < this.skier.maxX) {
-                this.skier.x = this.skier.x + 2;
+                this.setupSkierEasy("right");
             }
+            break;
+            
+        // Down.
+        case Mojo.Char.s:
+        case Mojo.Char.s + 32:
+            this.setupSkierEasy("down");
             break;
     }
 }
 
 GameAssistant.prototype.tapEvent = function(event){
-	if(this.isPaused){
-		this.startMainLoop();
-		this.isPaused = false;
-	}
-	else{
-		this.stopMainLoop();
-		this.isPaused = true;
-	}
+    if (this.isPaused) {
+        this.startMainLoop();
+        this.isPaused = false;
+    }
+    else {
+        this.stopMainLoop();
+        this.isPaused = true;
+    }
 }

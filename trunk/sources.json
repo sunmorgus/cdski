@@ -3,5 +3,17 @@
     {
         "scenes": "game",
         "source": "app/assistants/game-assistant.js"
+    },
+    {
+        "scenes": "new-game",
+        "source": "app/assistants/new-game-assistant.js"
+    },
+    {
+        "scenes": "start",
+        "source": "app/assistants/start-assistant.js"
+    },
+    {
+        "scenes": "test-canvas",
+        "source": "app/assistants/test-canvas-assistant.js"
     }
 ]
