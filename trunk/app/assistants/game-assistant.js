@@ -1,5 +1,6 @@
-function GameAssistant(chosen){
-    this.chosenSkier = chosen;
+function GameAssistant(params){
+    this.chosenSkier = params.chosen;
+    this.hsDB = params.db;
 }
 
 GameAssistant.prototype.obsArray = new Array();
@@ -17,7 +18,6 @@ GameAssistant.prototype.canvasWidth = null;
 GameAssistant.prototype.canvasHeight = null;
 GameAssistant.prototype.keypressHandlerBind = null;
 GameAssistant.prototype.skier = null;
-GameAssistant.prototype.chosenSkier = null;
 GameAssistant.prototype.score = null;
 GameAssistant.prototype.increaseDiffScore = null;
 GameAssistant.prototype.speed = null;
@@ -25,6 +25,7 @@ GameAssistant.prototype.increaseSpeedScore = null;
 GameAssistant.prototype.divLives = null;
 GameAssistant.prototype.lives = null;
 GameAssistant.prototype.isPaused = null;
+GameAssistant.prototype.hsDB = null;
 
 GameAssistant.prototype.setup = function(){
     this.appMenuModel = {
@@ -211,11 +212,9 @@ GameAssistant.prototype.mainLoop = function(){
             this.context.fillRect(this.skier.x, this.skier.y, this.skier.width, this.skier.height);
             this.setupSkierEasy("crash");
             this.context.drawImage(this.skier.img, this.skier.x, this.skier.y, this.skier.width, this.skier.height);
-            
-			var t = setTimeout(this.showAlert.bind(this), 1000);
+                        
             this.stopMainLoop();
-            
-            
+            var t = setTimeout(this.checkHighScore.bind(this), 1000);            
         }
         else {
             this.context.drawImage(this.skier.img, this.skier.x, this.skier.y, this.skier.width, this.skier.height);
@@ -273,31 +272,16 @@ GameAssistant.prototype.stopMainLoop = function(){
     this.mainLoopInterval = null;
 }
 
-GameAssistant.prototype.showAlert = function(){
-	this.controller.showAlertDialog({
-                onChoose: function(value){
-                    this.obstacles.splice(0, this.obstacles.length);
-                    switch (value) {
-                        case 'retry':
-                            this.controller.stageController.assistant.showScene("game", 'game');
-                            break;
-                        case 'quit':
-                            this.controller.stageController.assistant.showScene("start", 'start');
-                            break;
-                    }
-                },
-                title: $L("You crashed!"),
-                message: $L("Your score was " + Math.round(this.score + .3)),
-                choices: [{
-                    label: $L('Retry'),
-                    value: 'retry',
-                    type: 'affirmative'
-                }, {
-                    label: $L('Quit'),
-                    value: 'quit',
-                    type: ''
-                }]
-            })
+GameAssistant.prototype.checkHighScore = function(){
+    this.obstacles.splice(0, this.obstacles.length);
+	
+	var params = {
+		db: this.hsDB,
+		score: Math.round(this.score + .3),
+		skier: this.chosenSkier
+	}
+	
+	this.controller.stageController.assistant.showScene("highscores", 'highscores', params);
 }
 
 GameAssistant.prototype.keypressHandler = function(event){

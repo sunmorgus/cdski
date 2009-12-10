@@ -15,5 +15,9 @@
     {
         "scenes": "test-canvas",
         "source": "app/assistants/test-canvas-assistant.js"
+    },
+    {
+        "scenes": "highscores",
+        "source": "app/assistants/highscores-assistant.js"
     }
 ]
