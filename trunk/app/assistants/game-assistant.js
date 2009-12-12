@@ -267,7 +267,12 @@ GameAssistant.prototype.mainLoop = function(){
         }
     }
     
-    this.score += .3;
+	if (this.isJumping) {
+		this.score += 5.3;
+	}
+	else {
+		this.score += .3;
+	}
     var printScore = Math.round(this.score);
     this.divScoreBoard.innerHTML = "Score: " + Math.round(printScore);
     //this.divLives.innerHTML = "Live(s): " + this.lives;
