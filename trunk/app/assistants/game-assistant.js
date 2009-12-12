@@ -88,7 +88,7 @@ GameAssistant.prototype.activate = function(event){
     this.context.drawImage(this.skier.img, this.skier.x, this.skier.y, this.skier.width, this.skier.height);
     
     this.isJumping = false;
-	this.jumpLength = 0;
+    this.jumpLength = 0;
     
     this.mainLoopBind = this.mainLoop.bind(this);
     
@@ -221,24 +221,27 @@ GameAssistant.prototype.mainLoop = function(){
         }
         var y = ((Math.floor(currentObs.y) <= (this.skier.y + this.skier.height - 12)));
         
-		if (!this.isJumping) {
-			if (x && y && (currentObs.name != "ramp")) {//skier has collided with obstacle
-				this.context.fillRect(this.skier.x, this.skier.y, this.skier.width, this.skier.height);
-				this.setupSkierEasy("crash");
-				this.context.drawImage(this.skier.img, this.skier.x, this.skier.y, this.skier.width, this.skier.height);
-				
-				this.stopMainLoop();
-				var t = setTimeout(this.checkHighScore.bind(this), 1000);
-			}
-			else 
-				if (x && y && (currentObs.name == "ramp")) {
-					this.isJumping = true;
-				}
-				else {
-					this.context.drawImage(this.skier.img, this.skier.x, this.skier.y, this.skier.width, this.skier.height);
-					this.isJumping = false;
-				}
-		}
+        if (!this.isJumping) {
+            if (x && y && (currentObs.name != "ramp")) {//skier has collided with obstacle
+                this.context.fillRect(this.skier.x, this.skier.y, this.skier.width, this.skier.height);
+                this.setupSkierEasy("crash");
+                this.context.drawImage(this.skier.img, this.skier.x, this.skier.y, this.skier.width, this.skier.height);
+                
+                this.stopMainLoop();
+                var t = setTimeout(this.checkHighScore.bind(this), 1000);
+            }
+            else 
+                if (x && y && (currentObs.name == "ramp")) {
+                    this.isJumping = true;
+                    var unjump = setTimeout(this.stopJump.bind(this), 2000);
+                }
+                else {
+                    this.context.drawImage(this.skier.img, this.skier.x, this.skier.y, this.skier.width, this.skier.height);
+                }
+        }
+        else {
+            this.context.drawImage(this.skier.img, this.skier.x, this.skier.y - 3, this.skier.width + 3, this.skier.height + 3);
+        }
         
         this.context.drawImage(currentObs.img, currentObs.x, currentObs.y, currentObs.width, currentObs.height);
         
@@ -291,6 +294,10 @@ GameAssistant.prototype.startMainLoop = function(){
 GameAssistant.prototype.stopMainLoop = function(){
     clearInterval(this.mainLoopInterval);
     this.mainLoopInterval = null;
+}
+
+GameAssistant.prototype.stopJump = function(){
+    this.isJumping = false;
 }
 
 GameAssistant.prototype.checkHighScore = function(){
