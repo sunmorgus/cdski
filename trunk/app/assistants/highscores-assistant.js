@@ -1,10 +1,26 @@
 function HighscoresAssistant(params){
     this.hsDB = params.db;
-    this.Score = params.score;
-    this.chosenSkier = params.skier;
+    if (params.score) {
+        this.Score = params.score;
+    }
+    if (params.skier) {
+        this.chosenSkier = params.skier;
+    }
 }
 
 HighscoresAssistant.prototype.setup = function(){
+    this.appMenuModel = {
+        visible: true,
+        items: [Mojo.Menu.editItem, {
+            label: $L('Clear High Scores'),
+            command: 'clearScores'
+        }]
+    };
+    
+    this.controller.setupWidget(Mojo.Menu.appMenu, {
+        omitDefaultItems: true
+    }, this.appMenuModel);
+    
     this.innerListAttrs = {
         listTemplate: 'highscores/listcontainer',
         itemTemplate: 'highscores/listItem'
@@ -20,9 +36,34 @@ HighscoresAssistant.prototype.setup = function(){
     Mojo.Event.listen($('quit'), Mojo.Event.tap, this.quit.bind(this));
 }
 
+HighscoresAssistant.prototype.handleCommand = function(event){
+    this.controller = Mojo.Controller.stageController.activeScene();
+    if (event.type == Mojo.Event.command) {
+        switch (event.command) {
+            case 'clearScores':
+                this.dropTable();
+                this.resultList.clear();
+                this.controller.modelChanged(this.listModel, this);
+                break;
+        }
+    }
+}
+
 HighscoresAssistant.prototype.activate = function(event){
     this.getHighScores();
-    this.addHighScore();
+    if (!this.Score) {
+        $('retry').style.display = 'none';
+        $('quit').innerHTML = 'Back';
+    }
+    else {
+        this.checkScore(this.Score);
+    }
+}
+
+HighscoresAssistant.prototype.callback = function(value){
+    if (this.Score) {
+        this.addHighScore(value);
+    }
 }
 
 HighscoresAssistant.prototype.deactivate = function(event){
@@ -39,13 +80,23 @@ HighscoresAssistant.prototype.getHighScores = function(){
 }
 
 HighscoresAssistant.prototype.checkScore = function(score){
-    var query = 'select score from highScore where ';
+    var query = 'select score from highScore where ' + score + ' > (select score from highScore order by score asc limit 1);';
+    this.hsDB.transaction((function(transaction){
+        transaction.executeSql(query, [], this.isHighScore.bind(this), this.errorHandler.bind(this));
+    }).bind(this));
 }
 
-HighscoresAssistant.prototype.addHighScore = function(score){
+HighscoresAssistant.prototype.addHighScore = function(name){
     var query = 'INSERT INTO highScore (id, name, score) VALUES (?,?,?); GO;'
     this.hsDB.transaction((function(transaction){
-        transaction.executeSql(query, [Math.random(), 'Nick', this.Score], this.getHighScores.bind(this), this.errorHandler.bind(this));
+        transaction.executeSql(query, [Math.random(), name, this.Score], this.getHighScores.bind(this), this.errorHandler.bind(this));
+    }).bind(this));
+}
+
+HighscoresAssistant.prototype.dropTable = function(){
+    var query = 'DELETE FROM highScore; GO;';
+    this.hsDB.transaction((function(transaction){
+        transaction.executeSql(query, []);
     }).bind(this));
 }
 
@@ -86,6 +137,16 @@ HighscoresAssistant.prototype.buildList = function(transaction, results){
     }
 }
 
+HighscoresAssistant.prototype.isHighScore = function(transaction, results){
+    if (results.rows.length > 0 || this.resultList.length == 0) {
+        this.controller.showDialog({
+            template: 'entry/entry-scene',
+            assistant: new EntryAssistant(this, this.callback.bind(this), this.Score),
+            preventCancel: true
+        });
+    }
+}
+
 HighscoresAssistant.prototype.retry = function(event){
     var params = {
         chosen: this.chosenSkier,
@@ -97,7 +158,8 @@ HighscoresAssistant.prototype.retry = function(event){
 
 HighscoresAssistant.prototype.quit = function(event){
     var params = {
-        db: this.hsDB
+        chosen: this.chosenSkier,
+		db: this.hsDB
     }
     
     this.controller.stageController.assistant.showScene("start", 'start', params);

@@ -26,6 +26,8 @@ GameAssistant.prototype.divLives = null;
 GameAssistant.prototype.lives = null;
 GameAssistant.prototype.isPaused = null;
 GameAssistant.prototype.hsDB = null;
+GameAssistant.prototype.isJumping = null;
+GameAssistant.prototype.jumpLength = null;
 
 GameAssistant.prototype.setup = function(){
     this.appMenuModel = {
@@ -84,6 +86,9 @@ GameAssistant.prototype.activate = function(event){
     this.setupSkierEasy("initial");
     
     this.context.drawImage(this.skier.img, this.skier.x, this.skier.y, this.skier.width, this.skier.height);
+    
+    this.isJumping = false;
+	this.jumpLength = 0;
     
     this.mainLoopBind = this.mainLoop.bind(this);
     
@@ -151,6 +156,13 @@ GameAssistant.prototype.setupObstacles = function(){
         height: 40
     };
     
+    this.obsArray[3] = {
+        name: "ramp",
+        imgSrc: "images/obstacles/ramp.png",
+        width: 24,
+        height: 20
+    }
+    
     this.addObstacle(6);
 }
 
@@ -182,7 +194,8 @@ GameAssistant.prototype.addObstacle = function(num){
             height: currentObstacle.height,
             vDir: this.randNum1,
             maxX: (this.canvasWidth - currentObstacle.width - 2),
-            maxY: startPosition
+            maxY: startPosition,
+            name: currentObstacle.name
         };
         
         obstacle.img.src = this.obsArray[randomObstacle].imgSrc;
@@ -208,17 +221,24 @@ GameAssistant.prototype.mainLoop = function(){
         }
         var y = ((Math.floor(currentObs.y) <= (this.skier.y + this.skier.height - 12)));
         
-        if (x && y) {//skier has collided with obstacle
-            this.context.fillRect(this.skier.x, this.skier.y, this.skier.width, this.skier.height);
-            this.setupSkierEasy("crash");
-            this.context.drawImage(this.skier.img, this.skier.x, this.skier.y, this.skier.width, this.skier.height);
-                        
-            this.stopMainLoop();
-            var t = setTimeout(this.checkHighScore.bind(this), 1000);            
-        }
-        else {
-            this.context.drawImage(this.skier.img, this.skier.x, this.skier.y, this.skier.width, this.skier.height);
-        }
+		if (!this.isJumping) {
+			if (x && y && (currentObs.name != "ramp")) {//skier has collided with obstacle
+				this.context.fillRect(this.skier.x, this.skier.y, this.skier.width, this.skier.height);
+				this.setupSkierEasy("crash");
+				this.context.drawImage(this.skier.img, this.skier.x, this.skier.y, this.skier.width, this.skier.height);
+				
+				this.stopMainLoop();
+				var t = setTimeout(this.checkHighScore.bind(this), 1000);
+			}
+			else 
+				if (x && y && (currentObs.name == "ramp")) {
+					this.isJumping = true;
+				}
+				else {
+					this.context.drawImage(this.skier.img, this.skier.x, this.skier.y, this.skier.width, this.skier.height);
+					this.isJumping = false;
+				}
+		}
         
         this.context.drawImage(currentObs.img, currentObs.x, currentObs.y, currentObs.width, currentObs.height);
         
@@ -236,6 +256,7 @@ GameAssistant.prototype.mainLoop = function(){
             currentObs.y = currentObs.maxY + currentObs.height + Math.floor(Math.random() * 100);
             currentObs.x = Math.floor(Math.random() * (this.canvasWidth - currentObs.width - 2));
             currentObs.vDir = this.canvasHeight;
+            currentObs.name = currentObstacle.name;
         }
         
         if (currentObs.y <= -currentObs.height) {
@@ -274,14 +295,14 @@ GameAssistant.prototype.stopMainLoop = function(){
 
 GameAssistant.prototype.checkHighScore = function(){
     this.obstacles.splice(0, this.obstacles.length);
-	
-	var params = {
-		db: this.hsDB,
-		score: Math.round(this.score + .3),
-		skier: this.chosenSkier
-	}
-	
-	this.controller.stageController.assistant.showScene("highscores", 'highscores', params);
+    
+    var params = {
+        db: this.hsDB,
+        score: Math.round(this.score + .3),
+        skier: this.chosenSkier
+    }
+    
+    this.controller.stageController.assistant.showScene("highscores", 'highscores', params);
 }
 
 GameAssistant.prototype.keypressHandler = function(event){
