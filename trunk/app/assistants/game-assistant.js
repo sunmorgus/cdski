@@ -28,6 +28,7 @@ GameAssistant.prototype.isPaused = null;
 GameAssistant.prototype.hsDB = null;
 GameAssistant.prototype.isJumping = null;
 GameAssistant.prototype.jumpLength = null;
+GameAssistant.prototype.moveX = null;
 
 GameAssistant.prototype.setup = function(){
     this.appMenuModel = {
@@ -41,6 +42,8 @@ GameAssistant.prototype.setup = function(){
     this.controller.setupWidget(Mojo.Menu.appMenu, {
         omitDefaultItems: true
     }, this.appMenuModel);
+    
+    this.controller.listen(document, 'acceleration', this.handleAcceleration.bindAsEventListener(this));
 }
 
 GameAssistant.prototype.handleCommand = function(event){
@@ -77,9 +80,6 @@ GameAssistant.prototype.activate = function(event){
     this.score = 0;
     this.increaseDiffScore = 50;
     
-    this.speed = 2.5;
-    this.increaseSpeedScore = 100;
-    
     this.setupObstacles();
     
     //skier draw goes here
@@ -110,10 +110,10 @@ GameAssistant.prototype.setupSkierEasy = function(state){
             this.setupSkier(this.skier.x, 20, 14, 32, chosen + "_down");
             break;
         case "right":
-            this.setupSkier(this.skier.x + 2, 20, 16, 33, chosen + "_right");
+            this.setupSkier(this.skier.x + this.moveX, 20, 16, 33, chosen + "_right");
             break;
         case "left":
-            this.setupSkier(this.skier.x - 2, 20, 18, 31, chosen + "_left");
+            this.setupSkier(this.skier.x + this.moveX, 20, 18, 31, chosen + "_left");
             break;
         case "crash":
             this.setupSkier(this.skier.x - 2, 20, 18, 22, chosen + "_crash");
@@ -267,28 +267,22 @@ GameAssistant.prototype.mainLoop = function(){
         }
     }
     
-	if (this.isJumping) {
-		this.score += 5.3;
-	}
-	else {
-		this.score += .3;
-	}
+    if (this.isJumping) {
+        this.score += 5.3;
+    }
+    else {
+        this.score += .3;
+    }
     var printScore = Math.round(this.score);
     this.divScoreBoard.innerHTML = "Score: " + Math.round(printScore);
     //this.divLives.innerHTML = "Live(s): " + this.lives;
     
-    if (printScore == this.increaseDiffScore) {
+    if (printScore >= this.increaseDiffScore) {
         this.stopMainLoop();
         this.addObstacle(1);
         this.startMainLoop();
         
         this.increaseDiffScore += 50;
-    }
-    
-    if (printScore == this.increaseSpeedScore) {
-        this.speed += .4;
-        
-        this.increaseSpeedScore += 100;
     }
 }
 
@@ -341,6 +335,28 @@ GameAssistant.prototype.keypressHandler = function(event){
             this.setupSkierEasy("down");
             break;
     }
+}
+
+GameAssistant.prototype.handleAcceleration = function(event){
+    if (this.skier.x > 2 && this.skier.x < this.skier.maxX) {
+        var accelX = Math.floor(event.accelX * 100);
+        if (event.accelX >= 0 && this.skier.x < this.skier.maxX) {
+            this.moveX = accelX;
+            this.setupSkierEasy("right");
+        }
+        
+        if (event.accelX <= 0 && this.skier.x > 2) {
+            this.moveX = accelX;
+            this.setupSkierEasy("left");
+        }
+        
+        if (accelX >= -3 && accelX <= 3) {
+            this.moveX = 0;
+            this.setupSkierEasy("down");
+        }
+    }
+    
+    this.speed = Math.floor(Math.abs(event.accelY * 10));
 }
 
 GameAssistant.prototype.tapEvent = function(event){
