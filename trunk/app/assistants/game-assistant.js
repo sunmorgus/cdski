@@ -153,7 +153,7 @@ GameAssistant.prototype.setupObstacles = function(){
         name: "snowman",
         imgSrc: "images/obstacles/snowman.png",
         width: 20,
-        height: 40
+        height: 19
     };
     
     this.obsArray[3] = {
