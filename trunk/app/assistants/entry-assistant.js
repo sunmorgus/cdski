@@ -38,6 +38,8 @@ EntryAssistant.prototype.deactivate = function(event) {
 }
 
 EntryAssistant.prototype.cleanup = function(event) {
+	this.controller.stopListening($('save'), Mojo.Event.tap, this.save);
+	this.controller.stopListening($('cancel'), Mojo.Event.tap, this.cancel)
 }
 
 EntryAssistant.prototype.save = function(event){
