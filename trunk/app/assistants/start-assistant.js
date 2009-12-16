@@ -31,6 +31,8 @@ StartAssistant.prototype.setup = function(){
     this.createDB();
     
     this.chosenSkier = 'riley';
+	
+	//snowStorm.resume();
 }
 
 StartAssistant.prototype.activate = function(event){

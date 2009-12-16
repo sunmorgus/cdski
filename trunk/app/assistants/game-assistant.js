@@ -44,6 +44,15 @@ GameAssistant.prototype.setup = function(){
     }, this.appMenuModel);
     
     this.controller.listen(document, 'acceleration', this.handleOrientation.bindAsEventListener(this));
+    
+	this.unPauseHandlerBind = this.unPauseHandler.bind(this);
+    this.scrim = Mojo.View.createScrim(this.controller.document, {
+		onMouseDown:this.unPauseHandlerBind,
+        scrimClass: 'palm-scrim'
+    });
+    this.controller.get("Pause").appendChild(this.scrim).appendChild($('paused'));
+	
+	//snowStorm.freeze();
 }
 
 GameAssistant.prototype.handleCommand = function(event){
@@ -58,13 +67,17 @@ GameAssistant.prototype.handleCommand = function(event){
     }
 }
 
+GameAssistant.prototype.ready = function(){
+    this.scrim.hide();
+}
+
 GameAssistant.prototype.activate = function(event){
     if (this.canvas) {
         //return;
     }
     
     this.keypressHandlerBind = this.keypressHandler.bind(this);
-    Mojo.Event.listen(this.controller.document, Mojo.Event.keypress, this.keypressHandlerBind, true);
+    Mojo.Event.listen(this.controller.document, Mojo.Event.keypress, this.keypressHandlerBind, true);   
     
     this.canvas = $("slope");
     this.context = this.canvas.getContext("2d");
@@ -88,7 +101,6 @@ GameAssistant.prototype.activate = function(event){
     this.context.drawImage(this.skier.img, this.skier.x, this.skier.y, this.skier.width, this.skier.height);
     
     this.isJumping = false;
-    this.jumpLength = 0;
     
     this.mainLoopBind = this.mainLoop.bind(this);
     
@@ -354,27 +366,35 @@ GameAssistant.prototype.keypressHandler = function(event){
 
 GameAssistant.prototype.handleOrientation = function(event){
     if (!this.isJumping) {
-		var scaleX = 5;
-		var scaleY = 10;
-		var roll = (event.accelX * scaleX);
-		
-		this.moveX += roll;
-		
-		if (roll >= -.5 && roll <= .5) {
-			this.moveX = 0;
-		}
-		
-		this.speed = Math.floor(Math.abs(event.accelY * scaleY));
-	}
+        var scaleX = 5;
+        var scaleY = 10;
+        var roll = (event.accelX * scaleX);
+        
+        this.moveX += roll;
+        
+        if (roll >= -.5 && roll <= .5) {
+            this.moveX = 0;
+        }
+        
+        this.speed = Math.floor(Math.abs(event.accelY * scaleY));
+    }
 }
 
 GameAssistant.prototype.tapEvent = function(event){
     if (this.isPaused) {
+        this.scrim.hide();
         this.startMainLoop();
         this.isPaused = false;
     }
     else {
+        this.scrim.show();
         this.stopMainLoop();
         this.isPaused = true;
     }
+}
+
+GameAssistant.prototype.unPauseHandler = function(){
+    this.scrim.hide();
+    this.startMainLoop();
+    this.isPaused = false;
 }

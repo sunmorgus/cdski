@@ -34,6 +34,8 @@ HighscoresAssistant.prototype.setup = function(){
     this.controller.setupWidget('results_list', this.innerListAttrs, this.listModel);
     Mojo.Event.listen($('retry'), Mojo.Event.tap, this.retry.bind(this));
     Mojo.Event.listen($('quit'), Mojo.Event.tap, this.quit.bind(this));
+	
+	//snowStorm.resume();
 }
 
 HighscoresAssistant.prototype.handleCommand = function(event){
