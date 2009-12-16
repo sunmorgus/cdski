@@ -1,7 +1,7 @@
 function StartAssistant(params){
     if (params) {
         this.hsDB = params.db;
-		this.chosenSkier = params.chosen
+        this.chosenSkier = params.chosen
     }
 }
 
@@ -13,15 +13,15 @@ StartAssistant.prototype.setup = function(){
     this.controller.setupWidget('riley', {}, {
         buttonLabel: 'Skier'
     });
-	this.riley = this.skierRiley.bind(this);
-	Mojo.Event.listen($('riley'), Mojo.Event.tap, this.riley);
-	
+    this.riley = this.skierRiley.bind(this);
+    Mojo.Event.listen($('riley'), Mojo.Event.tap, this.riley);
+    
     this.controller.setupWidget('aiden', {}, {
         buttonLabel: '\'Boarder'
     });
-	this.aiden = this.skierAiden.bind(this);
-	Mojo.Event.listen($('aiden'), Mojo.Event.tap, this.aiden);
-	
+    this.aiden = this.skierAiden.bind(this);
+    Mojo.Event.listen($('aiden'), Mojo.Event.tap, this.aiden);
+    
     this.start = this.startGame.bind(this);
     Mojo.Event.listen($('startGame'), Mojo.Event.tap, this.start);
     
@@ -29,8 +29,8 @@ StartAssistant.prototype.setup = function(){
     Mojo.Event.listen($('highScores'), Mojo.Event.tap, this.highscores);
     
     this.createDB();
-	
-	this.chosenSkier = 'riley';
+    
+    this.chosenSkier = 'riley';
 }
 
 StartAssistant.prototype.activate = function(event){
@@ -41,6 +41,10 @@ StartAssistant.prototype.deactivate = function(event){
 }
 
 StartAssistant.prototype.cleanup = function(event){
+    this.controller.stopListening($('riley'), Mojo.Event.tap, this.riley);    
+    this.controller.stopListening($('aiden'), Mojo.Event.tap, this.aiden);    
+    this.controller.stopListening($('startGame'), Mojo.Event.tap, this.start);    
+    this.controller.stopListening($('highScores'), Mojo.Event.tap, this.highscores);
 }
 
 StartAssistant.prototype.createDB = function(){
@@ -65,11 +69,11 @@ StartAssistant.prototype.createDB = function(){
 }
 
 StartAssistant.prototype.skierRiley = function(){
-	$('skier').src = 'images/sprites/r/riley_down.png';
+    $('skier').src = 'images/sprites/r/riley_down.png';
 }
 
 StartAssistant.prototype.skierAiden = function(){
-	$('skier').src = 'images/sprites/r/riley_left.png';
+    $('skier').src = 'images/sprites/r/riley_left.png';
 }
 
 StartAssistant.prototype.startGame = function(event){
@@ -83,7 +87,7 @@ StartAssistant.prototype.startGame = function(event){
 
 StartAssistant.prototype.highScores = function(event){
     var params = {
-		chosen: this.chosenSkier,
+        chosen: this.chosenSkier,
         db: this.hsDB
     }
     

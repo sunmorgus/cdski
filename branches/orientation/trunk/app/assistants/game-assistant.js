@@ -100,6 +100,11 @@ GameAssistant.prototype.deactivate = function(event){
     this.stopMainLoop();
 }
 
+GameAssistant.prototype.cleanup = function(){
+	this.controller.stopListening(document, 'acceleration', this.handleAcceleration.bindAsEventListener(this));
+	this.controller.stopListening(this.controller.document, Mojo.Event.keypress, this.keypressHandlerBind, true);
+}
+
 GameAssistant.prototype.setupSkierEasy = function(state){
     var chosen = this.chosenSkier;
     switch (state) {
