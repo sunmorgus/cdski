@@ -43,7 +43,7 @@ GameAssistant.prototype.setup = function(){
         omitDefaultItems: true
     }, this.appMenuModel);
     
-    this.controller.listen(document, 'acceleration', this.handleAcceleration.bindAsEventListener(this));
+    this.controller.listen(document, 'acceleration', this.handleOrientation.bindAsEventListener(this));
 }
 
 GameAssistant.prototype.handleCommand = function(event){
@@ -101,27 +101,20 @@ GameAssistant.prototype.deactivate = function(event){
 }
 
 GameAssistant.prototype.cleanup = function(){
-	this.controller.stopListening(document, 'acceleration', this.handleAcceleration.bindAsEventListener(this));
-	this.controller.stopListening(this.controller.document, Mojo.Event.keypress, this.keypressHandlerBind, true);
+    this.controller.stopListening(document, 'acceleration', this.handleOrientation.bindAsEventListener(this));
+    this.controller.stopListening(this.controller.document, Mojo.Event.keypress, this.keypressHandlerBind, true);
 }
 
 GameAssistant.prototype.setupSkierEasy = function(state){
     var chosen = this.chosenSkier;
+    
     switch (state) {
         case "initial":
             this.setupSkier(150, 20, 14, 32, chosen + "_down");
             break;
-        case "down":
-            this.setupSkier(this.skier.x, 20, 14, 32, chosen + "_down");
-            break;
-        case "right":
-            this.setupSkier(this.skier.x + this.moveX, 20, 16, 33, chosen + "_right");
-            break;
-        case "left":
-            this.setupSkier(this.skier.x + this.moveX, 20, 18, 31, chosen + "_left");
-            break;
         case "crash":
-            this.setupSkier(this.skier.x - 2, 20, 18, 22, chosen + "_crash");
+            var currentX = this.skier.x;
+            this.setupSkier(currentX - 2, 20, 18, 22, chosen + "_crash");
     }
 }
 
@@ -214,23 +207,36 @@ GameAssistant.prototype.mainLoop = function(){
     
     var l = this.obstacles.length;
     var currentSpeed = this.speed;
+    var currentSkier = this.skier;
+    var currentMoveX = this.moveX;
+    currentSkier.x += currentMoveX;
+    
+    if (currentMoveX <= 0) {
+        currentSkier.img.src = "images/sprites/r/riley_left.png";
+    }
+    if (currentMoveX >= 0) {
+        currentSkier.img.src = "images/sprites/r/riley_right.png";
+    }
+    if (currentMoveX == 0) {
+        currentSkier.img.src = "images/sprites/r/riley_down.png";
+    }
     
     //draw trees
     for (var i = 1; i < l; i++) {
         var currentObs = this.obstacles[i];
         
         //check for obstacle collision
-        var x = ((currentObs.x <= this.skier.x) && ((currentObs.x + currentObs.width) >= this.skier.x));
+        var x = ((currentObs.x <= currentSkier.x) && ((currentObs.x + currentObs.width) >= currentSkier.x));
         if (!x) {
-            x = ((currentObs.x <= (this.skier.x + this.skier.width)) && ((currentObs.x + currentObs.width) >= (this.skier.x + this.skier.width)));
+            x = ((currentObs.x <= (currentSkier.x + currentSkier.width)) && ((currentObs.x + currentObs.width) >= (currentSkier.x + currentSkier.width)));
         }
-        var y = ((Math.floor(currentObs.y) <= (this.skier.y + this.skier.height - 12)));
+        var y = ((Math.floor(currentObs.y) <= (currentSkier.y + currentSkier.height - 12)));
         
         if (!this.isJumping) {
             if (x && y && (currentObs.name != "ramp")) {//skier has collided with obstacle
-                this.context.fillRect(this.skier.x, this.skier.y, this.skier.width, this.skier.height);
+                this.context.fillRect(currentSkier.x, currentSkier.y, currentSkier.width, currentSkier.height);
                 this.setupSkierEasy("crash");
-                this.context.drawImage(this.skier.img, this.skier.x, this.skier.y, this.skier.width, this.skier.height);
+                this.context.drawImage(currentSkier.img, currentSkier.x, currentSkier.y, currentSkier.width, currentSkier.height);
                 
                 this.stopMainLoop();
                 var t = setTimeout(this.checkHighScore.bind(this), 1000);
@@ -241,11 +247,11 @@ GameAssistant.prototype.mainLoop = function(){
                     var unjump = setTimeout(this.stopJump.bind(this), 2000);
                 }
                 else {
-                    this.context.drawImage(this.skier.img, this.skier.x, this.skier.y, this.skier.width, this.skier.height);
+                    this.context.drawImage(currentSkier.img, currentSkier.x, currentSkier.y, currentSkier.width, currentSkier.height);
                 }
         }
         else {
-            this.context.drawImage(this.skier.img, this.skier.x, this.skier.y - 3, this.skier.width + 3, this.skier.height + 3);
+            this.context.drawImage(currentSkier.img, currentSkier.x, currentSkier.y - 3, currentSkier.width + 3, currentSkier.height + 3);
         }
         
         this.context.drawImage(currentObs.img, currentObs.x, currentObs.y, currentObs.width, currentObs.height);
@@ -287,7 +293,11 @@ GameAssistant.prototype.mainLoop = function(){
         this.addObstacle(1);
         this.startMainLoop();
         
-        this.increaseDiffScore += 50;
+        this.increaseDiffScore += 500;
+    }
+    
+    if (currentSkier.x < 2 || currentSkier.x > currentSkier.maxX) {
+        this.moveX = 0;
     }
 }
 
@@ -342,26 +352,20 @@ GameAssistant.prototype.keypressHandler = function(event){
     }
 }
 
-GameAssistant.prototype.handleAcceleration = function(event){
-    if (this.skier.x > 2 && this.skier.x < this.skier.maxX) {
-        var accelX = Math.floor(event.accelX * 100);
-        if (event.accelX >= 0 && this.skier.x < this.skier.maxX) {
-            this.moveX = accelX;
-            this.setupSkierEasy("right");
-        }
-        
-        if (event.accelX <= 0 && this.skier.x > 2) {
-            this.moveX = accelX;
-            this.setupSkierEasy("left");
-        }
-        
-        if (accelX >= -3 && accelX <= 3) {
-            this.moveX = 0;
-            this.setupSkierEasy("down");
-        }
-    }
-    
-    this.speed = Math.floor(Math.abs(event.accelY * 10));
+GameAssistant.prototype.handleOrientation = function(event){
+    if (!this.isJumping) {
+		var scaleX = 5;
+		var scaleY = 10;
+		var roll = (event.accelX * scaleX);
+		
+		this.moveX += roll;
+		
+		if (roll >= -.5 && roll <= .5) {
+			this.moveX = 0;
+		}
+		
+		this.speed = Math.floor(Math.abs(event.accelY * scaleY));
+	}
 }
 
 GameAssistant.prototype.tapEvent = function(event){
