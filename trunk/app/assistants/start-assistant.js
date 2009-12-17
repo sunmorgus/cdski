@@ -8,6 +8,7 @@ function StartAssistant(params){
 StartAssistant.prototype.hsDB = null;
 StartAssistant.prototype.chosenSkier = null;
 StartAssistant.prototype.skier = null;
+StartAssistant.prototyp.options = null;
 
 StartAssistant.prototype.setup = function(){
     this.controller.setupWidget('riley', {}, {
@@ -28,11 +29,23 @@ StartAssistant.prototype.setup = function(){
     this.highscores = this.highScores.bind(this);
     Mojo.Event.listen($('highScores'), Mojo.Event.tap, this.highscores);
     
+    this.cbattributes = {
+        property: 'value',
+        trueValue: 'ON',
+        falseValue: 'OFF'
+    };
+    
+    this.cbmodel = {
+        value: 'OFF',
+        disabled: false
+    };
+    this.controller.setupWidget('noSnow', this.cbattributes, this.cbmodel);
+    this.noSnowCallback = this.noSnowChecked.bindAsEventListener(this);
+    Mojo.Event.listen($('noSnow'), Mojo.Event.propertyChange, this.noSnowCallback);
+    
     this.createDB();
     
     this.chosenSkier = 'riley';
-	
-	//snowStorm.resume();
 }
 
 StartAssistant.prototype.activate = function(event){
@@ -43,10 +56,11 @@ StartAssistant.prototype.deactivate = function(event){
 }
 
 StartAssistant.prototype.cleanup = function(event){
-    this.controller.stopListening($('riley'), Mojo.Event.tap, this.riley);    
-    this.controller.stopListening($('aiden'), Mojo.Event.tap, this.aiden);    
-    this.controller.stopListening($('startGame'), Mojo.Event.tap, this.start);    
+    this.controller.stopListening($('riley'), Mojo.Event.tap, this.riley);
+    this.controller.stopListening($('aiden'), Mojo.Event.tap, this.aiden);
+    this.controller.stopListening($('startGame'), Mojo.Event.tap, this.start);
     this.controller.stopListening($('highScores'), Mojo.Event.tap, this.highscores);
+	this.controller.stopListening($('noSnow'), Mojo.Event.propertyChange, this.noSnowCallback);
 }
 
 StartAssistant.prototype.createDB = function(){
@@ -76,6 +90,21 @@ StartAssistant.prototype.skierRiley = function(){
 
 StartAssistant.prototype.skierAiden = function(){
     $('skier').src = 'images/sprites/r/riley_left.png';
+}
+
+StartAssistant.prototype.noSnowChecked = function(event){
+
+    switch (event.value) {
+        case 'ON':
+			snowStorm.stop();
+            snowStorm.freeze();
+            break;
+        case 'OFF':
+            snowStorm.show();
+			snowStorm.resume();
+            break;
+    }
+	
 }
 
 StartAssistant.prototype.startGame = function(event){

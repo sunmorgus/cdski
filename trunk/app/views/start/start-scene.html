@@ -1,16 +1,23 @@
 <div id="main" style="background-color: white; height: 480px;">
-    <div style="width: 320px; height: 220px;">
+    <div>
         <img src="images/ski.png" class="ski" /><img id="skier" src="images/sprites/r/riley_down.png" class="startSkier" /><img src="images/pre.png" class="pre" />
     </div>
     <div style="position: fixed; bottom: 0px; width: 100%;">
         <div class="palm-group">
             <div class="palm-group-title">
-                Choose your player:
+                Options:
             </div>
-            <div class="palm-list" style="height: 65px;">
-                <div x-mojo-element="Button" id="riley" class="blueButton">
-                </div>
-                <div x-mojo-element="Button" id="aiden" class="redButton">
+            <div class="palm-list" style="height: 100px;">
+                <div class="palm-row-wrapper">
+                    <div x-mojo-element="Button" id="riley" class="blueButton">
+                    </div>
+                    <div x-mojo-element="Button" id="aiden" class="redButton">
+                    </div>
+                    <div id="noSnow" x-mojo-element="CheckBox" style="clear: both; margin-left: 15px;">
+                    </div>
+                    <div>
+                        Disable Snowstorm (Faster)
+                    </div>
                 </div>
             </div>
         </div>
