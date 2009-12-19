@@ -11,6 +11,18 @@ StartAssistant.prototype.skier = null;
 StartAssistant.prototype.options = null;
 
 StartAssistant.prototype.setup = function(){
+    this.appMenuModel = {
+        visible: true,
+        items: [Mojo.Menu.editItem, {
+            label: $L('Help'),
+            command: 'help'
+        }]
+    };
+    
+    this.controller.setupWidget(Mojo.Menu.appMenu, {
+        omitDefaultItems: true
+    }, this.appMenuModel);
+	
     this.controller.setupWidget('riley', {}, {
         buttonLabel: 'Skier'
     });
@@ -48,6 +60,17 @@ StartAssistant.prototype.setup = function(){
     this.chosenSkier = 'riley';
 }
 
+StartAssistant.prototype.handleCommand = function(event){
+    this.controller = Mojo.Controller.stageController.activeScene();
+    if (event.type == Mojo.Event.command) {
+        switch (event.command) {
+            case 'help':
+                this.controller.stageController.assistant.showScene("help", 'help');
+                break;
+        }
+    }
+}
+
 StartAssistant.prototype.activate = function(event){
 
 }
@@ -60,7 +83,7 @@ StartAssistant.prototype.cleanup = function(event){
     this.controller.stopListening($('aiden'), Mojo.Event.tap, this.aiden);
     this.controller.stopListening($('startGame'), Mojo.Event.tap, this.start);
     this.controller.stopListening($('highScores'), Mojo.Event.tap, this.highscores);
-	this.controller.stopListening($('noSnow'), Mojo.Event.propertyChange, this.noSnowCallback);
+    this.controller.stopListening($('noSnow'), Mojo.Event.propertyChange, this.noSnowCallback);
 }
 
 StartAssistant.prototype.createDB = function(){
@@ -86,27 +109,27 @@ StartAssistant.prototype.createDB = function(){
 
 StartAssistant.prototype.skierRiley = function(){
     $('skier').src = 'images/sprites/r/riley_down.png';
-	this.chosenSkier = 'riley';
+    this.chosenSkier = 'riley';
 }
 
 StartAssistant.prototype.skierAiden = function(){
     $('skier').src = 'images/sprites/a/aiden_down.png';
-	this.chosenSkier = 'aiden';
+    this.chosenSkier = 'aiden';
 }
 
 StartAssistant.prototype.noSnowChecked = function(event){
 
     switch (event.value) {
         case 'ON':
-			snowStorm.stop();
+            snowStorm.stop();
             snowStorm.freeze();
             break;
         case 'OFF':
             snowStorm.show();
-			snowStorm.resume();
+            snowStorm.resume();
             break;
     }
-	
+    
 }
 
 StartAssistant.prototype.startGame = function(event){
