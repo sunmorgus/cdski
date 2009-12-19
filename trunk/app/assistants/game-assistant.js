@@ -221,16 +221,17 @@ GameAssistant.prototype.mainLoop = function(){
     var currentSpeed = this.speed;
     var currentSkier = this.skier;
     var currentMoveX = this.moveX;
+	var skierImg = this.chosenSkier;
     currentSkier.x += currentMoveX;
     
     if (currentMoveX <= 0) {
-        currentSkier.img.src = "images/sprites/r/riley_left.png";
+        currentSkier.img.src = "images/sprites/" + skierImg.substr(0,1) + "/" + skierImg + "_left.png";
     }
     if (currentMoveX >= 0) {
-        currentSkier.img.src = "images/sprites/r/riley_right.png";
+        currentSkier.img.src = "images/sprites/" + skierImg.substr(0,1) + "/" + skierImg + "_right.png";
     }
     if (currentMoveX == 0) {
-        currentSkier.img.src = "images/sprites/r/riley_down.png";
+        currentSkier.img.src = "images/sprites/" + skierImg.substr(0,1) + "/" + skierImg + "_down.png";
     }
     
     //draw trees

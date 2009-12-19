@@ -8,7 +8,7 @@ function StartAssistant(params){
 StartAssistant.prototype.hsDB = null;
 StartAssistant.prototype.chosenSkier = null;
 StartAssistant.prototype.skier = null;
-StartAssistant.prototyp.options = null;
+StartAssistant.prototype.options = null;
 
 StartAssistant.prototype.setup = function(){
     this.controller.setupWidget('riley', {}, {
@@ -86,10 +86,12 @@ StartAssistant.prototype.createDB = function(){
 
 StartAssistant.prototype.skierRiley = function(){
     $('skier').src = 'images/sprites/r/riley_down.png';
+	this.chosenSkier = 'riley';
 }
 
 StartAssistant.prototype.skierAiden = function(){
-    $('skier').src = 'images/sprites/r/riley_left.png';
+    $('skier').src = 'images/sprites/a/aiden_down.png';
+	this.chosenSkier = 'aiden';
 }
 
 StartAssistant.prototype.noSnowChecked = function(event){
