@@ -33,9 +33,8 @@ HighscoresAssistant.prototype.setup = function(){
     };
     this.controller.setupWidget('results_list', this.innerListAttrs, this.listModel);
     Mojo.Event.listen($('retry'), Mojo.Event.tap, this.retry.bind(this));
-    Mojo.Event.listen($('quit'), Mojo.Event.tap, this.quit.bind(this));
-	
-	//snowStorm.resume();
+    
+    //snowStorm.resume();
 }
 
 HighscoresAssistant.prototype.handleCommand = function(event){
@@ -55,7 +54,6 @@ HighscoresAssistant.prototype.activate = function(event){
     this.getHighScores();
     if (!this.Score) {
         $('retry').style.display = 'none';
-        $('quit').innerHTML = 'Back';
     }
     else {
         this.checkScore(this.Score);
@@ -133,11 +131,15 @@ HighscoresAssistant.prototype.buildList = function(transaction, results){
         }
         //update the list widget
         this.resultList.clear();
-        Object.extend(this.resultList, list);
-        this.controller.modelChanged(this.listModel, this);
+        if (list.length > 0) {        
+            Object.extend(this.resultList, list);
+            this.controller.modelChanged(this.listModel, this);
+        }else{
+			throw "";
+		}
     } 
     catch (e) {
-        $('result').update(e);
+        
     }
 }
 
@@ -158,15 +160,6 @@ HighscoresAssistant.prototype.retry = function(event){
     }
     
     this.controller.stageController.assistant.showScene("game", 'game', params);
-}
-
-HighscoresAssistant.prototype.quit = function(event){
-    var params = {
-        chosen: this.chosenSkier,
-        db: this.hsDB
-    }
-    
-    this.controller.stageController.assistant.showScene("start", 'start', params);
 }
 
 HighscoresAssistant.prototype.errorHandler = function(transaction, error){
