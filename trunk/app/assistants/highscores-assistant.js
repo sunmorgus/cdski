@@ -71,7 +71,6 @@ HighscoresAssistant.prototype.deactivate = function(event){
 
 HighscoresAssistant.prototype.cleanup = function(event){
     this.controller.stopListening($('retry'), Mojo.Event.tap, this.retry.bind(this));
-    this.controller.stopListening($('quit'), Mojo.Event.tap, this.quit.bind(this))
 }
 
 HighscoresAssistant.prototype.getHighScores = function(){

@@ -48,11 +48,15 @@ StartAssistant.prototype.setup = function(){
     };
     
     this.cbmodel = {
-        value: 'OFF',
+        value: 'ON',
         disabled: false
     };
     this.controller.setupWidget('noSnow', this.cbattributes, this.cbmodel);
     this.noSnowCallback = this.noSnowChecked.bindAsEventListener(this);
+	
+	snowStorm.stop();
+	snowStorm.freeze();
+	
     Mojo.Event.listen($('noSnow'), Mojo.Event.propertyChange, this.noSnowCallback);
     
     this.createDB();
