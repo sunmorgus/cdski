@@ -55,21 +55,11 @@ GameAssistant.prototype.setup = function(){
     });
     this.controller.get("Pause").appendChild(this.scrim).appendChild($('paused'));
 	
-	this.controller.serviceRequest("palm://com.palm.power/com/palm/power", {
-	  method: "activityStart",
-	  parameters: {
-	  id: "com.rjamdev.skipre.activate-1",
-	  duration_ms: '900000'
-	  },
-	  onSuccess: this.activitySuccess.bind(this),
-	  onFailure: this.activityFailure.bind(this)
-	 });
-	
 	//snowStorm.freeze();
 }
 
 GameAssistant.prototype.activitySuccess = function(event){
-	console.log('power manage success');
+	this.startMainLoop();
 }
 
 GameAssistant.prototype.activityFailure = function(event){
@@ -125,8 +115,16 @@ GameAssistant.prototype.activate = function(event){
     this.isJumping = false;
     
     this.mainLoopBind = this.mainLoop.bind(this);
-    
-    this.startMainLoop();
+
+	this.controller.serviceRequest("palm://com.palm.power/com/palm/power", {
+	  method: "activityStart",
+	  parameters: {
+	  id: "com.rjamdev.skipre.activate-1",
+	  duration_ms: '900000'
+	  },
+	  onSuccess: this.activitySuccess.bind(this),
+	  onFailure: this.activityFailure.bind(this)
+	 });
 }
 
 
