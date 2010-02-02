@@ -45,25 +45,25 @@ GameAssistant.prototype.setup = function(){
         omitDefaultItems: true
     }, this.appMenuModel);
     
-	this.controller.stageController.setWindowProperties("fastAccelerometer");
+    this.controller.stageController.setWindowProperties("fastAccelerometer");
     this.controller.listen(document, 'acceleration', this.handleOrientation.bindAsEventListener(this));
     
-	this.unPauseHandlerBind = this.unPauseHandler.bind(this);
+    this.unPauseHandlerBind = this.unPauseHandler.bind(this);
     this.scrim = Mojo.View.createScrim(this.controller.document, {
-		onMouseDown:this.unPauseHandlerBind,
+        onMouseDown: this.unPauseHandlerBind,
         scrimClass: 'palm-scrim'
     });
     this.controller.get("Pause").appendChild(this.scrim).appendChild($('paused'));
-	
-	//snowStorm.freeze();
+    
+    //snowStorm.freeze();
 }
 
 GameAssistant.prototype.activitySuccess = function(event){
-	this.startMainLoop();
+    this.startMainLoop();
 }
 
 GameAssistant.prototype.activityFailure = function(event){
-	console.log('power manage failure');
+    console.log('power manage failure');
 }
 
 GameAssistant.prototype.handleCommand = function(event){
@@ -88,7 +88,7 @@ GameAssistant.prototype.activate = function(event){
     }
     
     this.keypressHandlerBind = this.keypressHandler.bind(this);
-    Mojo.Event.listen(this.controller.document, Mojo.Event.keypress, this.keypressHandlerBind, true);   
+    Mojo.Event.listen(this.controller.document, Mojo.Event.keypress, this.keypressHandlerBind, true);
     
     this.canvas = $("slope");
     this.context = this.canvas.getContext("2d");
@@ -103,7 +103,7 @@ GameAssistant.prototype.activate = function(event){
     this.divScoreBoard = $("scoreboard");
     this.score = 0;
     this.increaseDiffScore = 50;
-	this.drawAbom = 12;
+    this.drawAbom = 12;
     
     this.setupObstacles();
     
@@ -115,30 +115,30 @@ GameAssistant.prototype.activate = function(event){
     this.isJumping = false;
     
     this.mainLoopBind = this.mainLoop.bind(this);
-
-	this.controller.serviceRequest("palm://com.palm.power/com/palm/power", {
-	  method: "activityStart",
-	  parameters: {
-	  id: "com.rjamdev.skipre.activate-1",
-	  duration_ms: '900000'
-	  },
-	  onSuccess: this.activitySuccess.bind(this),
-	  onFailure: this.activityFailure.bind(this)
-	 });
+    
+    this.controller.serviceRequest("palm://com.palm.power/com/palm/power", {
+        method: "activityStart",
+        parameters: {
+            id: "com.rjamdev.skipre.activate-1",
+            duration_ms: '900000'
+        },
+        onSuccess: this.activitySuccess.bind(this),
+        onFailure: this.activityFailure.bind(this)
+    });
 }
 
 
 GameAssistant.prototype.deactivate = function(event){
     this.stopMainLoop();
-	
-	this.controller.serviceRequest("palm://com.palm.power/com/palm/power", {
-	  method: "activityEnd",
-	  parameters: {
-	  id: "com.rjamdev.skipre.activate-1"
-	  },
-	  onSuccess: this.activitySuccess.bind(this),
-	  onFailure: this.activityFailure.bind(this)
-	  });
+    
+    this.controller.serviceRequest("palm://com.palm.power/com/palm/power", {
+        method: "activityEnd",
+        parameters: {
+            id: "com.rjamdev.skipre.activate-1"
+        },
+        onSuccess: this.activitySuccess.bind(this),
+        onFailure: this.activityFailure.bind(this)
+    });
 }
 
 GameAssistant.prototype.cleanup = function(){
@@ -244,20 +244,20 @@ GameAssistant.prototype.addObstacle = function(num){
 }
 
 GameAssistant.prototype.getAbom = function(){
-	var obstacle = {
-		img: new Image(),
-		x: Math.floor(Math.random() * (this.canvasWidth - 36 - 2)),
-		y: (this.canvasHeight - 46 - 2) + 46 + Math.floor(Math.random() * 100),
-		width: 36,
-		height: 46,
-		vDir: this.randNum1,
-		maxX: (this.canvasWidth - 36 - 2),
-		maxY: (this.canvasHeight - 46 - 2),
-		name: 'abom_h'
-	};
-	
-	obstacle.img.src = "images/obstacles/abom_h.gif";
-	this.obstacles.push(obstacle);
+    var obstacle = {
+        img: new Image(),
+        x: Math.floor(Math.random() * (this.canvasWidth - 36 - 2)),
+        y: (this.canvasHeight - 46 - 2) + 46 + Math.floor(Math.random() * 100),
+        width: 36,
+        height: 46,
+        vDir: this.randNum1,
+        maxX: (this.canvasWidth - 36 - 2),
+        maxY: (this.canvasHeight - 46 - 2),
+        name: 'abom_h'
+    };
+    
+    obstacle.img.src = "images/obstacles/abom_h.gif";
+    this.obstacles.push(obstacle);
 }
 
 GameAssistant.prototype.mainLoop = function(){
@@ -267,17 +267,17 @@ GameAssistant.prototype.mainLoop = function(){
     var currentSpeed = this.speed;
     var currentSkier = this.skier;
     var currentMoveX = this.moveX;
-	var skierImg = this.chosenSkier;
+    var skierImg = this.chosenSkier;
     currentSkier.x += currentMoveX;
     
     if (currentMoveX <= 0) {
-        currentSkier.img.src = "images/sprites/" + skierImg.substr(0,1) + "/" + skierImg + "_left.png";
+        currentSkier.img.src = "images/sprites/" + skierImg.substr(0, 1) + "/" + skierImg + "_left.png";
     }
     if (currentMoveX >= 0) {
-        currentSkier.img.src = "images/sprites/" + skierImg.substr(0,1) + "/" + skierImg + "_right.png";
+        currentSkier.img.src = "images/sprites/" + skierImg.substr(0, 1) + "/" + skierImg + "_right.png";
     }
     if (currentMoveX == 0) {
-        currentSkier.img.src = "images/sprites/" + skierImg.substr(0,1) + "/" + skierImg + "_down.png";
+        currentSkier.img.src = "images/sprites/" + skierImg.substr(0, 1) + "/" + skierImg + "_down.png";
     }
     
     //draw trees
@@ -291,27 +291,47 @@ GameAssistant.prototype.mainLoop = function(){
         }
         var y = ((Math.floor(currentObs.y) <= (currentSkier.y + currentSkier.height - 12)));
         
+        switch (currentObs.name) {
+            case "ramp":
+                if (!this.isJumping) {
+                    if (x && y) {
+                        this.isJumping = true;
+                        var unjump = setTimeout(this.stopJump.bind(this), 2000);
+                    }
+                    else {
+                        this.context.drawImage(currentSkier.img, currentSkier.x, currentSkier.y, currentSkier.width, currentSkier.height);
+                    }
+                }
+				else{
+					this.context.drawImage(currentSkier.img, currentSkier.x, currentSkier.y - 3, currentSkier.width + 3, currentSkier.height + 3);
+				}
+                break;
+            case "abom_h":
+                if (!this.isF) {
+                    if (x && y) {
+                        this.collide(currentSkier, currentObs);
+                    }
+                    else {
+						this.context.drawImage(currentSkier.img, currentSkier.x, currentSkier.y, currentSkier.width, currentSkier.height);
+                    }
+                }
+				else{
+					this.context.drawImage(currentSkier.img, currentSkier.x, currentSkier.y, currentSkier.width, currentSkier.height);
+				}
+                break;
+            default:
+                if (x && y) {
+                    this.collide(currentSkier, currentObs);
+                }
+				else{
+					this.context.drawImage(currentSkier.img, currentSkier.x, currentSkier.y, currentSkier.width, currentSkier.height);
+				}
+        }
+        
+/*
         if (!this.isJumping) {
             if (x && y && (currentObs.name != "ramp")) {//skier has collided with obstacle
-                this.stopMainLoop();
-				
-                this.context.fillRect(currentSkier.x, currentSkier.y, currentSkier.width, currentSkier.height);
-
-				if(currentObs.name == "abom_h"){
-					$('crash').src = "images/obstacles/abom_eat.gif",
-					$('crash').style.left = currentSkier.x + 'px';
-					$('crash').style.top = (currentSkier.y + 2 + currentObs.height) + 'px';
-				}
-				else{
-					$('crash').src = "images/sprites/" + skierImg.substr(0,1) + "/" + skierImg + "_crash.png";
-					$('crash').style.top = (currentSkier.y + 20 + currentObs.height) + 'px';
-					$('crash').style.left = currentSkier.x + 'px';
-					currentSkier.img.src = "";
-				}
-				
-				$('crash').style.visibility = 'visible';
-
-                var t = setTimeout(this.checkHighScore.bind(this), 1000);
+                this.collide(currentSkier, currentObs);
             }
             else 
                 if (x && y && (currentObs.name == "ramp")) {
@@ -325,14 +345,15 @@ GameAssistant.prototype.mainLoop = function(){
         else {
             this.context.drawImage(currentSkier.img, currentSkier.x, currentSkier.y - 3, currentSkier.width + 3, currentSkier.height + 3);
         }
+*/
         
         this.context.drawImage(currentObs.img, currentObs.x, currentObs.y, currentObs.width, currentObs.height);
         
         if (currentObs.vDir) {
             currentObs.y = currentObs.y - currentSpeed;
-			if(currentObs.name == "abom_h"){
-				currentObs.x = currentSkier.x;
-			}
+            if (currentObs.name == "abom_h") {
+                currentObs.x = currentSkier.x;
+            }
         }
         else {
             var randomObstacle = this.getRandomObsNum();
@@ -353,14 +374,14 @@ GameAssistant.prototype.mainLoop = function(){
         }
     }
     
-	if (currentSpeed > 0) {
-		if (this.isJumping) {
-			this.score += 5.3;
-		}
-		else {
-			this.score += .3;
-		}
-	}
+    if (currentSpeed > 0) {
+        if (this.isJumping) {
+            this.score += 5.3;
+        }
+        else {
+            this.score += .3;
+        }
+    }
     var printScore = Math.round(this.score);
     this.divScoreBoard.innerHTML = "Score: " + Math.round(printScore);
     //this.divLives.innerHTML = "Live(s): " + this.lives;
@@ -372,18 +393,39 @@ GameAssistant.prototype.mainLoop = function(){
         
         this.increaseDiffScore += 500;
     }
-	
-	if(printScore >= this.drawAbom){
-		this.stopMainLoop();
-		this.getAbom();
-		this.startMainLoop();
-		
-		this.drawAbom += 1200;
-	}
+    
+    if (printScore >= this.drawAbom) {
+        this.stopMainLoop();
+        this.getAbom();
+        this.startMainLoop();
+        
+        this.drawAbom += 1200;
+    }
     
     if (currentSkier.x < 2 || currentSkier.x > currentSkier.maxX) {
         this.moveX = 0;
     }
+}
+
+GameAssistant.prototype.collide = function(currentSkier, currentObs){
+    this.stopMainLoop();
+    
+    if (currentObs.name == "abom_h") {
+        $('crash').src = "images/obstacles/abom_eat.gif", $('crash').style.left = currentSkier.x + 'px';
+        $('crash').style.top = (currentSkier.y + 2 + currentObs.height) + 'px';
+        $('crash').style.left = currentObs.x + 'px';
+        currentObs.img.src = "";
+    }
+    else {
+        $('crash').src = "images/sprites/" + skierImg.substr(0, 1) + "/" + skierImg + "_crash.png";
+        $('crash').style.top = (currentSkier.y + 20 + currentObs.height) + 'px';
+        $('crash').style.left = currentSkier.x + 'px';
+        currentSkier.img.src = "";
+    }
+    
+    $('crash').style.visibility = 'visible';
+    
+    var t = setTimeout(this.checkHighScore.bind(this), 1000);
 }
 
 GameAssistant.prototype.startMainLoop = function(){
@@ -434,11 +476,11 @@ GameAssistant.prototype.keypressHandler = function(event){
         case Mojo.Char.s + 32:
             this.setupSkierEasy("down");
             break;
-			
-		case Mojo.Char.f:
-		case Mojo.Char.f + 32:
-			
-			break;
+            
+        case Mojo.Char.f:
+        case Mojo.Char.f + 32:
+            
+            break;
     }
 }
 
