@@ -1,6 +1,8 @@
 function GameAssistant(params){
     this.chosenSkier = params.chosen;
     this.hsDB = params.db;
+    this.speed = null;
+	this.fSpeedMod = 1;
 }
 
 GameAssistant.prototype.obsArray = new Array();
@@ -20,7 +22,6 @@ GameAssistant.prototype.keypressHandlerBind = null;
 GameAssistant.prototype.skier = null;
 GameAssistant.prototype.score = null;
 GameAssistant.prototype.increaseDiffScore = null;
-GameAssistant.prototype.speed = null;
 GameAssistant.prototype.increaseSpeedScore = null;
 GameAssistant.prototype.divLives = null;
 GameAssistant.prototype.lives = null;
@@ -56,14 +57,6 @@ GameAssistant.prototype.setup = function(){
     this.controller.get("Pause").appendChild(this.scrim).appendChild($('paused'));
     
     //snowStorm.freeze();
-}
-
-GameAssistant.prototype.activitySuccess = function(event){
-    this.startMainLoop();
-}
-
-GameAssistant.prototype.activityFailure = function(event){
-    console.log('power manage failure');
 }
 
 GameAssistant.prototype.handleCommand = function(event){
@@ -103,7 +96,7 @@ GameAssistant.prototype.activate = function(event){
     this.divScoreBoard = $("scoreboard");
     this.score = 0;
     this.increaseDiffScore = 50;
-    this.drawAbom = 12;
+    this.drawAbom = 300;
     
     this.setupObstacles();
     
@@ -116,29 +109,12 @@ GameAssistant.prototype.activate = function(event){
     
     this.mainLoopBind = this.mainLoop.bind(this);
     
-    this.controller.serviceRequest("palm://com.palm.power/com/palm/power", {
-        method: "activityStart",
-        parameters: {
-            id: "com.rjamdev.skipre.activate-1",
-            duration_ms: '900000'
-        },
-        onSuccess: this.activitySuccess.bind(this),
-        onFailure: this.activityFailure.bind(this)
-    });
+    this.startMainLoop();
 }
 
 
 GameAssistant.prototype.deactivate = function(event){
     this.stopMainLoop();
-    
-    this.controller.serviceRequest("palm://com.palm.power/com/palm/power", {
-        method: "activityEnd",
-        parameters: {
-            id: "com.rjamdev.skipre.activate-1"
-        },
-        onSuccess: this.activitySuccess.bind(this),
-        onFailure: this.activityFailure.bind(this)
-    });
 }
 
 GameAssistant.prototype.cleanup = function(){
@@ -302,9 +278,9 @@ GameAssistant.prototype.mainLoop = function(){
                         this.context.drawImage(currentSkier.img, currentSkier.x, currentSkier.y, currentSkier.width, currentSkier.height);
                     }
                 }
-				else{
-					this.context.drawImage(currentSkier.img, currentSkier.x, currentSkier.y - 3, currentSkier.width + 3, currentSkier.height + 3);
-				}
+                else {
+                    this.context.drawImage(currentSkier.img, currentSkier.x, currentSkier.y - 3, currentSkier.width + 3, currentSkier.height + 3);
+                }
                 break;
             case "abom_h":
                 if (!this.isF) {
@@ -312,46 +288,45 @@ GameAssistant.prototype.mainLoop = function(){
                         this.collide(currentSkier, currentObs);
                     }
                     else {
-						this.context.drawImage(currentSkier.img, currentSkier.x, currentSkier.y, currentSkier.width, currentSkier.height);
+                        this.context.drawImage(currentSkier.img, currentSkier.x, currentSkier.y, currentSkier.width, currentSkier.height);
                     }
                 }
-				else{
-					this.context.drawImage(currentSkier.img, currentSkier.x, currentSkier.y, currentSkier.width, currentSkier.height);
-				}
+                else {
+                    this.context.drawImage(currentSkier.img, currentSkier.x, currentSkier.y, currentSkier.width, currentSkier.height);
+                }
                 break;
             default:
                 if (x && y) {
                     this.collide(currentSkier, currentObs);
                 }
-				else{
-					this.context.drawImage(currentSkier.img, currentSkier.x, currentSkier.y, currentSkier.width, currentSkier.height);
-				}
-        }
-        
-/*
-        if (!this.isJumping) {
-            if (x && y && (currentObs.name != "ramp")) {//skier has collided with obstacle
-                this.collide(currentSkier, currentObs);
-            }
-            else 
-                if (x && y && (currentObs.name == "ramp")) {
-                    this.isJumping = true;
-                    var unjump = setTimeout(this.stopJump.bind(this), 2000);
-                }
                 else {
                     this.context.drawImage(currentSkier.img, currentSkier.x, currentSkier.y, currentSkier.width, currentSkier.height);
                 }
         }
-        else {
-            this.context.drawImage(currentSkier.img, currentSkier.x, currentSkier.y - 3, currentSkier.width + 3, currentSkier.height + 3);
-        }
-*/
         
+        /*
+         if (!this.isJumping) {
+         if (x && y && (currentObs.name != "ramp")) {//skier has collided with obstacle
+         this.collide(currentSkier, currentObs);
+         }
+         else
+         if (x && y && (currentObs.name == "ramp")) {
+         this.isJumping = true;
+         var unjump = setTimeout(this.stopJump.bind(this), 2000);
+         }
+         else {
+         this.context.drawImage(currentSkier.img, currentSkier.x, currentSkier.y, currentSkier.width, currentSkier.height);
+         }
+         }
+         else {
+         this.context.drawImage(currentSkier.img, currentSkier.x, currentSkier.y - 3, currentSkier.width + 3, currentSkier.height + 3);
+         }
+         */
         this.context.drawImage(currentObs.img, currentObs.x, currentObs.y, currentObs.width, currentObs.height);
         
         if (currentObs.vDir) {
             currentObs.y = currentObs.y - currentSpeed;
-            if (currentObs.name == "abom_h") {
+            if (currentObs.name == "abom_h" && !this.isF) {
                 currentObs.x = currentSkier.x;
             }
         }
@@ -369,7 +344,7 @@ GameAssistant.prototype.mainLoop = function(){
             currentObs.name = currentObstacle.name;
         }
         
-        if (currentObs.y <= -currentObs.height && currentObs.name != 'abom_h') {
+        if ((currentObs.y <= -currentObs.height)) {
             currentObs.vDir = !currentObs.vDir;
         }
     }
@@ -399,7 +374,7 @@ GameAssistant.prototype.mainLoop = function(){
         this.getAbom();
         this.startMainLoop();
         
-        this.drawAbom += 1200;
+        this.drawAbom += 300;
     }
     
     if (currentSkier.x < 2 || currentSkier.x > currentSkier.maxX) {
@@ -409,12 +384,16 @@ GameAssistant.prototype.mainLoop = function(){
 
 GameAssistant.prototype.collide = function(currentSkier, currentObs){
     this.stopMainLoop();
+	var skierImg = this.chosenSkier;
     
+	this.context.fillRect(currentSkier.x, currentSkier.y, currentSkier.width, currentSkier.height);
+	
     if (currentObs.name == "abom_h") {
         $('crash').src = "images/obstacles/abom_eat.gif", $('crash').style.left = currentSkier.x + 'px';
         $('crash').style.top = (currentSkier.y + 2 + currentObs.height) + 'px';
         $('crash').style.left = currentObs.x + 'px';
         currentObs.img.src = "";
+        currentSkier.img.src = "";
     }
     else {
         $('crash').src = "images/sprites/" + skierImg.substr(0, 1) + "/" + skierImg + "_crash.png";
@@ -479,9 +458,18 @@ GameAssistant.prototype.keypressHandler = function(event){
             
         case Mojo.Char.f:
         case Mojo.Char.f + 32:
-            
+            this.isF = true;
+			this.fSpeedMod = 2;
+			if (!this.fTimeout) {
+				this.fTimeout = setTimeout(this.noF.bind(this), 2000);
+			}
             break;
     }
+}
+
+GameAssistant.prototype.noF = function(){
+	this.isF = false;
+	this.fSpeedMod = 1;
 }
 
 GameAssistant.prototype.handleOrientation = function(event){
@@ -496,7 +484,7 @@ GameAssistant.prototype.handleOrientation = function(event){
             this.moveX = 0;
         }
         
-        this.speed = Math.floor(Math.abs(event.accelY * scaleY));
+        this.speed = Math.floor(Math.abs(event.accelY * scaleY)) * this.fSpeedMod;
     }
 }
 
