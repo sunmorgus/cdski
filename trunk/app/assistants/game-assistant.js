@@ -2,7 +2,9 @@ function GameAssistant(params){
     this.chosenSkier = params.chosen;
     this.hsDB = params.db;
     this.speed = null;
-	this.fSpeedMod = 1;
+    this.fSpeedMod = 1;
+    snowStorm.stop();
+    snowStorm.freeze();
 }
 
 GameAssistant.prototype.obsArray = new Array();
@@ -20,6 +22,7 @@ GameAssistant.prototype.canvasWidth = null;
 GameAssistant.prototype.canvasHeight = null;
 GameAssistant.prototype.keypressHandlerBind = null;
 GameAssistant.prototype.skier = null;
+GameAssistant.prototype.skierImgTag = null;
 GameAssistant.prototype.score = null;
 GameAssistant.prototype.increaseDiffScore = null;
 GameAssistant.prototype.increaseSpeedScore = null;
@@ -32,6 +35,7 @@ GameAssistant.prototype.jumpLength = null;
 GameAssistant.prototype.moveX = null;
 GameAssistant.prototype.drawAbom = null;
 GameAssistant.prototype.abomH = null;
+GameAssistant.prototype.rot = null;
 
 GameAssistant.prototype.setup = function(){
     this.appMenuModel = {
@@ -147,6 +151,16 @@ GameAssistant.prototype.setupSkier = function(x, y, width, height, imgSrc){
     };
     
     this.skier.img.src = "images/sprites/" + this.chosenSkier.substr(0, 1) + "/" + imgSrc + ".png";
+    
+    this.skierImgTag = $('skierImg');
+    this.skierImgTag.src = "images/sprites/" + this.chosenSkier.substr(0, 1) + "/" + imgSrc + ".png";
+	
+	var setupRot = jQuery('#skierImg').rotate(0);
+	setupRot[0].context.style.position = 'absolute';
+	setupRot[0].context.style.top = 54 + 'px';
+	setupRot[0].context.style.left = 140 + 'px';
+	
+	this.rot = setupRot;
 }
 
 GameAssistant.prototype.setupObstacles = function(){
@@ -246,16 +260,32 @@ GameAssistant.prototype.mainLoop = function(){
     var skierImg = this.chosenSkier;
     currentSkier.x += currentMoveX;
     
+    var skierRot = this.rot;
+	var skierRotContext = skierRot[0].context.style;
+
+/*
+	if(skierRot && currentMoveX)
+		skierRot[0].rotateAnimation(currentMoveX);
+*/
+
     if (currentMoveX <= 0) {
-        currentSkier.img.src = "images/sprites/" + skierImg.substr(0, 1) + "/" + skierImg + "_left.png";
+        //currentSkier.img.src = "images/sprites/" + skierImg.substr(0, 1) + "/" + skierImg + "_left.png";
+        if (skierRot) 
+            skierRot[0].rotateAnimation(-25);
     }
     if (currentMoveX >= 0) {
-        currentSkier.img.src = "images/sprites/" + skierImg.substr(0, 1) + "/" + skierImg + "_right.png";
+        //currentSkier.img.src = "images/sprites/" + skierImg.substr(0, 1) + "/" + skierImg + "_right.png";
+        if (skierRot) 
+            skierRot[0].rotateAnimation(25);
     }
     if (currentMoveX == 0) {
-        currentSkier.img.src = "images/sprites/" + skierImg.substr(0, 1) + "/" + skierImg + "_down.png";
+        //currentSkier.img.src = "images/sprites/" + skierImg.substr(0, 1) + "/" + skierImg + "_down.png";
+        if (skierRot) 
+            skierRot[0].rotateAnimation(0);
     }
     
+    this.canvas.width = this.canvas.getAttribute("width");
+    this.canvas.height = this.canvas.getAttribute("height");
     //draw trees
     for (var i = 1; i < l; i++) {
         var currentObs = this.obstacles[i];
@@ -384,10 +414,10 @@ GameAssistant.prototype.mainLoop = function(){
 
 GameAssistant.prototype.collide = function(currentSkier, currentObs){
     this.stopMainLoop();
-	var skierImg = this.chosenSkier;
+    var skierImg = this.chosenSkier;
     
-	this.context.fillRect(currentSkier.x, currentSkier.y, currentSkier.width, currentSkier.height);
-	
+    this.context.fillRect(currentSkier.x, currentSkier.y, currentSkier.width, currentSkier.height);
+    
     if (currentObs.name == "abom_h") {
         $('crash').src = "images/obstacles/abom_eat.gif", $('crash').style.left = currentSkier.x + 'px';
         $('crash').style.top = (currentSkier.y + 2 + currentObs.height) + 'px';
@@ -459,17 +489,17 @@ GameAssistant.prototype.keypressHandler = function(event){
         case Mojo.Char.f:
         case Mojo.Char.f + 32:
             this.isF = true;
-			this.fSpeedMod = 2;
-			if (!this.fTimeout) {
-				this.fTimeout = setTimeout(this.noF.bind(this), 2000);
-			}
+            this.fSpeedMod = 2;
+            if (!this.fTimeout) {
+                this.fTimeout = setTimeout(this.noF.bind(this), 2000);
+            }
             break;
     }
 }
 
 GameAssistant.prototype.noF = function(){
-	this.isF = false;
-	this.fSpeedMod = 1;
+    this.isF = false;
+    this.fSpeedMod = 1;
 }
 
 GameAssistant.prototype.handleOrientation = function(event){

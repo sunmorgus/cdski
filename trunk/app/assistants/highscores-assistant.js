@@ -6,6 +6,9 @@ function HighscoresAssistant(params){
     if (params.skier) {
         this.chosenSkier = params.skier;
     }
+    
+    snowStorm.show();
+    snowStorm.resume();
 }
 
 HighscoresAssistant.prototype.setup = function(){
@@ -33,8 +36,6 @@ HighscoresAssistant.prototype.setup = function(){
     };
     this.controller.setupWidget('results_list', this.innerListAttrs, this.listModel);
     Mojo.Event.listen($('retry'), Mojo.Event.tap, this.retry.bind(this));
-    
-    //snowStorm.resume();
 }
 
 HighscoresAssistant.prototype.handleCommand = function(event){
@@ -58,6 +59,9 @@ HighscoresAssistant.prototype.activate = function(event){
     else {
         this.checkScore(this.Score);
     }
+    
+    snowStorm.show();
+    snowStorm.resume();
 }
 
 HighscoresAssistant.prototype.callback = function(value){
@@ -130,15 +134,16 @@ HighscoresAssistant.prototype.buildList = function(transaction, results){
         }
         //update the list widget
         this.resultList.clear();
-        if (list.length > 0) {        
+        if (list.length > 0) {
             Object.extend(this.resultList, list);
             this.controller.modelChanged(this.listModel, this);
-        }else{
-			throw "";
-		}
+        }
+        else {
+            throw "";
+        }
     } 
     catch (e) {
-        
+    
     }
 }
 

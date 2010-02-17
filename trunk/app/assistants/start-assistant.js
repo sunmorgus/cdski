@@ -3,6 +3,9 @@ function StartAssistant(params){
         this.hsDB = params.db;
         this.chosenSkier = params.chosen
     }
+    
+    snowStorm.show();
+    snowStorm.resume();
 }
 
 StartAssistant.prototype.hsDB = null;
@@ -22,7 +25,7 @@ StartAssistant.prototype.setup = function(){
     this.controller.setupWidget(Mojo.Menu.appMenu, {
         omitDefaultItems: true
     }, this.appMenuModel);
-	
+    
     this.controller.setupWidget('riley', {}, {
         buttonLabel: 'Skier'
     });
@@ -41,27 +44,48 @@ StartAssistant.prototype.setup = function(){
     this.highscores = this.highScores.bind(this);
     Mojo.Event.listen($('highScores'), Mojo.Event.tap, this.highscores);
     
-    this.cbattributes = {
-        property: 'value',
-        trueValue: 'ON',
-        falseValue: 'OFF'
-    };
+    this.help = this.showHelp.bind(this);
+    Mojo.Event.listen($('help'), Mojo.Event.tap, this.help);
     
-    this.cbmodel = {
-        value: 'ON',
-        disabled: false
-    };
-    this.controller.setupWidget('noSnow', this.cbattributes, this.cbmodel);
-    this.noSnowCallback = this.noSnowChecked.bindAsEventListener(this);
-	
-	snowStorm.stop();
-	snowStorm.freeze();
-	
-    Mojo.Event.listen($('noSnow'), Mojo.Event.propertyChange, this.noSnowCallback);
-    
+    /*
+     this.cbattributes = {
+     property: 'value',
+     trueValue: 'ON',
+     falseValue: 'OFF'
+     };
+     
+     this.cbmodel = {
+     value: 'ON',
+     disabled: false
+     };
+     this.controller.setupWidget('noSnow', this.cbattributes, this.cbmodel);
+     this.noSnowCallback = this.noSnowChecked.bindAsEventListener(this);
+     
+     snowStorm.stop();
+     snowStorm.freeze();
+     
+     Mojo.Event.listen($('noSnow'), Mojo.Event.propertyChange, this.noSnowCallback);
+     */
     this.createDB();
     
     this.chosenSkier = 'riley';
+    
+/*
+    var rot = jQuery('#skier').rotate({
+		angle: 0,
+        maxAngle: 25,
+        minAngle: -55,
+        bind: [{
+            "mouseover": function(){
+                rot[0].rotateAnimation(85);
+            }
+        }, {
+            "mouseout": function(){
+                rot[0].rotateAnimation(0);
+            }
+        }]
+    });
+*/
 }
 
 StartAssistant.prototype.handleCommand = function(event){
@@ -76,7 +100,8 @@ StartAssistant.prototype.handleCommand = function(event){
 }
 
 StartAssistant.prototype.activate = function(event){
-
+    snowStorm.show();
+    snowStorm.resume();
 }
 
 StartAssistant.prototype.deactivate = function(event){
@@ -87,7 +112,8 @@ StartAssistant.prototype.cleanup = function(event){
     this.controller.stopListening($('aiden'), Mojo.Event.tap, this.aiden);
     this.controller.stopListening($('startGame'), Mojo.Event.tap, this.start);
     this.controller.stopListening($('highScores'), Mojo.Event.tap, this.highscores);
-    this.controller.stopListening($('noSnow'), Mojo.Event.propertyChange, this.noSnowCallback);
+    this.controller.stopListening($('help'), Mojo.Event.tap, this.help);
+    
 }
 
 StartAssistant.prototype.createDB = function(){
@@ -121,21 +147,21 @@ StartAssistant.prototype.skierAiden = function(){
     this.chosenSkier = 'aiden';
 }
 
-StartAssistant.prototype.noSnowChecked = function(event){
-
-    switch (event.value) {
-        case 'ON':
-            snowStorm.stop();
-            snowStorm.freeze();
-            break;
-        case 'OFF':
-            snowStorm.show();
-            snowStorm.resume();
-            break;
-    }
-    
-}
-
+/*
+ StartAssistant.prototype.noSnowChecked = function(event){
+ switch (event.value) {
+ case 'ON':
+ snowStorm.stop();
+ snowStorm.freeze();
+ break;
+ case 'OFF':
+ snowStorm.show();
+ snowStorm.resume();
+ break;
+ }
+ 
+ }
+ */
 StartAssistant.prototype.startGame = function(event){
     var params = {
         chosen: this.chosenSkier,
@@ -152,4 +178,8 @@ StartAssistant.prototype.highScores = function(event){
     }
     
     this.controller.stageController.assistant.showScene("highscores", 'highscores', params);
+}
+
+StartAssistant.prototype.showHelp = function(event){
+    this.controller.stageController.assistant.showScene("help", 'help');
 }

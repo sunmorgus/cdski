@@ -1,31 +1,38 @@
 <div id="main" style="background-color: white; height: 480px;">
-    <div>
+    <div style="position: fixed;">
         <img src="images/ski.png" class="ski" /><img src="images/for.png" class="the" /><img id="skier" src="images/sprites/r/riley_down.png" class="startSkier" /><img src="images/pre.png" class="pre" /><img src="images/pixi.png" class="pixi" />
     </div>
     <div style="position: fixed; bottom: 0px; width: 100%;">
         <div class="palm-group">
             <div class="palm-group-title">
-                Options:
+                Choose Your Avatar:
             </div>
-            <div class="palm-list" style="height: 100px;">
+            <div class="palm-list">
                 <div class="palm-row-wrapper">
                     <div x-mojo-element="Button" id="riley" class="blueButton">
                     </div>
                     <div x-mojo-element="Button" id="aiden" class="redButton">
                     </div>
-                    <div id="noSnow" x-mojo-element="CheckBox" style="clear: both; margin-left: 15px;">
+                    <div style="clear: both;">
+                    </div>
+                    <!--<div id="noSnow" x-mojo-element="CheckBox" style="clear: both; margin-left: 15px;">
                     </div>
                     <div>
-                        Disable Snowstorm (Faster)
-                    </div>
+                    Disable Snowstorm (Faster)
+                    </div>-->
                 </div>
             </div>
         </div>
         <div id="startGame" class="palm-button affirmative">
             Start New Game
         </div>
-        <div id="highScores" class="palm-button affirmative">
-            Highscores
+        <div>
+            <div id="highScores" class="palm-button affirmative" style="width: 150px; position: absolute;">
+                Highscores
+            </div>
+            <div id="help" class="palm-button affirmative" style="width: 150px; float: right;">
+                Help
+            </div>
         </div>
     </div>
 </div>
