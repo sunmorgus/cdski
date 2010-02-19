@@ -60,3 +60,9 @@
 	top: 98px;
 	left: 95px;
 }
+
+#noScores{
+	position: absolute;
+	top: 190px;
+	left: 140px;
+}

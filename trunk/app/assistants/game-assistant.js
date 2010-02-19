@@ -471,6 +471,7 @@ GameAssistant.prototype.checkHighScore = function(){
         skier: this.chosenSkier
     }
     
+	this.controller.stageController.popScene();
     this.controller.stageController.assistant.showScene("highscores", 'highscores', params);
 }
 

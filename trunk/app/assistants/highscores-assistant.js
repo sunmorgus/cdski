@@ -35,7 +35,24 @@ HighscoresAssistant.prototype.setup = function(){
         items: this.resultList
     };
     this.controller.setupWidget('results_list', this.innerListAttrs, this.listModel);
-    Mojo.Event.listen($('retry'), Mojo.Event.tap, this.retry.bind(this));
+    
+    this.cmdMenuModel = {
+        label: $L('Menu Demo'),
+        items: [{},{
+            label: $L('Back/Fwd'),
+            toggleCmd: 'local',
+            items: [{
+                label: $L('Your Scores'),
+                command: 'local',
+				width: 160
+            }, {
+                label: $L('Global Scores'),
+                command: 'global',
+				width: 160
+            }]
+        }]
+    };
+    this.controller.setupWidget(Mojo.Menu.commandMenu, undefined, this.cmdMenuModel);
 }
 
 HighscoresAssistant.prototype.handleCommand = function(event){
@@ -47,16 +64,21 @@ HighscoresAssistant.prototype.handleCommand = function(event){
                 this.resultList.clear();
                 this.controller.modelChanged(this.listModel, this);
                 break;
+            case 'local':
+                this.getHighScores();
+                break;
+            case 'global':
+                this.getGlobalHighScores();
+				$('noScores').style.display = 'none';
+                break;
         }
     }
 }
 
 HighscoresAssistant.prototype.activate = function(event){
     this.getHighScores();
-    if (!this.Score) {
-        $('retry').style.display = 'none';
-    }
-    else {
+    if (this.Score) {
+        $('retry').style.display = 'block';
         this.checkScore(this.Score);
     }
     
@@ -74,14 +96,24 @@ HighscoresAssistant.prototype.deactivate = function(event){
 }
 
 HighscoresAssistant.prototype.cleanup = function(event){
-    this.controller.stopListening($('retry'), Mojo.Event.tap, this.retry.bind(this));
 }
 
 HighscoresAssistant.prototype.getHighScores = function(){
-    var query = 'select name, score from highScore order by score desc;'
+    var query = 'select name, score, global_id from highScore order by score desc, id asc;';
     this.hsDB.transaction((function(transaction){
         transaction.executeSql(query, [], this.buildList.bind(this), this.errorHandler.bind(this));
     }).bind(this));
+}
+
+HighscoresAssistant.prototype.getGlobalHighScores = function(){
+    var url = 'http://monstertrucks.rjamdev.info/skiprehs.php?method=s';
+    
+    var request = new Ajax.Request(url, {
+        method: 'get',
+        evalJSON: 'force',
+        onSuccess: this.buildGlobalList.bind(this),
+        onFailure: this.errorHandler.bind(this)
+    });
 }
 
 HighscoresAssistant.prototype.checkScore = function(score){
@@ -92,9 +124,21 @@ HighscoresAssistant.prototype.checkScore = function(score){
 }
 
 HighscoresAssistant.prototype.addHighScore = function(name){
-    var query = 'INSERT INTO highScore (id, name, score) VALUES (?,?,?); GO;'
+    var url = 'http://monstertrucks.rjamdev.info/skiprehs.php?method=i&n=' + name + '&s=' + this.Score;
+    this.name = name;
+    var request = new Ajax.Request(url, {
+        method: 'get',
+        evalJSON: 'force',
+        onSuccess: this.globalAddSuccess.bind(this),
+        onFailure: this.errorHandler.bind(this)
+    });
+}
+
+HighscoresAssistant.prototype.globalAddSuccess = function(transport){
+    var globalId = transport.responseText;
+    var query = 'INSERT INTO highScore (id, name, score, global_id) VALUES (?,?,?,?); GO;'
     this.hsDB.transaction((function(transaction){
-        transaction.executeSql(query, [Math.random(), name, this.Score], this.getHighScores.bind(this), this.errorHandler.bind(this));
+        transaction.executeSql(query, [Math.random(), this.name, this.Score, globalId], this.getHighScores.bind(this), this.errorHandler.bind(this));
     }).bind(this));
 }
 
@@ -103,6 +147,21 @@ HighscoresAssistant.prototype.dropTable = function(){
     this.hsDB.transaction((function(transaction){
         transaction.executeSql(query, []);
     }).bind(this));
+	
+	var top = $('top');
+	top.innerHTML = 'You have no highscores!';
+	$('noScores').style.display = 'block';
+}
+
+HighscoresAssistant.prototype.buildGlobalList = function(transport){
+    var r = transport.responseJSON;
+    this.resultList.clear();
+    Object.extend(this.resultList, $A(r));
+    this.controller.modelChanged(this.listModel, this);
+    $('results_list').style.display = 'block';
+    
+    var title = $('title');
+    title.innerHTML = 'Global High Scores';
 }
 
 HighscoresAssistant.prototype.buildList = function(transaction, results){
@@ -118,6 +177,8 @@ HighscoresAssistant.prototype.buildList = function(transaction, results){
             
             if (i === 0) {
                 var rowClass = "first";
+                this.topScore = row["score"];
+                this.globalScoreId = row["global_id"];
             }
             else 
                 if (i === results.rows.length - 1) {
@@ -125,6 +186,7 @@ HighscoresAssistant.prototype.buildList = function(transaction, results){
                 }
             
             var string = {
+                rank: i + 1,
                 score: row["score"],
                 name: row["name"],
                 rowClass: rowClass
@@ -136,15 +198,38 @@ HighscoresAssistant.prototype.buildList = function(transaction, results){
         this.resultList.clear();
         if (list.length > 0) {
             Object.extend(this.resultList, list);
-            this.controller.modelChanged(this.listModel, this);
+            $('results_list').style.display = 'block';
+			$('noScores').style.display = 'none';
         }
         else {
-            throw "";
+        	$('noScores').style.display = 'block';
+			var top = $('top');
+			top.innerHTML = 'You have no high scores!';
         }
+        
+        this.controller.modelChanged(this.listModel, this);
+        
+        var title = $('title');
+        title.innerHTML = 'Your High Scores';
+        
+        var url = 'http://monstertrucks.rjamdev.info/skiprehs.php?method=r&g=' + this.globalScoreId;
+        
+        var request = new Ajax.Request(url, {
+            method: 'get',
+            evalJSON: 'force',
+            onSuccess: this.setSubtitle.bind(this),
+            onFailure: this.errorHandler.bind(this)
+        });
     } 
     catch (e) {
     
     }
+}
+
+HighscoresAssistant.prototype.setSubtitle = function(transport){
+	var r = transport.responseJSON;
+	var top = $('top');
+	top.innerHTML = 'Your highest score of ' + this.topScore + ' ranks ' + r[0].rank + ' out of ' + r[0].count + ' other players!';
 }
 
 HighscoresAssistant.prototype.isHighScore = function(transaction, results){
@@ -157,7 +242,7 @@ HighscoresAssistant.prototype.isHighScore = function(transaction, results){
     }
 }
 
-HighscoresAssistant.prototype.retry = function(event){
+HighscoresAssistant.prototype.retry = function(){
     var params = {
         chosen: this.chosenSkier,
         db: this.hsDB
