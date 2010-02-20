@@ -269,7 +269,7 @@ GameAssistant.prototype.mainLoop = function(){
 
     var skierRot = this.rot;
 	
-    currentSkier.x += (currentMoveX * 5);
+    //currentSkier.x += (currentMoveX * 5);
 	this.rotLeft += (currentMoveX * 5);
 	
 	if(this.rotLeft > 0 && this.rotLeft < (320 - currentSkier.width)){
@@ -296,19 +296,16 @@ GameAssistant.prototype.mainLoop = function(){
             skierRot[0].rotateAnimation(0);
     }
 
-    
-    this.canvas.width = this.canvas.getAttribute("width");
-    this.canvas.height = this.canvas.getAttribute("height");
-    //draw trees
+    //draw obstacles
     for (var i = 1; i < l; i++) {
         var currentObs = this.obstacles[i];
         
         //check for obstacle collision
-        var x = ((currentObs.x <= currentSkier.x) && ((currentObs.x + currentObs.width) >= currentSkier.x));
+        var x = ((currentObs.x <= currentLeft) && ((currentObs.x + currentObs.width) >= currentLeft));
         if (!x) {
-            x = ((currentObs.x <= (currentSkier.x + currentSkier.width)) && ((currentObs.x + currentObs.width) >= (currentSkier.x + currentSkier.width)));
+            x = ((currentObs.x <= (currentLeft + currentSkier.width)) && ((currentObs.x + currentObs.width) >= (currentLeft + currentSkier.width)));
         }
-        var y = ((Math.floor(currentObs.y) <= (currentSkier.y + currentSkier.height - 12)));
+        var y = ((Math.floor(currentObs.y) <= (currentRotTop + currentSkier.height - 12)));
         		
         switch (currentObs.name) {
             case "ramp":
