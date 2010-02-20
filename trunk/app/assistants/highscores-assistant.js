@@ -6,9 +6,9 @@ function HighscoresAssistant(params){
     if (params.skier) {
         this.chosenSkier = params.skier;
     }
-    
-    snowStorm.show();
-    snowStorm.resume();
+	
+	snowStorm.stop();
+	snowStorm.freeze();    
 }
 
 HighscoresAssistant.prototype.setup = function(){
@@ -78,12 +78,8 @@ HighscoresAssistant.prototype.handleCommand = function(event){
 HighscoresAssistant.prototype.activate = function(event){
     this.getHighScores();
     if (this.Score) {
-        $('retry').style.display = 'block';
         this.checkScore(this.Score);
     }
-    
-    snowStorm.show();
-    snowStorm.resume();
 }
 
 HighscoresAssistant.prototype.callback = function(value){
