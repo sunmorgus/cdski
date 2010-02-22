@@ -153,7 +153,11 @@ GameAssistant.prototype.setupSkier = function(x, y, width, height, imgSrc){
     this.skierImgTag.src = "images/sprites/" + this.chosenSkier.substr(0, 1) + "/" + imgSrc + ".png";
     this.skierImgTag.style.visibility = 'visible';
     
-    var setupRot = jQuery('#skierImg').rotate(0);
+    var setupRot = jQuery('#skierImg').rotate({
+		angle: 0,
+		maxAngle: 40,
+		minAngle: -40
+	});
     
     this.rotTop = 54;
     this.rotLeft = 140;
@@ -312,13 +316,12 @@ GameAssistant.prototype.mainLoop = function(){
                     skierRot[0].rotate(0);
 					GameAssistant.prototype.scaleJump = true;
                     skierRot[0].rotateAnimation(360);
-					skierRot[0].rotateAnimation(360);
                     skierRot[0].context.style.left = currentLeft + 'px';
                 }
                 break;
             case "abom_h":
                 if (!this.isF) {
-                    if (x && y) {
+                    if (x && y && !this.isJumping) {
                         this.collide(currentSkier, currentObs);
                     }
                     else {
@@ -331,7 +334,7 @@ GameAssistant.prototype.mainLoop = function(){
                 break;
                 
             default:
-                if (x && y) {
+                if (x && y && !this.isJumping) {
                     this.collide(currentSkier, currentObs);
                 }
                 else {

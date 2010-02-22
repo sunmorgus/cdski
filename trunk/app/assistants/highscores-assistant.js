@@ -217,7 +217,7 @@ HighscoresAssistant.prototype.buildList = function(transaction, results){
                     var rowClass = "last";
                 }
             
-            var star = "duh";
+            var star = "";
             if (row["global_id"] == 0) {
                 star = "*";
             }

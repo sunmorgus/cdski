@@ -161,10 +161,10 @@ Wilq32.PhotoEffect.prototype._animateStart = function(){
 Wilq32.PhotoEffect.prototype._animate = function(){
     if (this._canvas || this._vimage) 
         this._angle -= (this._angle - this._parameters.animateAngle) * 0.1;
-    if (typeof this._parameters.minAngle != "undefined") 
+    if (typeof this._parameters.minAngle != "undefined" && !GameAssistant.prototype.scaleJump) 
         if (this._angle < this._parameters.minAngle) 
             this._angle = this._parameters.minAngle;
-    if (typeof this._parameters.maxAngle != "undefined") 
+    if (typeof this._parameters.maxAngle != "undefined" && !GameAssistant.prototype.scaleJump) 
         if (this._angle > this._parameters.maxAngle) 
             this._angle = this._parameters.maxAngle;
     
