@@ -13,6 +13,7 @@ jQuery.fn.extend({
             parameters = {
                 angle: parameters
             };
+		
         var returned = [];
         for (var i = 0, i0 = this.length; i < i0; i++) {
             var element = this.get(i);
@@ -35,10 +36,6 @@ jQuery.fn.extend({
                 angle: parameters
             };
 			
-		this.scaleJump = false;
-		if(parameters.scaleJump){
-			this.scaleJump = true;
-		}
         var returned = [];
         for (var i = 0, i0 = this.length; i < i0; i++) {
             var element = this.get(i);
@@ -209,12 +206,13 @@ Wilq32.PhotoEffect.prototype._rotate = (function(){
             // clear canvas	
             this._canvas.width = width + widthAdd;
             this._canvas.height = height + heightAdd;
-            
-			if (this.scaleJump) {
-				this._cnv.scale(0.8, 0.8); // SCALE - if needed ;)
+			
+			if (GameAssistant.prototype.scaleJump) {
+				var scaleIt = (angle / 5);
+				this._cnv.scale(scaleIt, scaleIt); // SCALE - if needed ;)
 			}
 			else{
-				this._cnv.scale(0, 0);
+				this._cnv.scale(1.0, 1.0);
 			}
             // REMEMBER: all drawings are read from backwards.. so first function is translate, then rotate, then translate, translate..
             this._cnv.save();

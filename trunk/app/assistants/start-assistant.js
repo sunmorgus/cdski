@@ -46,46 +46,10 @@ StartAssistant.prototype.setup = function(){
     
     this.help = this.showHelp.bind(this);
     Mojo.Event.listen($('help'), Mojo.Event.tap, this.help);
-    
-    /*
-     this.cbattributes = {
-     property: 'value',
-     trueValue: 'ON',
-     falseValue: 'OFF'
-     };
-     
-     this.cbmodel = {
-     value: 'ON',
-     disabled: false
-     };
-     this.controller.setupWidget('noSnow', this.cbattributes, this.cbmodel);
-     this.noSnowCallback = this.noSnowChecked.bindAsEventListener(this);
-     
-     snowStorm.stop();
-     snowStorm.freeze();
-     
-     Mojo.Event.listen($('noSnow'), Mojo.Event.propertyChange, this.noSnowCallback);
-     */
+
     this.createDB();
     
     this.chosenSkier = 'riley';
-    
-/*
-    var rot = jQuery('#skier').rotate({
-		angle: 0,
-        maxAngle: 25,
-        minAngle: -55,
-        bind: [{
-            "mouseover": function(){
-                rot[0].rotateAnimation(85);
-            }
-        }, {
-            "mouseout": function(){
-                rot[0].rotateAnimation(0);
-            }
-        }]
-    });
-*/
 }
 
 StartAssistant.prototype.handleCommand = function(event){
@@ -128,18 +92,20 @@ StartAssistant.prototype.createDB = function(){
             /* Create Table(s) */
             var string = 'CREATE TABLE IF NOT EXISTS highScore (id TEXT PRIMARY KEY DESC DEFAULT "nothing", name TEXT NOT NULL DEFAULT "nothing", score INTEGER NOT NULL DEFAULT "nothing", global_id INTEGER NULL DEFAULT "0"); GO;'
             this.hsDB.transaction((function(transaction){
-                transaction.executeSql(string, [])
+                transaction.executeSql(string, [], this.addColumn.bind(this))
             }).bind(this));
-			
-			string = 'ALTER TABLE highScore ADD global_id INTEGER NULL DEFAULT "0"; GO;';
-			this.hsDB.transaction((function(transaction){
-				transaction.executeSql(string, [])
-			}).bind(this));
         }
     } 
     catch (e) {
         console.log('Error: ' + e);
     }
+}
+
+StartAssistant.prototype.addColumn = function(){
+    string = 'ALTER TABLE highScore ADD global_id INTEGER NULL DEFAULT "0"; GO;';
+    this.hsDB.transaction((function(transaction){
+        transaction.executeSql(string, [])
+    }).bind(this));
 }
 
 StartAssistant.prototype.skierRiley = function(){
@@ -152,21 +118,6 @@ StartAssistant.prototype.skierAiden = function(){
     this.chosenSkier = 'aiden';
 }
 
-/*
- StartAssistant.prototype.noSnowChecked = function(event){
- switch (event.value) {
- case 'ON':
- snowStorm.stop();
- snowStorm.freeze();
- break;
- case 'OFF':
- snowStorm.show();
- snowStorm.resume();
- break;
- }
- 
- }
- */
 StartAssistant.prototype.startGame = function(event){
     var params = {
         chosen: this.chosenSkier,
