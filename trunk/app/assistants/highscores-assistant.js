@@ -208,14 +208,16 @@ HighscoresAssistant.prototype.buildList = function(transaction, results){
         var title = $('title');
         title.innerHTML = 'Your High Scores';
         
-        var url = 'http://monstertrucks.rjamdev.info/skiprehs.php?method=r&g=' + this.globalScoreId;
-        
-        var request = new Ajax.Request(url, {
-            method: 'get',
-            evalJSON: 'force',
-            onSuccess: this.setSubtitle.bind(this),
-            onFailure: this.errorHandler.bind(this)
-        });
+		if (this.globalScoreId != 0) {
+			var url = 'http://monstertrucks.rjamdev.info/skiprehs.php?method=r&g=' + this.globalScoreId;
+			
+			var request = new Ajax.Request(url, {
+				method: 'get',
+				evalJSON: 'force',
+				onSuccess: this.setSubtitle.bind(this),
+				onFailure: this.errorHandler.bind(this)
+			});
+		}
     } 
     catch (e) {
     

@@ -126,10 +126,15 @@ StartAssistant.prototype.createDB = function(){
         
         if (this.hsDB) {
             /* Create Table(s) */
-            var string = 'CREATE TABLE IF NOT EXISTS highScore (id TEXT PRIMARY KEY DESC DEFAULT "nothing", name TEXT NOT NULL DEFAULT "nothing", score INTEGER NOT NULL DEFAULT "nothing", global_id INTEGER NOT NULL DEFAULT "nothing"); GO;'
+            var string = 'CREATE TABLE IF NOT EXISTS highScore (id TEXT PRIMARY KEY DESC DEFAULT "nothing", name TEXT NOT NULL DEFAULT "nothing", score INTEGER NOT NULL DEFAULT "nothing", global_id INTEGER NULL DEFAULT "0"); GO;'
             this.hsDB.transaction((function(transaction){
                 transaction.executeSql(string, [])
             }).bind(this));
+			
+			string = 'ALTER TABLE highScore ADD global_id INTEGER NULL DEFAULT "0"; GO;';
+			this.hsDB.transaction((function(transaction){
+				transaction.executeSql(string, [])
+			}).bind(this));
         }
     } 
     catch (e) {

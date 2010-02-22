@@ -34,6 +34,11 @@ jQuery.fn.extend({
             parameters = {
                 angle: parameters
             };
+			
+		this.scaleJump = false;
+		if(parameters.scaleJump){
+			this.scaleJump = true;
+		}
         var returned = [];
         for (var i = 0, i0 = this.length; i < i0; i++) {
             var element = this.get(i);
@@ -177,7 +182,7 @@ Wilq32.PhotoEffect.prototype._animate = function(){
         var self = this;
         this._timer = setTimeout(function(){
             self._animate.call(self);
-        }, 5);
+        }, 2);
     }
 }
 
@@ -205,8 +210,12 @@ Wilq32.PhotoEffect.prototype._rotate = (function(){
             this._canvas.width = width + widthAdd;
             this._canvas.height = height + heightAdd;
             
-            //this._cnv.scale(0.8,0.8); // SCALE - if needed ;)
-            
+			if (this.scaleJump) {
+				this._cnv.scale(0.8, 0.8); // SCALE - if needed ;)
+			}
+			else{
+				this._cnv.scale(0, 0);
+			}
             // REMEMBER: all drawings are read from backwards.. so first function is translate, then rotate, then translate, translate..
             this._cnv.save();
             this._cnv.translate(widthAdd / 2, heightAdd / 2); // at least center image on screen
