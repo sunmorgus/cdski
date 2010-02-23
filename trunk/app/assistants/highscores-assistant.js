@@ -117,7 +117,7 @@ HighscoresAssistant.prototype.cleanup = function(event){
 }
 
 HighscoresAssistant.prototype.getHighScores = function(){
-    var query = 'select name, score, global_id from highScore order by score desc, id asc;';
+    var query = 'select name, score, global_id from highScore order by score desc, id asc limit 10;';
     this.hsDB.transaction((function(transaction){
         transaction.executeSql(query, [], this.buildList.bind(this), this.errorHandler.bind(this));
     }).bind(this));
@@ -130,13 +130,14 @@ HighscoresAssistant.prototype.getGlobalHighScores = function(){
     var request = new Ajax.Request(url, {
         method: 'get',
         evalJSON: 'force',
+		timeout: 2000,
         onSuccess: this.buildGlobalList.bind(this),
         onFailure: this.errorHandler.bind(this)
     });
 }
 
 HighscoresAssistant.prototype.checkScore = function(score){
-    var query = 'select score from highScore where ' + score + ' > (select score from highScore order by score asc limit 1);';
+    var query = 'select score from highScore where ' + score + ' > (select score from (select score from highScore order by score desc limit 10) order by score asc limit 1);';
     this.hsDB.transaction((function(transaction){
         transaction.executeSql(query, [], this.isHighScore.bind(this), this.errorHandler.bind(this));
     }).bind(this));
@@ -149,6 +150,7 @@ HighscoresAssistant.prototype.addHighScore = function(name){
     var request = new Ajax.Request(url, {
         method: 'get',
         evalJSON: 'force',
+		timeout: 2000,
         onSuccess: this.globalAddSuccess.bind(this),
         onFailure: this.globalAddFailure.bind(this)
     });
@@ -255,6 +257,7 @@ HighscoresAssistant.prototype.buildList = function(transaction, results){
             var request = new Ajax.Request(url, {
                 method: 'get',
                 evalJSON: 'force',
+				timeout: 2000,
                 onSuccess: this.setSubtitle.bind(this),
                 onFailure: this.errorHandler.bind(this)
             });
@@ -268,7 +271,7 @@ HighscoresAssistant.prototype.buildList = function(transaction, results){
 HighscoresAssistant.prototype.setSubtitle = function(transport){
     var r = transport.responseJSON;
     var top = $('top');
-    top.innerHTML = 'Your highest score of ' + this.topScore + ' ranks ' + r[0].rank + ' out of ' + r[0].count + ' other players!';
+    top.innerHTML = 'Your highest score of ' + this.topScore + ' ranks ' + r[0].rank + ' out of ' + r[0].count + ' other scores!';
 }
 
 HighscoresAssistant.prototype.isHighScore = function(transaction, results){
@@ -291,6 +294,7 @@ HighscoresAssistant.prototype.retry = function(){
 }
 
 HighscoresAssistant.prototype.errorHandler = function(transaction, error){
+	this.scrim.hide();
     console.log('Error was ' + error.message + ' (Code ' + error.code + ')');
     return true;
 }

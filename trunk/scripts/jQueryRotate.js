@@ -161,10 +161,10 @@ Wilq32.PhotoEffect.prototype._animateStart = function(){
 Wilq32.PhotoEffect.prototype._animate = function(){
     if (this._canvas || this._vimage) 
         this._angle -= (this._angle - this._parameters.animateAngle) * 0.1;
-    if (typeof this._parameters.minAngle != "undefined" && !GameAssistant.prototype.scaleJump) 
+    if (typeof this._parameters.minAngle != "undefined" && !GameAssistant.prototype.isJumping)
         if (this._angle < this._parameters.minAngle) 
             this._angle = this._parameters.minAngle;
-    if (typeof this._parameters.maxAngle != "undefined" && !GameAssistant.prototype.scaleJump) 
+    if (typeof this._parameters.maxAngle != "undefined" && !GameAssistant.prototype.isJumping) 
         if (this._angle > this._parameters.maxAngle) 
             this._angle = this._parameters.maxAngle;
     
@@ -207,6 +207,7 @@ Wilq32.PhotoEffect.prototype._rotate = (function(){
             this._canvas.width = width + widthAdd;
             this._canvas.height = height + heightAdd;
 			
+/*
 			if (GameAssistant.prototype.scaleJump) {
 				var scaleIt = (angle / 5);
 				this._cnv.scale(scaleIt, scaleIt); // SCALE - if needed ;)
@@ -214,6 +215,7 @@ Wilq32.PhotoEffect.prototype._rotate = (function(){
 			else{
 				this._cnv.scale(1.0, 1.0);
 			}
+*/
             // REMEMBER: all drawings are read from backwards.. so first function is translate, then rotate, then translate, translate..
             this._cnv.save();
             this._cnv.translate(widthAdd / 2, heightAdd / 2); // at least center image on screen
