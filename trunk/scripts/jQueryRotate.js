@@ -134,9 +134,9 @@ Wilq32.PhotoEffect.prototype._Loader = (function(){
             this._canvas.height = height;
             this._canvas.width = width;
             this._canvas.id = "skierCanvas";
-            
+
             this._canvas.setAttribute('width', width);
-            
+
             this._temp.appendChild(this._canvas);
             
             var self = this;
@@ -204,9 +204,10 @@ Wilq32.PhotoEffect.prototype._rotate = (function(){
             var widthAdd = this._img._widthMax - width;
             var heightAdd = this._img._heightMax - height;
             // clear canvas	
+
             this._canvas.width = width + widthAdd;
             this._canvas.height = height + heightAdd;
-			
+
 /*
 			if (GameAssistant.prototype.scaleJump) {
 				var scaleIt = (angle / 5);
@@ -222,7 +223,7 @@ Wilq32.PhotoEffect.prototype._rotate = (function(){
             this._cnv.translate(width / 2, height / 2); // we move image back to its orginal 
             this._cnv.rotate(angle); // rotate image
             this._cnv.translate(-width / 2, -height / 2); // move image to its center, so we can rotate around its center
-            this._cnv.drawImage(this._img, 0, 0); // First - we draw image
+            this._cnv.drawImage(this._img, 0, 0, width, height); // First - we draw image
             this._cnv.restore();
         }
         

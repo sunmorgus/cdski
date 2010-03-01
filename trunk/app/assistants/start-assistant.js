@@ -97,7 +97,7 @@ StartAssistant.prototype.createDB = function(){
         }
     } 
     catch (e) {
-        console.log('Error: ' + e);
+        console.log('Error DB: ' + e);
     }
 }
 
@@ -123,7 +123,7 @@ StartAssistant.prototype.startGame = function(event){
         chosen: this.chosenSkier,
         db: this.hsDB
     }
-    
+
     this.controller.stageController.assistant.showScene("game", 'game', params);
 }
 

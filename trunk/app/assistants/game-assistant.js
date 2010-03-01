@@ -105,12 +105,10 @@ GameAssistant.prototype.activate = function(event){
     //skier draw goes here
     this.setupSkierEasy("initial");
     
-    this.context.drawImage(this.skier.img, this.skier.x, this.skier.y, this.skier.width, this.skier.height);
-    
     this.isJumping = false;
     
     this.mainLoopBind = this.mainLoop.bind(this);
-    
+
     this.startMainLoop();
 }
 
@@ -157,7 +155,7 @@ GameAssistant.prototype.setupSkier = function(x, y, width, height, imgSrc){
         maxAngle: 40,
         minAngle: -40
     });
-    
+
     this.rotTop = 54;
     this.rotLeft = 140;
     setupRot[0].context.style.position = 'absolute';
@@ -291,11 +289,10 @@ GameAssistant.prototype.mainLoop = function(){
         var currentObs = this.obstacles[i];
         
         //check for obstacle collision
-        var x = (currentObs.x < currentSkier.x) && ((currentObs.x + currentObs.width) > currentSkier.x);
-        
+        var x = ((currentObs.x + 3) < currentSkier.x) && ((currentObs.x + (currentObs.width - 3)) > currentSkier.x);
         
         if (!x) {
-            x = ((currentObs.x < (currentSkier.x + currentSkier.width)) && ((currentObs.x + currentObs.width) > (currentSkier.x + currentSkier.width)));
+            x = (((currentObs.x + 3) < (currentSkier.x + currentSkier.width)) && ((currentObs.x + (currentObs.width - 3)) > (currentSkier.x + currentSkier.width)));
         }
         
         var y = Math.floor(currentObs.y) <= skierMiddleY;
@@ -330,6 +327,7 @@ GameAssistant.prototype.mainLoop = function(){
             case "abom_h":
                 if (!this.isF) {
                     if (x && y && !this.isJumping) {
+						this.stopMainLoop();
                         this.collide(currentSkier, currentObs);
                     }
                     else {
@@ -343,6 +341,7 @@ GameAssistant.prototype.mainLoop = function(){
                 
             default:
                 if (x && y && !this.isJumping) {
+					this.stopMainLoop();
                     this.collide(currentSkier, currentObs);
                 }
                 else {
@@ -355,7 +354,7 @@ GameAssistant.prototype.mainLoop = function(){
         if (currentObs.vDir) {
             currentObs.y = currentObs.y - currentSpeed;
             if (currentObs.name == "abom_h" && !this.isF) {
-				currentObs.y -= 1;
+                currentObs.y -= 1;
                 currentObs.x = currentSkier.x;
             }
         }
@@ -430,7 +429,7 @@ GameAssistant.prototype.collide = function(currentSkier, currentObs){
     
     $('crash').style.visibility = 'visible';
     
-    var t = setTimeout(this.checkHighScore.bind(this), 1000);
+    var t = setTimeout(this.checkHighScore.bind(this), 1000);    
 }
 
 GameAssistant.prototype.startMainLoop = function(){
@@ -466,7 +465,7 @@ GameAssistant.prototype.keypressHandler = function(event){
         case Mojo.Char.a:
         case Mojo.Char.a + 32:
             if (this.skier.x > 2) {
-                this.setupSkierEasy("left");
+            //this.moveX -= 1;
             }
             break;
             
@@ -474,7 +473,7 @@ GameAssistant.prototype.keypressHandler = function(event){
         case Mojo.Char.d:
         case Mojo.Char.d + 32:
             if (this.skier.x < this.skier.maxX) {
-                this.setupSkierEasy("right");
+            //this.moveX +=1;
             }
             break;
             
