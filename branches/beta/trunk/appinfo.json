@@ -1,0 +1,9 @@
+{
+	"id": "com.rjamdev.skipre",
+	"version": "1.5.1",
+	"vendor": "RJAMDev",
+	"type": "web",
+	"main": "index.html",
+	"title": "Ski for Pre",
+	"icon": "icon.png"
+}
