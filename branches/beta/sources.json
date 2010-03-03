@@ -1,0 +1,32 @@
+[
+    {"source": "app/assistants/stage-assistant.js"},
+    {"source": "app/assistants/entry-assistant.js"},
+    {
+        "scenes": "game",
+        "source": "app/assistants/game-assistant.js"
+    },
+    {
+        "scenes": "new-game",
+        "source": "app/assistants/new-game-assistant.js"
+    },
+    {
+        "scenes": "start",
+        "source": "app/assistants/start-assistant.js"
+    },
+    {
+        "scenes": "test-canvas",
+        "source": "app/assistants/test-canvas-assistant.js"
+    },
+    {
+        "scenes": "highscores",
+        "source": "app/assistants/highscores-assistant.js"
+    },
+    {
+        "scenes": "entry",
+        "source": "app/assistants/entry-assistant.js"
+    },
+    {
+        "scenes": "help",
+        "source": "app/assistants/help-assistant.js"
+    }
+]
