@@ -7,6 +7,9 @@ function HighscoresAssistant(params){
         this.chosenSkier = params.skier;
     }
     
+    //this.scoreUrl = "http://monstertrucks.rjamdev.info/skiprehs.php?method=";
+    this.scoreUrl = "http://monstertrucks.rjamdev.info/skiprehs_beta.php?method=";
+    
     snowStorm.stop();
     snowStorm.freeze();
 }
@@ -125,7 +128,7 @@ HighscoresAssistant.prototype.getHighScores = function(){
 
 HighscoresAssistant.prototype.getGlobalHighScores = function(){
     this.scrim.show();
-    var url = 'http://monstertrucks.rjamdev.info/skiprehs.php?method=s';
+    var url = this.scoreUrl + 's';
     
     var request = new Ajax.Request(url, {
         method: 'get',
@@ -145,7 +148,7 @@ HighscoresAssistant.prototype.checkScore = function(score){
 
 HighscoresAssistant.prototype.addHighScore = function(name){
     this.scrim.show();
-    var url = 'http://monstertrucks.rjamdev.info/skiprehs.php?method=i&n=' + name + '&s=' + this.Score;
+    var url = this.scoreUrl + 'i&n=' + name + '&s=' + this.Score;
     this.name = name;
     var request = new Ajax.Request(url, {
         method: 'get',
@@ -252,7 +255,7 @@ HighscoresAssistant.prototype.buildList = function(transaction, results){
         title.innerHTML = 'Your High Scores';
         
         if (this.globalScoreId != 0) {
-            var url = 'http://monstertrucks.rjamdev.info/skiprehs.php?method=r&g=' + this.globalScoreId;
+            var url = this.scoreUrl + 'r&g=' + this.globalScoreId;
             
             var request = new Ajax.Request(url, {
                 method: 'get',
