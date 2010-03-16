@@ -1,6 +1,7 @@
 function GameAssistant(params){
     this.chosenSkier = params.chosen;
     this.hsDB = params.db;
+	this.control = params.control;
     this.speed = null;
     this.fSpeedMod = 1;
     snowStorm.stop();
@@ -50,9 +51,11 @@ GameAssistant.prototype.setup = function(){
         omitDefaultItems: true
     }, this.appMenuModel);
     
-    //this.controller.stageController.setWindowProperties("fastAccelerometer");
-    this.controller.listen(document, 'acceleration', this.handleOrientation.bindAsEventListener(this));
-    
+	if (this.control == 'tilt') {
+		//this.controller.stageController.setWindowProperties("fastAccelerometer");
+		this.controller.listen(document, 'acceleration', this.handleOrientation.bindAsEventListener(this));
+	}
+	
     this.unPauseHandlerBind = this.unPauseHandler.bind(this);
     this.scrim = Mojo.View.createScrim(this.controller.document, {
         onMouseDown: this.unPauseHandlerBind,
@@ -266,12 +269,17 @@ GameAssistant.prototype.mainLoop = function(){
     var skierRot = this.rot;
     
     var currentMoveX = this.moveX;
+	
+	var moveMod = 2;
+	if(this.control == 'tilt'){
+		moveMod = 5;
+	}
 
     var holdLeft = this.rotLeft;
-    this.rotLeft += Math.floor(currentMoveX * 5);
+    this.rotLeft += Math.floor(currentMoveX * moveMod);
     
     if (this.rotLeft > -1 && this.rotLeft < (310 - currentSkier.width)) {
-        currentSkier.x += Math.floor(currentMoveX * 5);
+        currentSkier.x += Math.floor(currentMoveX * moveMod);
         var currentLeft = this.rotLeft;
     }
     else {
