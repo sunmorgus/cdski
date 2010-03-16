@@ -50,7 +50,7 @@ GameAssistant.prototype.setup = function(){
         omitDefaultItems: true
     }, this.appMenuModel);
     
-    this.controller.stageController.setWindowProperties("fastAccelerometer");
+    //this.controller.stageController.setWindowProperties("fastAccelerometer");
     this.controller.listen(document, 'acceleration', this.handleOrientation.bindAsEventListener(this));
     
     this.unPauseHandlerBind = this.unPauseHandler.bind(this);
@@ -82,8 +82,10 @@ GameAssistant.prototype.activate = function(event){
         //return;
     }
     
-    this.keypressHandlerBind = this.keypressHandler.bind(this);
-    Mojo.Event.listen(this.controller.document, Mojo.Event.keypress, this.keypressHandlerBind, true);
+    this.keydownHandlerBind = this.keydownHandler.bind(this);
+	this.keyupHandlerBind = this.keyupHandler.bind(this);
+    Mojo.Event.listen(this.controller.document, Mojo.Event.keydown, this.keydownHandlerBind, true);
+	Mojo.Event.listen(this.controller.document, Mojo.Event.keyup, this.keyupHandlerBind, true);
     
     this.canvas = $("slope");
     this.context = this.canvas.getContext("2d");
@@ -108,7 +110,7 @@ GameAssistant.prototype.activate = function(event){
     this.isJumping = false;
     
     this.mainLoopBind = this.mainLoop.bind(this);
-
+    
     this.startMainLoop();
 }
 
@@ -127,7 +129,7 @@ GameAssistant.prototype.setupSkierEasy = function(state){
     
     switch (state) {
         case "initial":
-            this.setupSkier(150, 20, 14, 32, chosen + "_down");
+            this.setupSkier(150, 160, 14, 32, chosen + "_down");
             break;
         case "crash":
             var currentX = this.skier.x;
@@ -155,8 +157,8 @@ GameAssistant.prototype.setupSkier = function(x, y, width, height, imgSrc){
         maxAngle: 40,
         minAngle: -40
     });
-
-    this.rotTop = 54;
+    
+    this.rotTop = 160;
     this.rotLeft = 140;
     setupRot[0].context.style.position = 'absolute';
     setupRot[0].context.style.top = this.rotTop + 'px';
@@ -258,11 +260,13 @@ GameAssistant.prototype.mainLoop = function(){
     var l = this.obstacles.length;
     var currentSpeed = this.speed;
     var currentSkier = this.skier;
-    var currentMoveX = this.moveX;
+    
     var skierImg = this.chosenSkier;
     
     var skierRot = this.rot;
     
+    var currentMoveX = this.moveX;
+
     var holdLeft = this.rotLeft;
     this.rotLeft += Math.floor(currentMoveX * 5);
     
@@ -276,13 +280,13 @@ GameAssistant.prototype.mainLoop = function(){
         currentMoveX = 0;
     }
     
-    var currentRotTop = this.rotTop;
+    var currentRotTop = this.rotTop - 35;
     
     if (skierRot && !this.isJumping) {
         skierRot[0].rotateAnimation(currentMoveX * 100)
     }
     
-    var skierMiddleY = (currentSkier.y + currentSkier.height) / 2;
+    var skierMiddleY = (currentRotTop + currentSkier.height) / 2;
     
     //draw obstacles
     for (var i = 1; i < l; i++) {
@@ -295,7 +299,7 @@ GameAssistant.prototype.mainLoop = function(){
             x = (((currentObs.x + 3) < (currentSkier.x + currentSkier.width)) && ((currentObs.x + (currentObs.width - 3)) > (currentSkier.x + currentSkier.width)));
         }
         
-        var y = Math.floor(currentObs.y) <= skierMiddleY;
+        var y = (currentObs.y <= currentRotTop) && ((currentObs.y + currentObs.height) >= currentRotTop);
         
         switch (currentObs.name) {
             case "ramp":
@@ -310,7 +314,7 @@ GameAssistant.prototype.mainLoop = function(){
                         });
                         skierRot[0].rotateAnimation(360);
                         jQuery(skierRot[0].context).animate({
-                            top: '54'
+                            top: '160'
                         }, 1500);
                         
                         var unjump = setTimeout(this.stopJump.bind(this), 2000);
@@ -327,7 +331,7 @@ GameAssistant.prototype.mainLoop = function(){
             case "abom_h":
                 if (!this.isF) {
                     if (x && y && !this.isJumping) {
-						this.stopMainLoop();
+                        this.stopMainLoop();
                         this.collide(currentSkier, currentObs);
                     }
                     else {
@@ -341,7 +345,7 @@ GameAssistant.prototype.mainLoop = function(){
                 
             default:
                 if (x && y && !this.isJumping) {
-					this.stopMainLoop();
+                    this.stopMainLoop();
                     this.collide(currentSkier, currentObs);
                 }
                 else {
@@ -413,15 +417,15 @@ GameAssistant.prototype.collide = function(currentSkier, currentObs){
     
     if (currentObs.name == "abom_h") {
         $('crash').src = "images/obstacles/abom_eat.gif", $('crash').style.left = currentSkier.x + 'px';
-        $('crash').style.top = (currentSkier.y + 2 + currentObs.height) + 'px';
+        $('crash').style.top = (this.rotTop) + 'px';
         $('crash').style.left = currentObs.x + 'px';
         currentObs.img.src = "";
         currentSkier.img.src = "";
         this.rot[0].context.style.display = "none";
     }
     else {
-        $('crash').src = "images/sprites/" + skierImg.substr(0, 1) + "/" + skierImg + "_crash.png";
-        $('crash').style.top = (currentSkier.y + 20 + currentObs.height) + 'px';
+        $('crash').src = "images/sprites/" + skierImg.substr(0, 1) + "/" + "riley_crash.png";
+        $('crash').style.top = (this.rotTop) + 'px';
         $('crash').style.left = currentSkier.x + 'px';
         currentSkier.img.src = "";
         this.rot[0].context.style.display = "none";
@@ -429,11 +433,11 @@ GameAssistant.prototype.collide = function(currentSkier, currentObs){
     
     $('crash').style.visibility = 'visible';
     
-    var t = setTimeout(this.checkHighScore.bind(this), 1000);    
+    var t = setTimeout(this.checkHighScore.bind(this), 1000);
 }
 
 GameAssistant.prototype.startMainLoop = function(){
-    this.mainLoopInterval = setInterval(this.mainLoopBind, 30);
+    this.mainLoopInterval = setInterval(this.mainLoopBind, 33);
 }
 
 GameAssistant.prototype.stopMainLoop = function(){
@@ -459,13 +463,13 @@ GameAssistant.prototype.checkHighScore = function(){
     Mojo.Controller.stageController.assistant.showScene("highscores", 'highscores', params);
 }
 
-GameAssistant.prototype.keypressHandler = function(event){
+GameAssistant.prototype.keyupHandler = function(event){
     switch (event.originalEvent.keyCode) {
         // Left.
         case Mojo.Char.a:
         case Mojo.Char.a + 32:
             if (this.skier.x > 2) {
-            //this.moveX -= 1;
+                this.moveX = 0;
             }
             break;
             
@@ -473,7 +477,33 @@ GameAssistant.prototype.keypressHandler = function(event){
         case Mojo.Char.d:
         case Mojo.Char.d + 32:
             if (this.skier.x < this.skier.maxX) {
-            //this.moveX +=1;
+                this.moveX = 0;
+            }
+            break;
+            
+        // Down.
+        case Mojo.Char.s:
+        case Mojo.Char.s + 32:
+            this.setupSkierEasy("down");
+            break;
+    }
+}
+
+GameAssistant.prototype.keydownHandler = function(event){
+    switch (event.originalEvent.keyCode) {
+        // Left.
+        case Mojo.Char.a:
+        case Mojo.Char.a + 32:
+            if (this.skier.x > 2) {
+                this.moveX = -1;
+            }
+            break;
+            
+        // Right.
+        case Mojo.Char.d:
+        case Mojo.Char.d + 32:
+            if (this.skier.x < this.skier.maxX) {
+                this.moveX = 1;
             }
             break;
             
