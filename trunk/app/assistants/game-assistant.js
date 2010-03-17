@@ -52,7 +52,10 @@ GameAssistant.prototype.setup = function() {
 	}, this.appMenuModel);
 
 	if (this.control == 'tilt') {
-		// this.controller.stageController.setWindowProperties("fastAccelerometer");
+		this.controller.stageController.setWindowProperties({
+			fastAccelerometer: true,
+			blockScreenTimeout: true
+		});
 		this.controller.listen(document, 'acceleration', this.handleOrientation
 				.bindAsEventListener(this));
 	} else {
