@@ -309,7 +309,7 @@ GameAssistant.prototype.mainLoop = function() {
 
 	var moveMod = 2;
 	if (this.control == 'tilt') {
-		moveMod = 5;
+		moveMod = .5;
 	}
 
 	var holdLeft = this.rotLeft;
@@ -327,7 +327,7 @@ GameAssistant.prototype.mainLoop = function() {
 	var currentRotTop = this.rotTop - 35;
 
 	if (skierRot && !this.isJumping) {
-		skierRot[0].rotateAnimation(currentMoveX * 100)
+		skierRot[0].rotateAnimation(currentMoveX * 10)
 	}
 
 	var skierMiddleY = (currentRotTop + currentSkier.height) / 2;
