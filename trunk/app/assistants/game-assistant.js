@@ -2,8 +2,10 @@ function GameAssistant(params) {
 	this.chosenSkier = params.chosen;
 	this.hsDB = params.db;
 	this.control = params.control;
-	this.speed = null;
+	this.speed = 3;
 	this.fSpeedMod = 1;
+	this.chase = 0;
+	this.abomIndex = null;
 	snowStorm.stop();
 	snowStorm.freeze();
 }
@@ -51,29 +53,20 @@ GameAssistant.prototype.setup = function() {
 		omitDefaultItems : true
 	}, this.appMenuModel);
 
-	if (this.control == 'tilt') {
-		this.controller.stageController.setWindowProperties({
-			fastAccelerometer: true,
-			blockScreenTimeout: true
-		});
-		this.controller.listen(document, 'acceleration', this.handleOrientation
-				.bindAsEventListener(this));
-	} else {
-		//touch controls go here
-		if(jQuery(window).height() == '372'){
-			jQuery('#touchControls').css('top', '310px');
-		}
-		this.zero = this.holdEnd.bind(this);
-		
-	    this.left = this.moveLeft.bind(this);
-	    Mojo.Event.listen($('left'), Mojo.Event.hold, this.left);
-	    Mojo.Event.listen($('left'), Mojo.Event.holdEnd, this.zero);
-	    
-	    this.right = this.moveRight.bind(this);
-	    Mojo.Event.listen($('right'), Mojo.Event.hold, this.right);
-	    Mojo.Event.listen($('right'), Mojo.Event.holdEnd, this.zero);
-	}
+	this.controller.stageController.setWindowProperties( {
+		fastAccelerometer : true,
+		blockScreenTimeout : true
+	});
+	this.controller.listen(document, 'acceleration', this.handleOrientation
+			.bindAsEventListener(this));
 
+	this.faster = this.fasterButton.bind(this);
+	Mojo.Event.listen($('faster'), Mojo.Event.tap, this.faster);
+
+	// touch controls go here
+	if (jQuery(window).height() == '372') {
+		jQuery('#touchControls').css('top', '310px');
+	}
 	this.unPauseHandlerBind = this.unPauseHandler.bind(this);
 	this.scrim = Mojo.View.createScrim(this.controller.document, {
 		onMouseDown : this.unPauseHandlerBind,
@@ -139,15 +132,15 @@ GameAssistant.prototype.activate = function(event) {
 	this.startMainLoop();
 }
 
-GameAssistant.prototype.moveLeft = function(event){
+GameAssistant.prototype.moveLeft = function(event) {
 	this.moveX = -1;
 }
 
-GameAssistant.prototype.moveRight = function(event){
+GameAssistant.prototype.moveRight = function(event) {
 	this.moveX = 1;
 }
 
-GameAssistant.prototype.holdEnd = function(event){
+GameAssistant.prototype.holdEnd = function(event) {
 	this.moveX = 0;
 }
 
@@ -193,8 +186,8 @@ GameAssistant.prototype.setupSkier = function(x, y, width, height, imgSrc) {
 
 	var setupRot = jQuery('#skierImg').rotate( {
 		angle : 0,
-		maxAngle : 40,
-		minAngle : -40
+		maxAngle : 80,
+		minAngle : -80
 	});
 
 	this.rotTop = 160;
@@ -327,7 +320,7 @@ GameAssistant.prototype.mainLoop = function() {
 	var currentRotTop = this.rotTop - 35;
 
 	if (skierRot && !this.isJumping) {
-		skierRot[0].rotateAnimation(currentMoveX * 10)
+		skierRot[0].rotateAnimation(currentMoveX * 50)
 	}
 
 	var skierMiddleY = (currentRotTop + currentSkier.height) / 2;
@@ -398,10 +391,20 @@ GameAssistant.prototype.mainLoop = function() {
 				currentObs.width, currentObs.height);
 
 		if (currentObs.vDir) {
-			currentObs.y = currentObs.y - currentSpeed;
 			if (currentObs.name == "abom_h" && !this.isF) {
-				currentObs.y -= 1;
-				currentObs.x = currentSkier.x;
+				if(this.abomIndex == null){
+					this.abomIndex = i;
+				}
+				
+				if ((currentObs.y <= this.chase) && (i == this.abomIndex)) {
+					this.chase += .5;
+					currentObs.x = currentSkier.x;
+					currentObs.y = this.chase;
+				} else {
+					currentObs.y -= currentSpeed;
+				}
+			} else {
+				currentObs.y -= currentSpeed;
 			}
 		} else {
 			var randomObstacle = this.getRandomObsNum();
@@ -421,6 +424,10 @@ GameAssistant.prototype.mainLoop = function() {
 
 		if ((currentObs.y <= -currentObs.height)) {
 			currentObs.vDir = !currentObs.vDir;
+			if(currentObs.name == "abom_h"){
+				this.abomIndex = null;
+				this.chase = 0;
+			}
 		}
 	}
 
@@ -442,7 +449,7 @@ GameAssistant.prototype.mainLoop = function() {
 		this.increaseDiffScore += 500;
 	}
 
-	if (printScore >= this.drawAbom) {
+	if ((printScore >= this.drawAbom)) {
 		this.stopMainLoop();
 		this.getAbom();
 		this.startMainLoop();
@@ -540,7 +547,7 @@ GameAssistant.prototype.keydownHandler = function(event) {
 	case Mojo.Char.a:
 	case Mojo.Char.a + 32:
 		if (this.skier.x > 2) {
-			this.moveX = -1;
+			this.moveX = -3;
 		}
 		break;
 
@@ -548,7 +555,7 @@ GameAssistant.prototype.keydownHandler = function(event) {
 	case Mojo.Char.d:
 	case Mojo.Char.d + 32:
 		if (this.skier.x < this.skier.maxX) {
-			this.moveX = 1;
+			this.moveX = 4;
 		}
 		break;
 
@@ -569,29 +576,17 @@ GameAssistant.prototype.keydownHandler = function(event) {
 	}
 }
 
+GameAssistant.prototype.fasterButton = function(event) {
+	this.isF = true;
+	this.fSpeedMod = 2;
+	if (!this.fTimeout) {
+		this.fTimeout = setTimeout(this.noF.bind(this), 2000);
+	}
+}
+
 GameAssistant.prototype.noF = function() {
 	this.isF = false;
 	this.fSpeedMod = 1;
-
-	this.cmdMenuModel = {
-		label : $L('Menu Demo'),
-		items : [ {
-			label : $L('L'),
-			command : 'left'
-		}, {
-			label : $L('Back/Fwd'),
-			toggleCmd : '',
-			items : [ {
-				label : $L('FFFFFASTER!!'),
-				command : 'f',
-				width : 160
-			} ]
-		}, {
-			label : $L('R'),
-			command : 'right'
-		} ]
-	};
-	this.controller.modelChanged(this.cmdMenuModel, this);
 }
 
 GameAssistant.prototype.handleOrientation = function(event) {
