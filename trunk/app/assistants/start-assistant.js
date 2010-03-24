@@ -121,8 +121,7 @@ StartAssistant.prototype.skierAiden = function(){
 StartAssistant.prototype.startGame = function(event){
     var params = {
         chosen: this.chosenSkier,
-        db: this.hsDB,
-		control: 'tilt'
+        db: this.hsDB
     }
 
     this.controller.stageController.assistant.showScene("game", 'game', params);

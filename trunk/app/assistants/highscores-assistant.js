@@ -7,8 +7,8 @@ function HighscoresAssistant(params){
         this.chosenSkier = params.skier;
     }
     
-    //this.scoreUrl = "http://monstertrucks.rjamdev.info/skiprehs.php?method=";
-    this.scoreUrl = "http://monstertrucks.rjamdev.info/skiprehs_beta.php?method=";
+    this.scoreUrl = "http://monstertrucks.rjamdev.info/skiprehs.php?method=";
+    //this.scoreUrl = "http://monstertrucks.rjamdev.info/skiprehs_beta.php?method=";
     
     snowStorm.stop();
     snowStorm.freeze();
