@@ -46,7 +46,30 @@ StartAssistant.prototype.setup = function(){
     
     this.help = this.showHelp.bind(this);
     Mojo.Event.listen($('help'), Mojo.Event.tap, this.help);
-
+    
+    this.tattr = {
+        trueLabel: 'yes',
+        falseLable: 'no'
+    }
+    
+    this.cookie = new Mojo.Model.Cookie('optionsSkiPre');
+    if (this.cookie.get()) {
+        this.tModel = {
+            value: this.cookie.get().fButton
+        }
+		
+		this.fButtonVisible = this.cookie.get().fButton;
+    }
+    else {
+        this.tModel = {
+            value: false
+        }
+    }
+    
+    this.controller.setupWidget('noFButton', this.tattr, this.tModel);
+    this.togglePressed = this.togglePressed.bindAsEventListener(this);
+    Mojo.Event.listen($('noFButton'), Mojo.Event.propertyChange, this.togglePressed);
+    
     this.createDB();
     
     this.chosenSkier = 'riley';
@@ -63,6 +86,14 @@ StartAssistant.prototype.handleCommand = function(event){
     }
 }
 
+StartAssistant.prototype.togglePressed = function(event){
+    this.fButtonVisible = event.value;
+    this.cookie = new Mojo.Model.Cookie('optionsSkiPre');
+    this.cookie.put({
+        fButton: event.value
+    });
+}
+
 StartAssistant.prototype.activate = function(event){
     snowStorm.show();
     snowStorm.resume();
@@ -77,7 +108,7 @@ StartAssistant.prototype.cleanup = function(event){
     this.controller.stopListening($('startGame'), Mojo.Event.tap, this.start);
     this.controller.stopListening($('highScores'), Mojo.Event.tap, this.highscores);
     this.controller.stopListening($('help'), Mojo.Event.tap, this.help);
-    
+    this.controller.stopListening($('noFButton'), Mojo.Event.propertyChange, this.togglePressed);
 }
 
 StartAssistant.prototype.createDB = function(){
@@ -121,9 +152,10 @@ StartAssistant.prototype.skierAiden = function(){
 StartAssistant.prototype.startGame = function(event){
     var params = {
         chosen: this.chosenSkier,
-        db: this.hsDB
+        db: this.hsDB,
+        fButtonVisible: this.fButtonVisible
     }
-
+    
     this.controller.stageController.assistant.showScene("game", 'game', params);
 }
 
