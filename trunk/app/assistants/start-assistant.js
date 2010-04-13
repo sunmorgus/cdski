@@ -26,18 +26,19 @@ StartAssistant.prototype.setup = function(){
         omitDefaultItems: true
     }, this.appMenuModel);
     
-    this.controller.setupWidget('riley', {}, {
-        buttonLabel: 'Skier'
-    });
-    this.riley = this.skierRiley.bind(this);
-    Mojo.Event.listen($('riley'), Mojo.Event.tap, this.riley);
     
-    this.controller.setupWidget('aiden', {}, {
-        buttonLabel: '\'Boarder'
+    this.controller.setupWidget('options', {}, {
+        buttonLabel: 'Options'
     });
-    this.aiden = this.skierAiden.bind(this);
-    Mojo.Event.listen($('aiden'), Mojo.Event.tap, this.aiden);
-    
+    this.options = this.options.bind(this);
+    Mojo.Event.listen($('options'), Mojo.Event.tap, this.options);
+    /*     
+     this.controller.setupWidget('aiden', {}, {
+     buttonLabel: '\'Boarder'
+     });
+     this.aiden = this.skierAiden.bind(this);
+     Mojo.Event.listen($('aiden'), Mojo.Event.tap, this.aiden);
+     */
     this.start = this.startGame.bind(this);
     Mojo.Event.listen($('startGame'), Mojo.Event.tap, this.start);
     
@@ -47,44 +48,87 @@ StartAssistant.prototype.setup = function(){
     this.help = this.showHelp.bind(this);
     Mojo.Event.listen($('help'), Mojo.Event.tap, this.help);
     
-    this.tattr = {
+    this.ftattr = {
         trueLabel: 'yes',
-        falseLable: 'no'
+        falseLabel: 'no'
+    }
+    
+    this.ptattr = {
+        trueLabel: 'Skier',
+        falseLabel: '\'Boarder'
+    }
+    
+    this.ctattr = {
+        trueLabel: 'Tilt',
+        falseLabel: 'Key'
     }
     
     this.cookie = new Mojo.Model.Cookie('optionsSkiPre');
     if (this.cookie.get()) {
-        this.tModel = {
+        this.ftModel = {
             value: this.cookie.get().fButton
         }
         
         this.fButtonVisible = this.cookie.get().fButton;
         var chosenS = this.cookie.get().chosen;
+        var ptModelCookie;
         if (chosenS) {
             switch (chosenS) {
                 case 'riley':
                     this.skierRiley();
+                    ptModelCookie = true;
                     break;
                 case 'aiden':
                     this.skierAiden();
+                    ptModelCookie = false;
                     break;
             }
         }
         else {
             this.chosenSkier = 'riley';
+            ptModelCookie = true;
+        }
+        
+        this.ptModel = {
+            value: ptModelCookie
+        }
+        
+        var control = this.cookie.get().tilt;
+        if (control) {
+            this.tilt = control;
+            this.ctModel = {
+                value: control
+            }
         }
     }
     else {
-        this.tModel = {
+        this.ftModel = {
             value: false
         }
         
         this.chosenSkier = 'riley';
+        this.ptModel = {
+            value: true
+        }
+        
+        this.ctModel = {
+            value: true
+        }
     }
     
-    this.controller.setupWidget('noFButton', this.tattr, this.tModel);
-    this.togglePressed = this.togglePressed.bindAsEventListener(this);
-    Mojo.Event.listen($('noFButton'), Mojo.Event.propertyChange, this.togglePressed);
+/*
+    this.controller.setupWidget('noFButton', this.ftattr, this.ftModel);
+    this.ftogglePressed = this.ftogglePressed.bindAsEventListener(this);
+    Mojo.Event.listen($('noFButton'), Mojo.Event.propertyChange, this.ftogglePressed);
+    
+    this.controller.setupWidget('avatar', this.ptattr, this.ptModel);
+    this.ptogglePressed = this.ptogglePressed.bindAsEventListener(this);
+    Mojo.Event.listen($('avatar'), Mojo.Event.propertyChange, this.ptogglePressed);
+    
+    this.controller.setupWidget('control', this.ctattr, this.ctModel);
+    this.ctogglePressed = this.ctogglePressed.bindAsEventListener(this);
+    Mojo.Event.listen($('control'), Mojo.Event.propertyChange, this.ctogglePressed);
+*/
     
     this.createDB();
 }
@@ -100,8 +144,41 @@ StartAssistant.prototype.handleCommand = function(event){
     }
 }
 
-StartAssistant.prototype.togglePressed = function(event){
+StartAssistant.prototype.options = function(event){
+    var params = {
+        chosen: this.chosenSkier,
+        db: this.hsDB,
+        fButtonVisible: this.fButtonVisible,
+        tilt: this.tilt
+    }
+    
+    this.cookie = new Mojo.Model.Cookie('optionsSkiPre');
+    this.cookie.put({
+        fButton: params.fButtonVisible,
+        chosen: params.chosen,
+        tilt: params.tilt
+    })
+    
+    this.controller.stageController.assistant.showScene("options", 'options', params);
+}
+
+StartAssistant.prototype.ftogglePressed = function(event){
     this.fButtonVisible = event.value;
+}
+
+StartAssistant.prototype.ptogglePressed = function(event){
+    switch (event.value) {
+        case true:
+            this.skierRiley();
+            break;
+        case false:
+            this.skierAiden();
+            break;
+    }
+}
+
+StartAssistant.prototype.ctogglePressed = function(event){
+    this.tilt = event.value;
 }
 
 StartAssistant.prototype.activate = function(event){
@@ -113,12 +190,15 @@ StartAssistant.prototype.deactivate = function(event){
 }
 
 StartAssistant.prototype.cleanup = function(event){
-    this.controller.stopListening($('riley'), Mojo.Event.tap, this.riley);
-    this.controller.stopListening($('aiden'), Mojo.Event.tap, this.aiden);
+    /*
+     this.controller.stopListening($('riley'), Mojo.Event.tap, this.riley);
+     this.controller.stopListening($('aiden'), Mojo.Event.tap, this.aiden);
+     */
     this.controller.stopListening($('startGame'), Mojo.Event.tap, this.start);
     this.controller.stopListening($('highScores'), Mojo.Event.tap, this.highscores);
     this.controller.stopListening($('help'), Mojo.Event.tap, this.help);
-    this.controller.stopListening($('noFButton'), Mojo.Event.propertyChange, this.togglePressed);
+    this.controller.stopListening($('noFButton'), Mojo.Event.propertyChange, this.ftogglePressed);
+    this.controller.stopListening($('avatar'), Mojo.Event.propertyChange, this.ptogglePressed);
 }
 
 StartAssistant.prototype.createDB = function(){
@@ -163,13 +243,15 @@ StartAssistant.prototype.startGame = function(event){
     var params = {
         chosen: this.chosenSkier,
         db: this.hsDB,
-        fButtonVisible: this.fButtonVisible
+        fButtonVisible: this.fButtonVisible,
+        tilt: this.tilt
     }
     
     this.cookie = new Mojo.Model.Cookie('optionsSkiPre');
     this.cookie.put({
         fButton: params.fButtonVisible,
-        chosen: params.chosen
+        chosen: params.chosen,
+        tilt: params.tilt
     })
     
     this.controller.stageController.assistant.showScene("game", 'game', params);

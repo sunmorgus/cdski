@@ -32,5 +32,13 @@
     {
         "scenes": "changes",
         "source": "app/assistants/changes-assistant.js"
+    },
+    {
+        "scenes": "buy",
+        "source": "app/assistants/buy-assistant.js"
+    },
+    {
+        "scenes": "options",
+        "source": "app/assistants/options-assistant.js"
     }
 ]

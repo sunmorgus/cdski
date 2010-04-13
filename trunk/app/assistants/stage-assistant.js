@@ -1,8 +1,8 @@
-function StageAssistant() {
+function StageAssistant(){
 }
 
-StageAssistant.prototype.setup = function() {
-	this.controller.pushScene("start");
+StageAssistant.prototype.setup = function(){
+    this.controller.pushScene("start");
 }
 
 StageAssistant.prototype.showScene = function(directory, sceneName, arguments){
