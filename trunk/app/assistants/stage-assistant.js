@@ -2,7 +2,13 @@ function StageAssistant(){
 }
 
 StageAssistant.prototype.setup = function(){
-    this.controller.pushScene("start");
+    this.cookie = new Mojo.Model.Cookie('showChanges1-7-0');
+    if (this.cookie.get()) {
+        this.controller.pushScene("start");
+    }
+    else {
+        this.controller.pushScene("changes");
+    }
 }
 
 StageAssistant.prototype.showScene = function(directory, sceneName, arguments){

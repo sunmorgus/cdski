@@ -16,12 +16,20 @@ StartAssistant.prototype.skier = null;
 StartAssistant.prototype.options = null;
 
 StartAssistant.prototype.setup = function(){
+    this.controller.stageController.setWindowProperties({
+        fastAccelerometer: false,
+        blockScreenTimeout: false
+    });
+    
     this.appMenuModel = {
         visible: true,
         items: [Mojo.Menu.editItem, {
             label: $L('Help'),
             command: 'help'
-        }]
+        },{
+			label: $L('Changes'),
+			command: 'changes'
+		}]
     };
     
     this.controller.setupWidget(Mojo.Menu.appMenu, {
@@ -43,7 +51,7 @@ StartAssistant.prototype.setup = function(){
     
     this.help = this.showHelp.bind(this);
     Mojo.Event.listen($('help'), Mojo.Event.tap, this.help);
-        
+    
     this.createDB();
 }
 
@@ -54,6 +62,9 @@ StartAssistant.prototype.handleCommand = function(event){
             case 'help':
                 this.controller.stageController.assistant.showScene("help", 'help');
                 break;
+			case 'changes':
+				this.controller.stageController.pushScene('changes');
+				break;
         }
     }
 }
@@ -68,8 +79,8 @@ StartAssistant.prototype.activate = function(event){
     
     this.cookie = new Mojo.Model.Cookie('optionsSkiPre');
     if (this.cookie.get()) {
-        var f = this.cookie.get().fButton; 
-            this.fButtonVisible = this.cookie.get().fButton;
+        var f = this.cookie.get().fButton;
+        this.fButtonVisible = this.cookie.get().fButton;
         
         var chosenS = this.cookie.get().chosen;
         if (chosenS) {
@@ -91,8 +102,8 @@ StartAssistant.prototype.activate = function(event){
     }
     else {
         this.chosenSkier = 'riley';
-		this.tilt = true;
-		this.fButtonVisible = false;
+        this.tilt = true;
+        this.fButtonVisible = false;
     }
 }
 

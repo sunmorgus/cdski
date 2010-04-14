@@ -9,6 +9,11 @@ HelpAssistant.prototype.setup = function(){
     Mojo.Event.listen($('supportForum'), Mojo.Event.tap, this.forum);
     this.contact = this.goContact.bind(this);
     Mojo.Event.listen($('contact'), Mojo.Event.tap, this.contact);
+    
+    this.controller.stageController.setWindowProperties({
+        fastAccelerometer: false,
+        blockScreenTimeout: false
+    });
 }
 
 HelpAssistant.prototype.activate = function(event){
@@ -18,11 +23,11 @@ HelpAssistant.prototype.activate = function(event){
 }
 
 HelpAssistant.prototype.goForum = function(){
-	window.location = "http://support.rjamdev.info";
+    window.location = "http://support.rjamdev.info";
 }
 
 HelpAssistant.prototype.goContact = function(){
-	window.location = "http://rjamdev.info/?page_id=32";
+    window.location = "http://rjamdev.info/?page_id=32";
 }
 
 HelpAssistant.prototype.deactivate = function(event){

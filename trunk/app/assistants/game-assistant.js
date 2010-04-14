@@ -4,6 +4,7 @@ function GameAssistant(params){
     this.speed = null;
     this.fSpeedMod = 1;
     this.fButtonVisible = params.fButtonVisible;
+    this.tilt = params.tilt;
     this.chase = 0;
     snowStorm.stop();
     snowStorm.freeze();
@@ -57,9 +58,10 @@ GameAssistant.prototype.setup = function(){
     }, this.appMenuModel);
     
     this.controller.stageController.setWindowProperties({
-        fastAccelerometer: true,
+        fastAccelerometer: this.tilt,
         blockScreenTimeout: true
     });
+    
     this.controller.listen(document, 'acceleration', this.handleOrientation.bindAsEventListener(this));
     
     this.faster = this.fasterButton.bind(this);
@@ -83,7 +85,7 @@ GameAssistant.prototype.handleCommand = function(event){
     if (event.type == Mojo.Event.command) {
         switch (event.command) {
             case 'newGame':
-                this.obstacles.splice(0, this.obstacles.length);                
+                this.obstacles.splice(0, this.obstacles.length);
                 this.controller.stageController.popScene();
                 this.controller.stageController.assistant.showScene("start", 'start');
                 break;
@@ -96,15 +98,11 @@ GameAssistant.prototype.ready = function(){
 }
 
 GameAssistant.prototype.activate = function(event){
-    if (this.canvas) {
-        // return;
-    }
-    
     this.keydownHandlerBind = this.keydownHandler.bind(this);
-    // this.keyupHandlerBind = this.keyupHandler.bind(this);
     Mojo.Event.listen(this.controller.document, Mojo.Event.keydown, this.keydownHandlerBind, true);
-    // Mojo.Event.listen(this.controller.document, Mojo.Event.keyup,
-    // this.keyupHandlerBind, true);
+    
+    this.keyupHandlerBind = this.keyupHandler.bind(this);
+    Mojo.Event.listen(this.controller.document, Mojo.Event.keyup, this.keyupHandlerBind, true);
     
     this.canvas = $("slope");
     this.context = this.canvas.getContext("2d");
@@ -133,18 +131,6 @@ GameAssistant.prototype.activate = function(event){
     this.startMainLoop();
 }
 
-GameAssistant.prototype.moveLeft = function(event){
-    this.moveX = -1;
-}
-
-GameAssistant.prototype.moveRight = function(event){
-    this.moveX = 1;
-}
-
-GameAssistant.prototype.holdEnd = function(event){
-    this.moveX = 0;
-}
-
 GameAssistant.prototype.deactivate = function(event){
     this.stopMainLoop();
 }
@@ -153,6 +139,7 @@ GameAssistant.prototype.cleanup = function(){
     this.controller.stopListening(document, 'acceleration', this.handleOrientation.bindAsEventListener(this));
     this.controller.stopListening($('faster'), Mojo.Event.tap, this.faster);
     this.controller.stopListening(document, Mojo.Event.keydown, this.keydownHandlerBind);
+    this.controller.stopListening(document, Mojo.Event.keyup, this.keyupHandlerBind);
 }
 
 GameAssistant.prototype.setupSkierEasy = function(state){
@@ -398,7 +385,7 @@ GameAssistant.prototype.mainLoop = function(){
         if (currentObs.vDir) {
             if (currentObs.name == "abom_h" && !this.isF) {
                 if (currentObs.y <= this.chase) {
-                    this.chase += .5;
+                    this.chase += .7;
                     currentObs.x = currentSkier.x;
                     currentObs.y = this.chase;
                 }
@@ -522,59 +509,57 @@ GameAssistant.prototype.keyupHandler = function(event){
         // Left.
         case Mojo.Char.a:
         case Mojo.Char.a + 32:
-            if (this.skier.x > 2) {
-                this.moveX = 0;
-            }
+			if (!this.tilt) {
+				this.moveX = 0;
+			}
             break;
             
         // Right.
         case Mojo.Char.d:
         case Mojo.Char.d + 32:
-            if (this.skier.x < this.skier.maxX) {
-                this.moveX = 0;
-            }
+            if (!this.tilt) {
+				this.moveX = 0;
+			}
             break;
-            
-        // Down.
-        case Mojo.Char.s:
-        case Mojo.Char.s + 32:
-            this.setupSkierEasy("down");
-            break;
+			
+		case Mojo.Char.f:
+		case Mojo.Char.f + 32:
+			this.noF();
+			break;
     }
 }
 
 GameAssistant.prototype.keydownHandler = function(event){
     switch (event.originalEvent.keyCode) {
-        /*
-         // Left.
-         case Mojo.Char.a:
-         case Mojo.Char.a + 32:
-         if (this.skier.x > 2) {
-         this.moveX = -3;
-         }
-         break;
-         
-         // Right.
-         case Mojo.Char.d:
-         case Mojo.Char.d + 32:
-         if (this.skier.x < this.skier.maxX) {
-         this.moveX = 4;
-         }
-         break;
-         
-         // Down.
-         case Mojo.Char.s:
-         case Mojo.Char.s + 32:
-         this.setupSkierEasy("down");
-         break;
-         */
+        // Left.
+        case Mojo.Char.a:
+        case Mojo.Char.a + 32:
+			if (!this.tilt) {
+				if (this.skier.x > 2) {
+					this.moveX = -4;
+				}
+			}
+            break;
+            
+        // Right.
+        case Mojo.Char.d:
+        case Mojo.Char.d + 32:
+			if (!this.tilt) {
+				if (this.skier.x < this.skier.maxX) {
+					this.moveX = 4;
+				}
+			}
+            break;
+            
         case Mojo.Char.f:
         case Mojo.Char.f + 32:
             this.isF = true;
             this.fSpeedMod = 2;
+/*
             if (!this.fTimeout) {
                 this.fTimeout = setTimeout(this.noF.bind(this), 2000);
             }
+*/
             break;
     }
 }
@@ -596,7 +581,8 @@ GameAssistant.prototype.handleOrientation = function(event){
     if (!this.isJumping) {
         var scaleY = 10;
         
-        this.moveX += event.accelX;
+        if (this.tilt) 
+            this.moveX += event.accelX;
         
         this.speed = Math.floor(Math.abs(event.accelY * scaleY)) * this.fSpeedMod;
     }

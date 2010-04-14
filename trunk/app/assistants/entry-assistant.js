@@ -7,7 +7,10 @@ function EntryAssistant(sceneAssistant, callbackFunc, score) {
 
 EntryAssistant.prototype.setup = function(widget) {
 	this.widget = widget;
-
+    this.controller.stageController.setWindowProperties({
+        fastAccelerometer: false,
+        blockScreenTimeout: false
+    });
 	var attributes = {
 		hintText : 'Enter Your Name',
 		textFieldName : 'name',

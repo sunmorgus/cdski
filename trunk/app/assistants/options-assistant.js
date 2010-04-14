@@ -3,6 +3,11 @@ function OptionsAssistant(){
 }
 
 OptionsAssistant.prototype.setup = function(){
+    this.controller.stageController.setWindowProperties({
+        fastAccelerometer: false,
+        blockScreenTimeout: false
+    });
+    
     this.ftattr = {
         trueLabel: 'yes',
         falseLabel: 'no'

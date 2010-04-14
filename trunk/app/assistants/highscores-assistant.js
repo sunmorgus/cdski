@@ -15,6 +15,10 @@ function HighscoresAssistant(params){
 }
 
 HighscoresAssistant.prototype.setup = function(){
+    this.controller.stageController.setWindowProperties({
+        fastAccelerometer: false,
+        blockScreenTimeout: false
+    });
     this.appMenuModel = {
         visible: true,
         items: [Mojo.Menu.editItem, {
@@ -133,7 +137,7 @@ HighscoresAssistant.prototype.getGlobalHighScores = function(){
     var request = new Ajax.Request(url, {
         method: 'get',
         evalJSON: 'force',
-		timeout: 2000,
+        timeout: 2000,
         onSuccess: this.buildGlobalList.bind(this),
         onFailure: this.errorHandler.bind(this)
     });
@@ -153,7 +157,7 @@ HighscoresAssistant.prototype.addHighScore = function(name){
     var request = new Ajax.Request(url, {
         method: 'get',
         evalJSON: 'force',
-		timeout: 2000,
+        timeout: 2000,
         onSuccess: this.globalAddSuccess.bind(this),
         onFailure: this.globalAddFailure.bind(this)
     });
@@ -174,7 +178,7 @@ HighscoresAssistant.prototype.globalAddFailure = function(transport){
     this.hsDB.transaction((function(transaction){
         transaction.executeSql(query, [Math.random(), this.name, this.Score, globalId], this.getHighScores.bind(this), this.errorHandler.bind(this));
     }).bind(this));
-	this.scrim.hide();
+    this.scrim.hide();
 }
 
 HighscoresAssistant.prototype.dropTable = function(){
@@ -260,7 +264,7 @@ HighscoresAssistant.prototype.buildList = function(transaction, results){
             var request = new Ajax.Request(url, {
                 method: 'get',
                 evalJSON: 'force',
-				timeout: 2000,
+                timeout: 2000,
                 onSuccess: this.setSubtitle.bind(this),
                 onFailure: this.errorHandler.bind(this)
             });
@@ -297,7 +301,7 @@ HighscoresAssistant.prototype.retry = function(){
 }
 
 HighscoresAssistant.prototype.errorHandler = function(transaction, error){
-	this.scrim.hide();
+    this.scrim.hide();
     console.log('Error was ' + error.message + ' (Code ' + error.code + ')');
     return true;
 }
