@@ -83,6 +83,7 @@ GameAssistant.prototype.handleCommand = function(event){
     if (event.type == Mojo.Event.command) {
         switch (event.command) {
             case 'newGame':
+                this.obstacles.splice(0, this.obstacles.length);                
                 this.controller.stageController.popScene();
                 this.controller.stageController.assistant.showScene("start", 'start');
                 break;
@@ -150,8 +151,8 @@ GameAssistant.prototype.deactivate = function(event){
 
 GameAssistant.prototype.cleanup = function(){
     this.controller.stopListening(document, 'acceleration', this.handleOrientation.bindAsEventListener(this));
-	this.controller.stopListening($('faster'), Mojo.Event.tap, this.faster);
-	this.controller.stopListening(document, Mojo.Event.keydown, this.keydownHandlerBind);
+    this.controller.stopListening($('faster'), Mojo.Event.tap, this.faster);
+    this.controller.stopListening(document, Mojo.Event.keydown, this.keydownHandlerBind);
 }
 
 GameAssistant.prototype.setupSkierEasy = function(state){

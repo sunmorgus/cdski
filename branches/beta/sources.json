@@ -28,5 +28,9 @@
     {
         "scenes": "help",
         "source": "app/assistants/help-assistant.js"
+    },
+    {
+        "scenes": "buy",
+        "source": "app/assistants/buy-assistant.js"
     }
 ]

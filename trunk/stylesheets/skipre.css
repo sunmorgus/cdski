@@ -25,8 +25,6 @@
 
 .redButton .palm-button {
     -webkit-border-image: url(../images/button-red.png) 0 16 0 16 stretch stretch;
-    width: 140px;
-    float: right;
 }
 
 .startSkier {
