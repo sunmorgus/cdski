@@ -15,6 +15,8 @@ function HighscoresAssistant(params){
 }
 
 HighscoresAssistant.prototype.setup = function(){
+	this.controller.enableFullScreenMode(true);
+	
     this.controller.stageController.setWindowProperties({
         fastAccelerometer: false,
         blockScreenTimeout: false
@@ -68,8 +70,14 @@ HighscoresAssistant.prototype.setup = function(){
     this.exampleSpinnerAttrs = {
         spinnerSize: Mojo.Widget.spinnerLarge
     }
+	
+	this.loadingSpinner = 'loading';
+	this.loadingSpinnerAttrs = {
+		spinnerSize: Mojo.Widget.spinnerSmall
+	}
     
     this.controller.setupWidget(this.exampleSpinner, this.exampleSpinnerAttrs, {});
+	this.controller.setupWidget(this.loadingSpinner, this.loadingSpinnerAttrs, {});
     this.scrim = Mojo.View.createScrim(this.controller.document, {
         scrimClass: 'palm-scrim'
     });
@@ -78,6 +86,7 @@ HighscoresAssistant.prototype.setup = function(){
 
 HighscoresAssistant.prototype.ready = function(){
     this.controller.get(this.exampleSpinner).mojo.start();
+	this.controller.get(this.loadingSpinner).mojo.start();
     this.scrim.hide();
 }
 
@@ -124,6 +133,8 @@ HighscoresAssistant.prototype.cleanup = function(event){
 }
 
 HighscoresAssistant.prototype.getHighScores = function(){
+    $('loading').style.display = 'block';
+    $('top').innerHTML = '';
     var query = 'select name, score, global_id from highScore order by score desc, id asc limit 10;';
     this.hsDB.transaction((function(transaction){
         transaction.executeSql(query, [], this.buildList.bind(this), this.errorHandler.bind(this));
@@ -249,6 +260,7 @@ HighscoresAssistant.prototype.buildList = function(transaction, results){
         }
         else {
             $('noScores').style.display = 'block';
+            $('loading').style.display = 'none';
             var top = $('top');
             top.innerHTML = 'You have no high scores!';
         }
@@ -279,6 +291,7 @@ HighscoresAssistant.prototype.setSubtitle = function(transport){
     var r = transport.responseJSON;
     var top = $('top');
     top.innerHTML = 'Your highest score of ' + this.topScore + ' ranks ' + r[0].rank + ' out of ' + r[0].count + ' other scores!';
+    $('loading').style.display = 'none';
 }
 
 HighscoresAssistant.prototype.isHighScore = function(transaction, results){
@@ -302,6 +315,8 @@ HighscoresAssistant.prototype.retry = function(){
 
 HighscoresAssistant.prototype.errorHandler = function(transaction, error){
     this.scrim.hide();
+    $('loading').style.display = 'none';
+    $('top').innerHTML = 'Whoops! The Abominable Snowman must be attacking our servers and eating the Global Scores! We\'ll try and get them back as soon as we can!';
     console.log('Error was ' + error.message + ' (Code ' + error.code + ')');
     return true;
 }

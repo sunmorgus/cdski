@@ -41,6 +41,8 @@ GameAssistant.prototype.abomH = null;
 GameAssistant.prototype.rot = null;
 
 GameAssistant.prototype.setup = function(){
+    this.controller.enableFullScreenMode(true);
+    
     if (this.fButtonVisible) {
         jQuery('#touchControls').css('visibility', 'visible');
     }
@@ -69,7 +71,7 @@ GameAssistant.prototype.setup = function(){
     
     // touch controls go here
     if (jQuery(window).height() == '372') {
-        jQuery('#touchControls').css('top', '310px');
+        jQuery('#touchControls').css('top', '360px');
     }
     
     this.unPauseHandlerBind = this.unPauseHandler.bind(this);
@@ -78,6 +80,17 @@ GameAssistant.prototype.setup = function(){
         scrimClass: 'palm-scrim'
     });
     this.controller.get("Pause").appendChild(this.scrim).appendChild($('paused'));
+    
+/*
+    this.deactivateHandler = this.tapEvent.bind(this);
+    Mojo.Event.listen(this.controller.stageController.document, Mojo.Event.stageDeactivate, this.deactivateHandler);
+*/
+}
+
+GameAssistant.prototype.quit = function(event){
+    this.obstacles.splice(0, this.obstacles.length);
+    this.controller.stageController.popScene();
+    this.controller.stageController.assistant.show("start", 'start');
 }
 
 GameAssistant.prototype.handleCommand = function(event){
@@ -509,23 +522,23 @@ GameAssistant.prototype.keyupHandler = function(event){
         // Left.
         case Mojo.Char.a:
         case Mojo.Char.a + 32:
-			if (!this.tilt) {
-				this.moveX = 0;
-			}
+            if (!this.tilt) {
+                this.moveX = 0;
+            }
             break;
             
         // Right.
         case Mojo.Char.d:
         case Mojo.Char.d + 32:
             if (!this.tilt) {
-				this.moveX = 0;
-			}
+                this.moveX = 0;
+            }
             break;
-			
-		case Mojo.Char.f:
-		case Mojo.Char.f + 32:
-			this.noF();
-			break;
+            
+        case Mojo.Char.f:
+        case Mojo.Char.f + 32:
+            this.noF();
+            break;
     }
 }
 
@@ -534,32 +547,32 @@ GameAssistant.prototype.keydownHandler = function(event){
         // Left.
         case Mojo.Char.a:
         case Mojo.Char.a + 32:
-			if (!this.tilt) {
-				if (this.skier.x > 2) {
-					this.moveX = -4;
-				}
-			}
+            if (!this.tilt) {
+                if (this.skier.x > 2) {
+                    this.moveX = -4;
+                }
+            }
             break;
             
         // Right.
         case Mojo.Char.d:
         case Mojo.Char.d + 32:
-			if (!this.tilt) {
-				if (this.skier.x < this.skier.maxX) {
-					this.moveX = 4;
-				}
-			}
+            if (!this.tilt) {
+                if (this.skier.x < this.skier.maxX) {
+                    this.moveX = 4;
+                }
+            }
             break;
             
         case Mojo.Char.f:
         case Mojo.Char.f + 32:
             this.isF = true;
             this.fSpeedMod = 2;
-/*
-            if (!this.fTimeout) {
-                this.fTimeout = setTimeout(this.noF.bind(this), 2000);
-            }
-*/
+            /*
+         if (!this.fTimeout) {
+         this.fTimeout = setTimeout(this.noF.bind(this), 2000);
+         }
+         */
             break;
     }
 }

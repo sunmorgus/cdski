@@ -6,6 +6,8 @@ function BuyAssistant() {
 }
 
 BuyAssistant.prototype.setup = function() {
+	this.controller.enableFullScreenMode(true);
+	
 	this.buyNow = this.buy.bind(this);
 	Mojo.Event.listen($('buy'), Mojo.Event.tap, this.buyNow);
 };

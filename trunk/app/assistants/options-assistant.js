@@ -3,6 +3,8 @@ function OptionsAssistant(){
 }
 
 OptionsAssistant.prototype.setup = function(){
+	this.controller.enableFullScreenMode(true);
+	
     this.controller.stageController.setWindowProperties({
         fastAccelerometer: false,
         blockScreenTimeout: false
@@ -150,7 +152,6 @@ OptionsAssistant.prototype.activate = function(event){
 };
 
 OptionsAssistant.prototype.deactivate = function(event){
-    console.log(this.fButtonVisible);
     var params = {
         chosen: this.chosenSkier,
         fButtonVisible: this.fButtonVisible,

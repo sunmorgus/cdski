@@ -2,6 +2,8 @@ function ChangesAssistant(){
 }
 
 ChangesAssistant.prototype.setup = function(){
+	this.controller.enableFullScreenMode(true);
+	
     this.cmdMenuModel = {
         label: $L('Menu Demo'),
         items: [{}, {
@@ -17,7 +19,7 @@ ChangesAssistant.prototype.handleCommand = function(event){
     if (event.type == Mojo.Event.command) {
         switch (event.command) {
             case 'ok':
-                this.cookie = new Mojo.Model.Cookie('showChanges1-7-0');
+                this.cookie = new Mojo.Model.Cookie('showChanges1-7-4');
                 this.cookie.put({
 					viewed: true
 				});

@@ -1,9 +1,12 @@
 {
 	"id": "com.rjamdev.skipre",
-	"version": "1.7.0",
+	"version": "1.7.4",
 	"vendor": "RJAMDev",
 	"type": "web",
 	"main": "index.html",
 	"title": "Ski for Pre",
-	"icon": "icon.png"
+	"icon": "icon.png",
+	"noDeprecatedStyles": "true",
+	"theme": "light",
+	"splashBackground": "images/splash-screenshot-default.png"
 }

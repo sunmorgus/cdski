@@ -16,6 +16,8 @@ StartAssistant.prototype.skier = null;
 StartAssistant.prototype.options = null;
 
 StartAssistant.prototype.setup = function(){
+    this.controller.enableFullScreenMode(true);
+    
     this.controller.stageController.setWindowProperties({
         fastAccelerometer: false,
         blockScreenTimeout: false
@@ -26,10 +28,10 @@ StartAssistant.prototype.setup = function(){
         items: [Mojo.Menu.editItem, {
             label: $L('Help'),
             command: 'help'
-        },{
-			label: $L('Changes'),
-			command: 'changes'
-		}]
+        }, {
+            label: $L('Changes'),
+            command: 'changes'
+        }]
     };
     
     this.controller.setupWidget(Mojo.Menu.appMenu, {
@@ -62,9 +64,9 @@ StartAssistant.prototype.handleCommand = function(event){
             case 'help':
                 this.controller.stageController.assistant.showScene("help", 'help');
                 break;
-			case 'changes':
-				this.controller.stageController.pushScene('changes');
-				break;
+            case 'changes':
+                this.controller.stageController.pushScene('changes');
+                break;
         }
     }
 }
