@@ -1,9 +1,0 @@
-{
-	"id": "com.rjamdev.skipretrial",
-	"version": "1.6.1",
-	"vendor": "RJAMDev",
-	"type": "web",
-	"main": "index.html",
-	"title": "Ski for Pre Trial",
-	"icon": "icon.png"
-}
