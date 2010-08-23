@@ -40,5 +40,11 @@
     {
         "scenes": "options",
         "source": "app/assistants/options-assistant.js"
-    }
+    },
+    {
+    	"source": "app\/models\/metrix.js"
+    },
+    {
+    	"source": "app\/models\/asyncWrappers.js"
+    }    
 ]

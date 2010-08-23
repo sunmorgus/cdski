@@ -22,6 +22,8 @@ StartAssistant.prototype.setup = function(){
         fastAccelerometer: false,
         blockScreenTimeout: false
     });
+	
+	SkiPre.Metrix.checkBulletinBoard(this.controller, 0);
     
     this.appMenuModel = {
         visible: true,
