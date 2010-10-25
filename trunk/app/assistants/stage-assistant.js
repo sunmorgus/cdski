@@ -1,4 +1,6 @@
 SkiPre = {};
+SkiPre.lite = 'com.rjamdev.skipretrial';
+SkiPre.pro = 'com.rjamdev.skipre';
 
 function StageAssistant(){
 }
@@ -7,7 +9,9 @@ StageAssistant.prototype.setup = function(){
 	SkiPre.Metrix = new Metrix();
 	SkiPre.Metrix.postDeviceData();
 	
-    this.cookie = new Mojo.Model.Cookie('showChanges1-7-4');
+	SkiPre.id = Mojo.Controller.appInfo.id;
+	
+    this.cookie = new Mojo.Model.Cookie(Mojo.Controller.appInfo.version);
     if (this.cookie.get()) {
         this.controller.pushScene("start");
     }

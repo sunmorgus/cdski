@@ -1,10 +1,10 @@
 {
-	"id": "com.rjamdev.skipre",
-	"version": "1.7.5",
+	"id": "com.rjamdev.skipretrial",
+	"version": "1.7.6",
 	"vendor": "RJAMDev",
 	"type": "web",
 	"main": "index.html",
-	"title": "Ski for Pre",
+	"title": "Ski for Pre Lite",
 	"icon": "icon.png",
 	"noDeprecatedStyles": "true",
 	"theme": "light",

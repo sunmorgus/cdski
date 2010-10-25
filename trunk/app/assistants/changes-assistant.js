@@ -19,7 +19,7 @@ ChangesAssistant.prototype.handleCommand = function(event){
     if (event.type == Mojo.Event.command) {
         switch (event.command) {
             case 'ok':
-                this.cookie = new Mojo.Model.Cookie('showChanges1-7-4');
+                this.cookie = new Mojo.Model.Cookie(Mojo.Controller.appInfo.version);
                 this.cookie.put({
 					viewed: true
 				});

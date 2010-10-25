@@ -22,8 +22,24 @@ StartAssistant.prototype.setup = function(){
         fastAccelerometer: false,
         blockScreenTimeout: false
     });
-	
-	SkiPre.Metrix.checkBulletinBoard(this.controller, 0);
+    
+    if (SkiPre.id === SkiPre.lite) {
+        AdMob.ad.initialize({
+            pub_id: 'a14bd03c76d015c'
+        });
+        AdMob.ad.request({
+            onSuccess: (function(ad){
+                this.controller.get('admob_id').insert(ad);
+            }).bind(this),
+            onFailure: (function(){
+                console.log('getting ad failed');
+            }).bind(this)
+        });
+		
+		this.controller.get('gopro').style.display = 'block';
+    }
+    
+    //SkiPre.Metrix.checkBulletinBoard(this.controller, 0);
     
     this.appMenuModel = {
         visible: true,
@@ -50,6 +66,9 @@ StartAssistant.prototype.setup = function(){
     this.start = this.startGame.bind(this);
     Mojo.Event.listen($('startGame'), Mojo.Event.tap, this.start);
     
+    this.gopro = this.goPro.bind(this);
+    Mojo.Event.listen($('gopro'), Mojo.Event.tap, this.gopro);
+    
     this.highscores = this.highScores.bind(this);
     Mojo.Event.listen($('highScores'), Mojo.Event.tap, this.highscores);
     
@@ -71,6 +90,10 @@ StartAssistant.prototype.handleCommand = function(event){
                 break;
         }
     }
+}
+
+StartAssistant.prototype.goPro = function(){
+	this.controller.stageController.pushScene('buy');
 }
 
 StartAssistant.prototype.options = function(event){
