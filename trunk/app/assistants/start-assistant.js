@@ -4,6 +4,9 @@ function StartAssistant(params){
         this.chosenSkier = params.chosen;
         this.fButtonVisible = params.fButtonVisible;
         this.tilt = params.tilt;
+        this.leftKey = params.leftKey;
+        this.rightKey = params.rightKey;
+        this.fastKey = params.fastKey;
     }
     
     snowStorm.show();
@@ -126,11 +129,18 @@ StartAssistant.prototype.activate = function(event){
         
         var control = this.cookie.get().tilt;
         this.tilt = control;
+        
+        this.leftKey = this.cookie.get().leftKey;
+        this.rightKey = this.cookie.get().rightKey;
+        this.fastKey = this.cookie.get().fastKey;
     }
     else {
         this.chosenSkier = 'riley';
         this.tilt = true;
         this.fButtonVisible = false;
+        this.leftKey = "a";
+        this.rightKey = "d";
+        this.fastKey = "f";
     }
 }
 
@@ -187,14 +197,20 @@ StartAssistant.prototype.startGame = function(event){
         chosen: this.chosenSkier,
         db: this.hsDB,
         fButtonVisible: this.fButtonVisible,
-        tilt: this.tilt
+        tilt: this.tilt,
+        leftKey: this.leftKey,
+        rightKey: this.rightKey,
+        fastKey: this.fastKey
     }
     
     this.cookie = new Mojo.Model.Cookie('optionsSkiPre');
     this.cookie.put({
         fButton: params.fButtonVisible,
         chosen: params.chosen,
-        tilt: params.tilt
+        tilt: params.tilt,
+        leftKey: params.leftKey,
+        rightKey: params.rightKey,
+        fastKey: params.fastKey
     })
     
     this.controller.stageController.assistant.showScene("game", 'game', params);
