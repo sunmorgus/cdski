@@ -20,6 +20,7 @@ StartAssistant.prototype.options = null;
 
 StartAssistant.prototype.setup = function(){
     this.controller.enableFullScreenMode(true);
+    this.controller.stageController.setWindowOrientation("right");
     
     this.controller.stageController.setWindowProperties({
         fastAccelerometer: false,

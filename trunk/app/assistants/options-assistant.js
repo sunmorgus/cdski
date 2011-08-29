@@ -69,6 +69,12 @@ OptionsAssistant.prototype.setup = function() {
     });
     this.defaultButton = this.defaultButton.bind(this);
     Mojo.Event.listen($('default'), Mojo.Event.tap, this.defaultButton);
+    
+    this.controller.setupWidget('back', {}, {
+    	buttonLabel: "Back"
+    });
+    this.backButton = this.backButton.bind(this);
+    Mojo.Event.listen($('back'), Mojo.Event.tap, this.backButton);
 
     this.controller.setupWidget('leftkey', this.leftKeyAttr, this.leftKeyModel);
     this.controller.setupWidget('rightkey', this.rightKeyAttr, this.rightKeyModel);
@@ -110,6 +116,9 @@ OptionsAssistant.prototype.defaultButton = function(event) {
     }
     .bind(this), 1000);
 
+};
+OptionsAssistant.prototype.backButton = function(event){
+	this.controller.stageController.popScene();
 };
 OptionsAssistant.prototype.loadOptions = function() {
     this.cookie = new Mojo.Model.Cookie('optionsSkiPre');
@@ -226,4 +235,5 @@ OptionsAssistant.prototype.cleanup = function(event) {
     this.controller.stopListening($('avatar'), Mojo.Event.propertyChange, this.ptogglePressed);
     this.controller.stopListening($('control'), Mojo.Event.propertyChange, this.ctogglePressed);
     this.controller.stopListening($('default'), Mojo.Event.tap, this.defaultButton);
+    this.controller.stopListening($('back'), Mojo.Event.tap, this.backButton);
 };

@@ -48,19 +48,27 @@ HighscoresAssistant.prototype.setup = function(){
     };
     this.controller.setupWidget('results_list', this.innerListAttrs, this.listModel);
     
+    var buttonWidth = 110;
+    if(jQuery(window).height() > 700){
+    	buttonWidth = 462;
+    }
+    
     this.cmdMenuModel = {
         label: $L('Menu Demo'),
-        items: [{}, {
+        items: [{
+        	label: $L('Back'),
+        	command: 'back'
+        }, {
             label: $L('Back/Fwd'),
             toggleCmd: 'local',
             items: [{
                 label: $L('Your Scores'),
                 command: 'local',
-                width: 160
+                width: buttonWidth
             }, {
                 label: $L('Global Scores'),
                 command: 'global',
-                width: 160
+                width: buttonWidth
             }]
         }]
     };
@@ -109,6 +117,9 @@ HighscoresAssistant.prototype.handleCommand = function(event){
             case 'help':
                 this.controller.stageController.pushScene("help", 'help');
                 break;
+            case 'back':
+            	this.controller.stageController.popScene();
+            	break;
         }
     }
 }

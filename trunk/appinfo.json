@@ -1,5 +1,5 @@
 {
-	"id": "com.rjamdev.skipretrial",
+	"id": "com.rjamdev.skipre",
 	"version": "1.7.8",
 	"vendor": "RJAMDev",
 	"type": "web",
@@ -8,5 +8,6 @@
 	"icon": "icon.png",
 	"noDeprecatedStyles": "true",
 	"theme": "light",
-	"splashBackground": "images/splash-screenshot-default.png"
+	"splashBackground": "images/splash-screenshot-default.png",
+	"uiRevision": 2
 }
