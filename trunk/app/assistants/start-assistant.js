@@ -20,6 +20,7 @@ StartAssistant.prototype.options = null;
 
 StartAssistant.prototype.setup = function(){
     this.controller.enableFullScreenMode(true);
+    if(jQuery(window).height > 700)
     this.controller.stageController.setWindowOrientation("right");
     
     this.controller.stageController.setWindowProperties({

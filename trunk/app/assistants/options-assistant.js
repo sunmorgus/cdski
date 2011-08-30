@@ -79,6 +79,10 @@ OptionsAssistant.prototype.setup = function() {
     this.controller.setupWidget('leftkey', this.leftKeyAttr, this.leftKeyModel);
     this.controller.setupWidget('rightkey', this.rightKeyAttr, this.rightKeyModel);
     this.controller.setupWidget('fastkey', this.fastKeyAttr, this.fastKeyModel);
+    
+    if(jQuery(window).height() < 700){
+    	$('preOptions').style.visibility = 'visible';
+    }
 };
 OptionsAssistant.prototype.skierRiley = function() {
     this.chosenSkier = 'riley';

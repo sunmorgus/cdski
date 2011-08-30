@@ -174,6 +174,8 @@ HighscoresAssistant.prototype.checkScore = function(score){
 
 HighscoresAssistant.prototype.addHighScore = function(name){
     this.scrim.show();
+    if(jQuery(window).height() > 700)
+    	name += " (TouchPad)";
     var url = this.scoreUrl + 'i&n=' + name + '&s=' + this.Score;
     this.name = name;
     var request = new Ajax.Request(url, {

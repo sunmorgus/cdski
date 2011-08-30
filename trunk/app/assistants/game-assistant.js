@@ -46,7 +46,7 @@ GameAssistant.prototype.rot = null;
 GameAssistant.prototype.setup = function() {
 	this.controller.enableFullScreenMode(true);
 
-	if(this.fButtonVisible) {
+	if(this.fButtonVisible || jQuery(window).height() > 700) {
 		jQuery('#touchControls').css('visibility', 'visible');
 	}
 
@@ -84,16 +84,18 @@ GameAssistant.prototype.setup = function() {
 	}
 
 	this.unPauseHandlerBind = this.unPauseHandler.bind(this);
+	this.newGameHandlerBind = this.newGameHandler.bind(this);
 	this.scrim = Mojo.View.createScrim(this.controller.document, {
 		onMouseDown : this.unPauseHandlerBind,
 		scrimClass : 'palm-scrim'
 	});
+	Mojo.Event.listen($('back'), Mojo.Event.tap, this.newGameHandler);
 	this.controller.get("Pause").appendChild(this.scrim).appendChild($('paused'));
+	this.scrim.appendChild($('back'));
+	//$('back').style.visibility = 'visible';
 
-	/*
 	 this.deactivateHandler = this.tapEvent.bind(this);
 	 Mojo.Event.listen(this.controller.stageController.document, Mojo.Event.stageDeactivate, this.deactivateHandler);
-	 */
 }
 GameAssistant.prototype.quit = function(event) {
 	this.obstacles.splice(0, this.obstacles.length);
@@ -111,6 +113,10 @@ GameAssistant.prototype.handleCommand = function(event) {
 				break;
 		}
 	}
+}
+GameAssistant.prototype.newGameHandler = function(){
+	this.obstacles.splice(0, this.obstacles.length);
+	this.controller.stageController.popScene();
 }
 GameAssistant.prototype.ready = function() {
 	this.scrim.hide();
