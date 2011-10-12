@@ -1,0 +1,19 @@
+body {
+	background: #000000;
+}
+#screen {
+	text-align: left;
+	font-size: 15px;
+	font-family: "Courier New", monospace, serif;
+	line-height: 16px;
+	color: white;
+	width: 41em;
+	height: 212px;
+	display: block;
+/*	white-space: pre;*/
+}
+#buttons {
+	position: absolute;
+	top: 100px;
+	right: -130px;;
+}
