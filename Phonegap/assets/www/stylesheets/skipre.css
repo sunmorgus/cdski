@@ -1,19 +1,56 @@
-body {
-	background: #000000;
+.slope {
+    position: absolute;
+    left: 0px;
+    top: 35px;
 }
-#screen {
-	text-align: left;
-	font-size: 15px;
-	font-family: "Courier New", monospace, serif;
-	line-height: 16px;
-	color: white;
-	width: 41em;
-	height: 212px;
-	display: block;
-/*	white-space: pre;*/
+
+.scoreboard {
+    position: absolute;
+    left: 0px;
+    top: 5px;
+    width: 100%;
+    text-align: center;
 }
-#buttons {
+
+.lives {
+    position: absolute;
+    left: 235px;
+    top: 5px;
+    width: 100px;
+}
+
+.startSkier {
+    position: absolute;
+    top: 60px;
+    left: 150px;
+}
+
+.ski {
+    position: absolute;
+    top: 10px;
+    left: 5px;
+}
+
+.pre {
+    position: absolute;
+    top: 10px;
+    left: 180px;
+}
+
+.the{
 	position: absolute;
-	top: 100px;
-	right: -130px;;
+	top: 40px;
+	left: 140px;
+}
+
+.pixi {
+	position: absolute;
+	top: 98px;
+	left: 95px;
+}
+
+#noScores{
+	position: absolute;
+	top: 190px;
+	left: 140px;
 }

@@ -14,6 +14,10 @@ function onDeviceReady() {
 	// Register the event listener
 	document.addEventListener("pause", onPause, false);
 	document.addEventListener("resume", onResume, false);
+	
+	//start the snow
+	snowStorm.show();
+	snowStorm.resume();
 }
 
 //app exit
