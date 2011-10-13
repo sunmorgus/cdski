@@ -11,8 +11,8 @@ import android.view.Display;
 import android.view.WindowManager;
 import android.webkit.WebSettings.RenderPriority;
 
-public class Android_SkiPreActivity extends DroidGap {
-	// protected float ORIG_APP_W = 480;
+public class SkiPreActivity extends DroidGap {
+	protected float ORIG_APP_W = 320;
 	protected float ORIG_APP_H = 480;
 	protected PowerManager.WakeLock mWakeLock;
 
@@ -38,11 +38,11 @@ public class Android_SkiPreActivity extends DroidGap {
 		// get actual screen size
 		Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE))
 				.getDefaultDisplay();
-		// int width = display.getWidth();
+		int width = display.getWidth();
 		int height = display.getHeight();
 
 		// calculate target scale (only dealing with landscape)
-		double globalScale = Math.ceil((height / ORIG_APP_H) * 100);
+		double globalScale = Math.ceil((width / ORIG_APP_H) * 100);
 
 		// set some defaults to the web view
 		this.appView.getSettings().setBuiltInZoomControls(false);
@@ -54,7 +54,7 @@ public class Android_SkiPreActivity extends DroidGap {
 		// set the scale
 		int scale = (int) globalScale;
 		scale -= 5;
-		this.appView.setInitialScale(scale);
+//		this.appView.setInitialScale(scale);
 
 		final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK,

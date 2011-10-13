@@ -8,10 +8,14 @@
 		<script type="text/javascript" src="js/jquery.min.js"></script>
 		<script type="text/javascript" src="js/jquery.mobile.min.js"></script>
 	</head>
-	<body>
-		<div id="scoreboard" class="scoreboard"></div>
-		<div id="lives" class="lives"></div>
-		<canvas id="slope" width="320" height="415" class="slope"></canvas>
-		<img id="skierImg" src="" style="visibility: hidden;"/><img id="crash" src="" style="position: absolute; top: 0px; left: 0px; visibility: hidden;"/>
+	<body onload="onLoad()">
+		<div data-role="page" id="game">
+			<div data-role="content">
+				<div id="scoreboard" class="scoreboard"></div>
+				<div id="lives" class="lives"></div>
+				<canvas id="slope" width="320" height="415" class="slope"></canvas>
+				<img id="skierImg" src="" style="visibility: hidden;"/><img id="crash" src="" style="position: absolute; top: 0px; left: 0px; visibility: hidden;"/>
+			</div>
+		</div>
 	</body>
 </html>
