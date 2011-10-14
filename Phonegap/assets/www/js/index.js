@@ -16,8 +16,15 @@ $(document).bind("pagechange", function(e, data) {
 //	}
 //	console.log(str); // Show all properties and its value
 	if (typeof data.toPage.selector === "string") {
-		if(data.toPage.selector.indexOf("game.html") >= 0){
-			SetupCanvas();
+		if(data.toPage.selector.indexOf("game") >= 0){
+			snowStorm.stop();
+			snowStorm.freeze();
+			
+			var params = {
+				chosen: "riley"
+			}
+			
+			SetupCanvas(params);
 		}
 	}
 });
@@ -37,8 +44,10 @@ function onDeviceReady() {
 
 // app exit
 function onPause() {
+	StopMainLoop();
 }
 
 // app open
 function onResume() {
+	//StartMainLoop();
 }
