@@ -1,59 +1,50 @@
-html,body{
+html, body {
 	background-color: white;
 }
-
 .slope {
-    position: absolute;
-    left: 0px;
-    top: 35px;
+	position: absolute;
+	left: 0px;
+	top: 35px;
 }
-
 .scoreboard {
-    position: absolute;
-    left: 0px;
-    top: 5px;
-    width: 100%;
-    text-align: center;
+	position: absolute;
+	left: 0px;
+	top: 5px;
+	width: 100%;
+	text-align: center;
 }
-
 .lives {
-    position: absolute;
-    left: 235px;
-    top: 5px;
-    width: 100px;
+	position: absolute;
+	left: 235px;
+	top: 5px;
+	width: 100px;
 }
-
 .startSkier {
-    position: absolute;
-    top: 60px;
-    left: 150px;
+	position: absolute;
+	top: 60px;
+	left: 150px;
 }
-
 .ski {
-    position: absolute;
-    top: 10px;
-    left: 5px;
+	position: absolute;
+	top: 10px;
+	left: 5px;
 }
-
 .pre {
-    position: absolute;
-    top: 10px;
-    left: 180px;
+	position: absolute;
+	top: 10px;
+	left: 180px;
 }
-
-.the{
+.the {
 	position: absolute;
 	top: 40px;
 	left: 140px;
 }
-
 .pixi {
 	position: absolute;
 	top: 98px;
 	left: 95px;
 }
-
-#noScores{
+#noScores {
 	position: absolute;
 	top: 190px;
 	left: 140px;

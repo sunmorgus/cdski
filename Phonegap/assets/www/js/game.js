@@ -25,6 +25,10 @@ function SetupCanvas(params) {
 	_context.fillStyle = "rgb(255,255,255)";
 	_canvasWidth = _canvas.getAttribute("width");
 	_canvasHeight = _canvas.getAttribute("height");
+	
+	var lButtonImage = new Image();
+	lButtonImage.src = _mediaPath + "images/controls/left.png";
+	_context.drawImage(lButtonImage, 10, 100);
 
 	_isPaused = false;
 
