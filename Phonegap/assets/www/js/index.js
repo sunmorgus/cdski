@@ -39,6 +39,9 @@ $(document).bind("pagechange", function(e, data) {
 			}
 
 			SetupCanvas(params);
+			$(window).resize(function() {
+				SetupCanvas(params)
+			});
 		}
 	}
 });

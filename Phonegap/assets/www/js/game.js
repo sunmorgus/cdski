@@ -20,15 +20,29 @@ function SetupCanvas(params) {
 	_moveX = null; //default null
 	_isF = false; //default null
 
-	_canvas = document.getElementById("slope");
-	_context = _canvas.getContext("2d");
-	_context.fillStyle = "rgb(255,255,255)";
-	_canvasWidth = _canvas.getAttribute("width");
-	_canvasHeight = _canvas.getAttribute("height");
+	var windowWidth = window.innerWidth;
+	var windowHeight = window.innerHeight;
 	
-	var lButtonImage = new Image();
-	lButtonImage.src = _mediaPath + "images/controls/left.png";
-	_context.drawImage(lButtonImage, 10, 100);
+	var w = windowWidth / 1.2;
+	if(windowWidth <= 320)
+		w = windowWidth / 1.5;
+	
+	var h = window.innerHeight / 1.2;
+	if(windowHeight <= 480)
+		h = windowHeight / 1.5;
+	
+//	console.log(window.innerWidth + ':' + w + ' ' + window.innerHeight + ':' + h);
+	var canvasString = '<canvas id="slope" width="' + w + '" height="' + h + '" class="slope"></canvas>';
+	
+	$('#contentHolder').empty();
+	$(canvasString).appendTo('#contentHolder');
+	
+	_context = $('#slope').get(0).getContext('2d');
+	_context.fillStyle = "rgb(255,255,255)";
+	_canvasWidth = w;
+	_canvasHeight = h;
+	
+    document.getElementById('gameFooter').style.visibility = 'visible';
 
 	_isPaused = false;
 

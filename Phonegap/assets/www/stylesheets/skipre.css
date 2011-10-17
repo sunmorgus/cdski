@@ -1,23 +1,14 @@
 html, body {
-	background-color: white;
+	background: #FFFFFF;
 }
-.slope {
-	position: absolute;
-	left: 0px;
-	top: 35px;
+.ui-page{
+	background: #FFFFFF;
 }
-.scoreboard {
-	position: absolute;
-	left: 0px;
-	top: 5px;
-	width: 100%;
+#contentHolder {
+	width: 99%;
+	height: 99%;
+	margin: 0 auto;
 	text-align: center;
-}
-.lives {
-	position: absolute;
-	left: 235px;
-	top: 5px;
-	width: 100px;
 }
 .startSkier {
 	position: absolute;

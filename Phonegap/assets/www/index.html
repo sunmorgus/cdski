@@ -2,8 +2,8 @@
 <html>
 	<head>
 		<title></title>
+		<link href="stylesheets/jquery.mobile-1.0rc1.min.css" rel="stylesheet" type="text/css">
 		<link href="stylesheets/skipre.css" media="screen" rel="stylesheet" type="text/css">
-		<link href="stylesheets/jquery.mobile-1.0b3.min.css" rel="stylesheet" type="text/css">
 		<script type="text/javascript" charset="utf-8" src="js/phonegap-1.1.0.js"></script>
 		<script type="text/javascript" src="js/jquery.min.js"></script>
 		<script type="text/javascript" src="js/jquery.mobile.min.js"></script>
@@ -15,7 +15,7 @@
 	<body onload="onLoad()">
 		<div data-role="page" id="index">
 			<div data-role="content">
-				<div id="main" style="background-color: white; height: 480px;">
+				<div id="main">
 					<div style="position: fixed; left: 50%; margin-left: -160px;">
 						<img src="images/ski.png" class="ski" /><img src="images/for.png" class="the" /><img id="skier" src="images/sprites/r/riley_down.png" class="startSkier" /><img src="images/pre.png" class="pre" /><img src="images/pixi.png" class="pixi" />
 					</div>
@@ -31,11 +31,16 @@
 			</div>
 		</div>
 		<div data-role="page" id="game">
+			<div data-role="header" style="text-align: center;">
+				<div id="scoreboard"></div>
+			</div>
 			<div data-role="content">
-				<div id="scoreboard" class="scoreboard"></div>
-				<div id="lives" class="lives"></div>
-				<canvas id="slope" width="320" height="415" class="slope"></canvas>
+				<div id="contentHolder"></div>
 				<img id="skierImg" src="" style="visibility: hidden;"/><img id="crash" src="" style="position: absolute; top: 0px; left: 0px; visibility: hidden;"/>
+			</div>
+			<div id="gameFooter" data-role="footer" style="background: #FFFFFF; border: none; visibility: hidden;">
+				<img src="images/controls/left.png" style="float: left;" />
+				<img src="images/controls/right.png" style="float: right;" />
 			</div>
 		</div>
 	</body>
