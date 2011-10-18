@@ -1,7 +1,7 @@
 html, body {
 	background: #FFFFFF;
 }
-.ui-page{
+.ui-page {
 	background: #FFFFFF;
 }
 #contentHolder {
@@ -9,6 +9,11 @@ html, body {
 	height: 99%;
 	margin: 0 auto;
 	text-align: center;
+}
+.slope {
+    position: absolute;
+    left: 0px;
+    top: 35px;
 }
 .startSkier {
 	position: absolute;

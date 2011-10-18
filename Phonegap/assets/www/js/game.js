@@ -6,59 +6,59 @@ var Game = Class
 
 			SetupCanvas : function(params) {
 				// setup initial global variables
-				_mediaPath = "/android_asset/www/";
-				_chosenSkier = params.chosen;
-				_obsArray = new Array();
-				_obstacles = new Array();
-				_isJumping = false
-				_hsDB = params.db;
-				_fSpeedMod = 1;
-				_fButtonVisible = params.fButtonVisible;
-				_tilt = params.tilt;
-				_chase = 0;
-				_leftKey = params.leftKey;
-				_rightKey = params.rightKey;
-				_fastKey = params.fastKey;
-				_treeWidth = 44;
+				this.mediaPath = "/android_asset/www/";
+				this.chosenSkier = params.chosen;
+				this.obsArray = new Array();
+				this.obstacles = new Array();
+				this.isJumping = false
+				this.hsDB = params.db;
+				this.fSpeedMod = 1;
+				this.fButtonVisible = params.fButtonVisible;
+				this.tilt = params.tilt;
+				this.chase = 0;
+				this.leftKey = params.leftKey;
+				this.rightKey = params.rightKey;
+				this.fastKey = params.fastKey;
+				this.treeWidth = 44;
 
 				// change when testing
-				_speed = 10; // default null
-				_moveX = null; // default null
-				_isF = null; // default null
+				this.speed = 10; // default null
+				this.moveX = null; // default null
+				this.isF = null; // default null
 
 				var windowWidth = window.innerWidth;
 				var windowHeight = window.innerHeight;
 
-				var w = windowWidth / 1.2;
-				if (windowWidth <= 320)
-					w = windowWidth / 1.5;
+				var w = windowWidth;
 
-				var h = window.innerHeight / 1.2;
+				// var w = 320;
+
+				var h = windowHeight / 1.2;
 				if (windowHeight <= 480)
-					h = windowHeight / 1.5;
+					h = windowHeight / 1.3;
 
-				// console.log(window.innerWidth + ':' + w + ' ' +
-				// window.innerHeight + ':'
-				// + h);
-				var canvasString = '<canvas id="slope" width="' + w
-						+ '" height="' + h + '" class="slope"></canvas>';
+				var canvasString = '<canvas id="slope" width="'
+						+ w
+						+ '" height="'
+						+ h
+						+ '" style="border: solid 1px black" class="slope"></canvas>';
 
 				$j('#contentHolder').empty();
 				$j(canvasString).appendTo('#contentHolder');
 
-				_context = $j('#slope').get(0).getContext('2d');
-				_context.fillStyle = "rgb(255,255,255)";
-				_canvasWidth = w;
-				_canvasHeight = h;
+				this.context = $j('#slope').get(0).getContext('2d');
+				this.context.fillStyle = "rgb(255,255,255)";
+				this.canvasWidth = w;
+				this.canvasHeight = h;
 
 				document.getElementById('gameFooter').style.visibility = 'visible';
 
-				_isPaused = false;
+				this.isPaused = false;
 
-				_divScoreBoard = document.getElementById('scoreboard');
-				_score = 0;
-				_increaseDiffScore = 50;
-				_drawAbom = 300;
+				this.divScoreBoard = document.getElementById('scoreboard');
+				this.score = 0;
+				this.increaseDiffScore = 50;
+				this.drawAbom = 300;
 
 				this.SetupObstacles();
 				this.SetupSkierEasy("initial");
@@ -69,9 +69,9 @@ var Game = Class
 				}.bind(this));
 				$j('#rightButton').bind('taphold', function(e) {
 					this.MoveRight();
-				}.bind(this))
+				}.bind(this));
 
-				_isJumping = false;
+				this.isJumping = false;
 
 				this.StartMainLoop();
 			},
@@ -84,7 +84,7 @@ var Game = Class
 					this.SetupSkier(150, 160, 14, 32, chosen + "_down");
 					break;
 				case "crash":
-					var currentX = _skier.x;
+					var currentX = this.skier.x;
 					this
 							.SetupSkier(currentX - 2, 20, 18, 22, chosen
 									+ "_crash");
@@ -92,20 +92,20 @@ var Game = Class
 				}
 			},
 			SetupSkier : function(x, y, width, height, imgSrc) {
-				_skier = {
+				this.skier = {
 					img : new Image(),
 					x : x,
 					y : y,
 					width : width,
 					height : height,
-					maxX : (_canvasWidth - width - 2),
-					maxY : (_canvasHeight - height - 2)
+					maxX : (this.canvasWidth - width - 2),
+					maxY : (this.canvasHeight - height - 2)
 				};
 
-				_skierImgTag = document.getElementById('skierImg');
-				_skierImgTag.src = _mediaPath + "images/sprites/"
-						+ _chosenSkier.substr(0, 1) + "/" + imgSrc + ".png";
-				_skierImgTag.style.visibility = 'visible';
+				this.skierImgTag = document.getElementById('skierImg');
+				this.skierImgTag.src = this.mediaPath + "images/sprites/"
+						+ this.chosenSkier.substr(0, 1) + "/" + imgSrc + ".png";
+				this.skierImgTag.style.visibility = 'visible';
 
 				var setupRot = $j('#skierImg').rotate({
 					angle : 0,
@@ -113,37 +113,40 @@ var Game = Class
 					minAngle : -80
 				});
 
-				_rotTop = 160;
-				_rotLeft = 140;
-				setupRot[0].context.style.position = 'absolute';
-				setupRot[0].context.style.top = _rotTop + 'px';
-				setupRot[0].context.style.left = _rotLeft + 'px';
+				this.rotTop = 160;
+				this.rotLeft = 140;
+				try {
+					setupRot[0].context.style.position = 'absolute';
+					setupRot[0].context.style.top = this.rotTop + 'px';
+					setupRot[0].context.style.left = this.rotLeft + 'px';
+				} catch (err) {
+				}
 
-				_rot = setupRot;
+				this.rot = setupRot;
 			},
 			SetupObstacles : function() {
-				_obsArray[0] = {
+				this.obsArray[0] = {
 					name : "tree",
 					imgSrc : "images/obstacles/tree.png",
 					width : 30,
 					height : 44
 				};
 
-				_obsArray[1] = {
+				this.obsArray[1] = {
 					name : "stone",
 					imgSrc : "images/obstacles/stone.png",
 					width : 25,
 					height : 10
 				};
 
-				_obsArray[2] = {
+				this.obsArray[2] = {
 					name : "snowman",
 					imgSrc : "images/obstacles/snowman.png",
 					width : 20,
 					height : 19
 				};
 
-				_obsArray[3] = {
+				this.obsArray[3] = {
 					name : "ramp",
 					imgSrc : "images/obstacles/ramp.png",
 					width : 24,
@@ -153,97 +156,101 @@ var Game = Class
 				this.AddObstacle(6);
 			},
 			GetRandomObsNum : function() {
-				var num = Math.floor(Math.random() * (_obsArray.length));
+				var num = Math.floor(Math.random() * (this.obsArray.length));
 				return num;
 			},
 			AddObstacle : function(num) {
 				for (i = 0; i < num; i++) {
-					_randNum1 = Math.floor(Math.random() * 100);
-					if (_randNum1 <= _treeWidth) {
-						_randNum1 = false;
+					this.randNum1 = Math.floor(Math.random() * 100);
+					if (this.randNum1 <= this.treeWidth) {
+						this.randNum1 = false;
 					} else {
-						_randNum1 = true;
+						this.randNum1 = true;
 					}
 
 					var randomObstacle = this.GetRandomObsNum();
 
-					var currentObstacle = _obsArray[randomObstacle];
-					var startPosition = (_canvasHeight - currentObstacle.height - 2);
+					var currentObstacle = this.obsArray[randomObstacle];
+					var startPosition = (this.canvasHeight
+							- currentObstacle.height - 2);
 
 					var obstacle = {
 						img : new Image(),
-						x : Math.floor(Math.random()
-								* (_canvasWidth - currentObstacle.width - 2)),
+						x : Math
+								.floor(Math.random()
+										* (this.canvasWidth
+												- currentObstacle.width - 2)),
 						y : startPosition + currentObstacle.height
 								+ Math.floor(Math.random() * 100),
 						width : currentObstacle.width,
 						height : currentObstacle.height,
-						vDir : _randNum1,
-						maxX : (_canvasWidth - currentObstacle.width - 2),
+						vDir : this.randNum1,
+						maxX : (this.canvasWidth - currentObstacle.width - 2),
 						maxY : startPosition,
 						name : currentObstacle.name
 					};
 
-					obstacle.img.src = _obsArray[randomObstacle].imgSrc;
+					obstacle.img.src = this.obsArray[randomObstacle].imgSrc;
 
-					_obstacles.push(obstacle);
+					this.obstacles.push(obstacle);
 				}
 			},
 			GetAbom : function() {
 				var obstacle = {
 					img : new Image(),
-					x : Math.floor(Math.random() * (_canvasWidth - 36 - 2)),
-					y : (_canvasHeight - 46 - 2) + 46
+					x : Math.floor(Math.random() * (this.canvasWidth - 36 - 2)),
+					y : (this.canvasHeight - 46 - 2) + 46
 							+ Math.floor(Math.random() * 100),
 					width : 36,
 					height : 46,
-					vDir : _randNum1,
-					maxX : (_canvasWidth - 36 - 2),
-					maxY : (_canvasHeight - 46 - 2),
+					vDir : this.randNum1,
+					maxX : (this.canvasWidth - 36 - 2),
+					maxY : (this.canvasHeight - 46 - 2),
 					name : 'abom_h'
 				};
 
 				obstacle.img.src = "images/obstacles/abom_h.gif";
-				_obstacles.push(obstacle);
+				this.obstacles.push(obstacle);
 			},
 			MainLoop : function() {
 				try {
-					_context.fillRect(0, 0, _canvasWidth, _canvasHeight);
+					this.context.fillRect(0, 0, this.canvasWidth,
+							this.canvasHeight);
 
-					var l = _obstacles.length;
-					var currentSpeed = _speed;
-					var currentSkier = _skier;
+					var l = this.obstacles.length;
+					var currentSpeed = this.speed;
+					var currentSkier = this.skier;
 
-					var skierImg = _chosenSkier;
+					var skierImg = this.chosenSkier;
 
-					var skierRot = _rot;
+					var skierRot = this.rot;
 
-					var currentMoveX = _moveX;
+					var currentMoveX = this.moveX;
 					moveMod = .8;
 
-					var holdLeft = _rotLeft;
-					_rotLeft += Math.floor(currentMoveX * moveMod);
+					var holdLeft = this.rotLeft;
+					this.rotLeft += Math.floor(currentMoveX * moveMod);
 
 					var maxRight = 310;
 					if (jQuery(window).height() > 700)
 						maxRight = 1014;
 
-					if (_rotLeft > -1
-							&& _rotLeft < (maxRight - currentSkier.width)) {
+					if (this.rotLeft > -1
+							&& this.rotLeft < (maxRight - currentSkier.width)) {
 						currentSkier.x += Math.floor(currentMoveX * moveMod);
-						var currentLeft = _rotLeft;
+						var currentLeft = this.rotLeft;
 					} else {
-						_rotLeft = holdLeft;
-						_moveX = 0;
+						this.rotLeft = holdLeft;
+						this.moveX = 0;
 						currentMoveX = 0;
 					}
 
-					var currentRotTop = _rotTop - 35;
+					var currentRotTop = this.rotTop - 35;
 
 					var rotMod = 5;
 					if (jQuery(window).height() > 700)
 						rotMod = -5;
-					if (skierRot && !_isJumping) {
+					if (skierRot && !this.isJumping) {
 						skierRot[0].rotate({
 							animateTo : currentMoveX * rotMod
 						})
@@ -253,7 +260,7 @@ var Game = Class
 
 					// draw obstacles
 					for ( var i = 1; i < l; i++) {
-						var currentObs = _obstacles[i];
+						var currentObs = this.obstacles[i];
 
 						// check for obstacle collision
 						var x = ((currentObs.x + 3) < currentSkier.x)
@@ -268,9 +275,9 @@ var Game = Class
 
 						switch (currentObs.name) {
 						case "ramp":
-							if (!_isJumping) {
+							if (!this.isJumping) {
 								if (x && y) {
-									_isJumping = true;
+									this.isJumping = true;
 
 									skierRot[0].rotate({
 										animateTo : 0
@@ -285,7 +292,8 @@ var Game = Class
 										top : '160'
 									}, 1500);
 
-									var unjump = setTimeout(this.StopJump.bind(this), 2000);
+									var unjump = setTimeout(this.StopJump
+											.bind(this), 2000);
 								} else {
 									skierRot[0].context.style.left = currentLeft
 											+ 'px';
@@ -296,8 +304,8 @@ var Game = Class
 							}
 							break;
 						case "abom_h":
-							if (!_isF) {
-								if (x && y && !_isJumping) {
+							if (!this.isF) {
+								if (x && y && !this.isJumping) {
 									this.StopMainLoop();
 									this.Collide(currentSkier, currentObs);
 								} else {
@@ -311,7 +319,7 @@ var Game = Class
 							break;
 
 						default:
-							if (x && y && !_isJumping) {
+							if (x && y && !this.isJumping) {
 								this.StopMainLoop();
 								this.Collide(currentSkier, currentObs);
 							} else {
@@ -320,17 +328,17 @@ var Game = Class
 							}
 						}
 
-						_context.drawImage(currentObs.img, currentObs.x,
+						this.context.drawImage(currentObs.img, currentObs.x,
 								currentObs.y, currentObs.width,
 								currentObs.height);
-						// _context.drawImage(currentObs.img, 0, 0);
+						// this.context.drawImage(currentObs.img, 0, 0);
 
 						if (currentObs.vDir) {
-							if (currentObs.name == "abom_h" && !_isF) {
-								if (currentObs.y <= _chase) {
-									_chase += .7;
+							if (currentObs.name == "abom_h" && !this.isF) {
+								if (currentObs.y <= this.chase) {
+									this.chase += .7;
 									currentObs.x = currentSkier.x;
-									currentObs.y = _chase;
+									currentObs.y = this.chase;
 								} else {
 									currentObs.y -= currentSpeed;
 								}
@@ -340,90 +348,92 @@ var Game = Class
 						} else {
 							var randomObstacle = this.GetRandomObsNum();
 
-							var currentObstacle = _obsArray[randomObstacle];
+							var currentObstacle = this.obsArray[randomObstacle];
 							currentObs.img.src = currentObstacle.imgSrc;
 							currentObs.height = currentObstacle.height;
 							currentObs.width = currentObstacle.width;
 
 							currentObs.y = currentObs.maxY + currentObs.height
 									+ Math.floor(Math.random() * 100);
-							currentObs.x = Math.floor(Math.random()
-									* (_canvasWidth - currentObs.width - 2));
-							currentObs.vDir = _canvasHeight;
+							currentObs.x = Math
+									.floor(Math.random()
+											* (this.canvasWidth
+													- currentObs.width - 2));
+							currentObs.vDir = this.canvasHeight;
 							currentObs.name = currentObstacle.name;
 						}
 
 						if (currentObs.y <= -currentObs.height) {
 							currentObs.vDir = !currentObs.vDir;
 							if (currentObs.name == "abom_h") {
-								_chase = 0;
+								this.chase = 0;
 							}
 						}
 					}
 
 					if (currentSpeed > 0) {
-						if (_isJumping) {
-							_score += (_speed / 10) + 5.3;
+						if (this.isJumping) {
+							this.score += (this.speed / 10) + 5.3;
 						} else {
-							_score += (_speed / 10);
+							this.score += (this.speed / 10);
 						}
 					}
 
-					var printScore = Math.round(_score);
-					_divScoreBoard.innerHTML = "Score: "
+					var printScore = Math.round(this.score);
+					this.divScoreBoard.innerHTML = "Score: "
 							+ Math.round(printScore);
 
-					if (printScore >= _increaseDiffScore) {
+					if (printScore >= this.increaseDiffScore) {
 						this.StopMainLoop();
 						this.AddObstacle(1);
 						this.StartMainLoop();
 
-						_increaseDiffScore += 500;
+						this.increaseDiffScore += 500;
 					}
 
-					if (printScore >= _drawAbom) {
+					if (printScore >= this.drawAbom) {
 						this.StopMainLoop();
 						this.GetAbom();
 						this.StartMainLoop();
 
-						_drawAbom += 300;
+						this.drawAbom += 300;
 					}
 				} catch (Err) {
-					StopMainLoop();
-					alert('Error starting Main Loop:\n\n' + Err.description);
+					this.StopMainLoop();
+					alert('Error starting Main Loop:\n\n' + printObjProps(Err));
 				}
 			},
 			MoveLeft : function() {
-				if (_skier.x > 2)
-					_moveX = -4;
+				if (this.skier.x > 2)
+					this.moveX = -4;
 			},
 			MoveRight : function() {
-				if (_skier.x < _skier.maxX)
-					_moveX = 4;
+				if (this.skier.x < this.skier.maxX)
+					this.moveX = 4;
 			},
 			Collide : function(currentSkier, currentObs) {
 				this.StopMainLoop();
-				var skierImg = _chosenSkier;
+				var skierImg = this.chosenSkier;
 
-				_context.fillRect(currentSkier.x, currentSkier.y,
+				this.context.fillRect(currentSkier.x, currentSkier.y,
 						currentSkier.width, currentSkier.height);
 				var crashElem = document.getElementById('crash');
 				if (currentObs.name == "abom_h") {
-					crashElem.src = _mediaPath
+					crashElem.src = this.mediaPath
 							+ "images/obstacles/abom_eat.gif",
 							crashElem.style.left = currentSkier.x + 'px';
-					crashElem.style.top = (_rotTop) + 'px';
+					crashElem.style.top = (this.rotTop) + 'px';
 					crashElem.style.left = currentObs.x + 'px';
 					currentObs.img.src = "";
 					currentSkier.img.src = "";
-					_rot[0].context.style.display = "none";
+					this.rot[0].context.style.display = "none";
 				} else {
-					crashElem.src = _mediaPath + "images/sprites/"
+					crashElem.src = this.mediaPath + "images/sprites/"
 							+ skierImg.substr(0, 1) + "/" + "riley_crash.png";
-					crashElem.style.top = (_rotTop) + 'px';
+					crashElem.style.top = (this.rotTop) + 'px';
 					crashElem.style.left = currentSkier.x + 'px';
 					currentSkier.img.src = "";
-					_rot[0].context.style.display = "none";
+					this.rot[0].context.style.display = "none";
 				}
 
 				crashElem.style.visibility = 'visible';
@@ -431,13 +441,14 @@ var Game = Class
 				// var t = setTimeout(CheckHighScore(), 1000);
 			},
 			StartMainLoop : function() {
-				_mainLoopInterval = setInterval(this.MainLoop.bind(this), 33);
+				this.mainLoopInterval = setInterval(this.MainLoop.bind(this),
+						33);
 			},
 			StopMainLoop : function() {
-				clearInterval(_mainLoopInterval);
-				_mainLoopInterval = null;
+				clearInterval(this.mainLoopInterval);
+				this.mainLoopInterval = null;
 			},
 			StopJump : function() {
-				_isJumping = false;
+				this.isJumping = false;
 			}
 		});

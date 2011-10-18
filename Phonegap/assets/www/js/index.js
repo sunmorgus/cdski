@@ -1,7 +1,7 @@
 $(function() {
 
 });
-var _storage = window.localStorage;
+//var _storage = window.localStorage;
 var _gameObj;
 
 $j(document).bind("pagebeforechange", function(e, data) {
@@ -11,26 +11,14 @@ $j(document).bind("pagebeforechange", function(e, data) {
 		case "#game":
 			break;
 		default:
+			_gameObj.StopMainLoop();
 			_gameObj = null;
-//			_obstacles.splice(0, _obstacles.length);
-//			var params = {
-//				chosen : "riley"
-//			}
-//
-//			SetupCanvas(params);
 			break;
 		}
 	}
 });
 
 $j(document).bind("pagechange", function(e, data) {
-	// alert(typeof data.toPage.selector);
-	// var str="";
-	// for(prop in data.toPage)
-	// {
-	// str += prop + " value: " + data.toPage[prop] + "\n";
-	// }
-	// console.log(str); // Show all properties and its value
 	if (typeof data.toPage.selector === "string") {
 		if (data.toPage.selector.indexOf("game") >= 0) {
 			snowStorm.stop();
@@ -60,16 +48,23 @@ function onDeviceReady() {
 	// start the snow
 	snowStorm.show();
 	snowStorm.resume();
-
-	$j('.ui-page').css('minHeight', screen.availHeight);
 }
 
 // app exit
 function onPause() {
-	StopMainLoop();
+	_gameObj.StopMainLoop();
 }
 
 // app open
 function onResume() {
 	// StartMainLoop();
+}
+
+function printObjProps(obj){
+	 var str="";
+	 for(prop in obj)
+	 {
+	 str += prop + " value: " + obj[prop] + "\n";
+	 }
+	 console.log(str); // Show all properties and its value	
 }
