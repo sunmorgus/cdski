@@ -1,27 +1,29 @@
 $(function() {
 
 });
-var storage = window.localStorage;
+var _storage = window.localStorage;
+var _gameObj;
 
-$(document).bind("pagebeforechange", function(e, data) {
+$j(document).bind("pagebeforechange", function(e, data) {
 	if (typeof data.toPage === "string") {
-		var u = $.mobile.path.parseUrl(data.toPage);
+		var u = $j.mobile.path.parseUrl(data.toPage);
 		switch (u.hash) {
 		case "#game":
 			break;
 		default:
-			_obstacles.splice(0, _obstacles.length);
-			var params = {
-				chosen : "riley"
-			}
-
-			SetupCanvas(params);
+			_gameObj = null;
+//			_obstacles.splice(0, _obstacles.length);
+//			var params = {
+//				chosen : "riley"
+//			}
+//
+//			SetupCanvas(params);
 			break;
 		}
 	}
 });
 
-$(document).bind("pagechange", function(e, data) {
+$j(document).bind("pagechange", function(e, data) {
 	// alert(typeof data.toPage.selector);
 	// var str="";
 	// for(prop in data.toPage)
@@ -37,10 +39,11 @@ $(document).bind("pagechange", function(e, data) {
 			var params = {
 				chosen : "riley"
 			}
-
-			SetupCanvas(params);
-			$(window).resize(function() {
-				SetupCanvas(params)
+			
+			_gameObj = new Game();
+			_gameObj.SetupCanvas(params);
+			$j(window).resize(function() {
+				_gameObj.SetupCanvas(params)
 			});
 		}
 	}
@@ -58,7 +61,7 @@ function onDeviceReady() {
 	snowStorm.show();
 	snowStorm.resume();
 
-	$('.ui-page').css('minHeight', screen.availHeight);
+	$j('.ui-page').css('minHeight', screen.availHeight);
 }
 
 // app exit
