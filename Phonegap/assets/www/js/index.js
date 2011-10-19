@@ -1,8 +1,9 @@
 $(function() {
 
 });
-//var _storage = window.localStorage;
+// var _storage = window.localStorage;
 var _gameObj;
+var _moveX = null;
 
 $j(document).bind("pagebeforechange", function(e, data) {
 	if (typeof data.toPage === "string") {
@@ -27,7 +28,7 @@ $j(document).bind("pagechange", function(e, data) {
 			var params = {
 				chosen : "riley"
 			}
-			
+
 			_gameObj = new Game();
 			_gameObj.SetupCanvas(params);
 			$j(window).resize(function() {
@@ -60,11 +61,10 @@ function onResume() {
 	// StartMainLoop();
 }
 
-function printObjProps(obj){
-	 var str="";
-	 for(prop in obj)
-	 {
-	 str += prop + " value: " + obj[prop] + "\n";
-	 }
-	 console.log(str); // Show all properties and its value	
+function printObjProps(obj) {
+	var str = "";
+	for (prop in obj) {
+		str += prop + " value: " + obj[prop] + "\n";
+	}
+	console.log(str); // Show all properties and its value
 }
