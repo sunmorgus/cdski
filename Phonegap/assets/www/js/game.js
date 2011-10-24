@@ -40,6 +40,7 @@ var Game = Class.create({
 			this.context.fillStyle = "rgb(255,255,255)";
 			this.canvasWidth = w;
 			this.canvasHeight = h;
+			this.canvasMiddle = w / 2;
 
 			this.isPaused = false;
 
@@ -52,11 +53,18 @@ var Game = Class.create({
 			this.SetupSkierEasy("initial");
 
 			// set events
-			$j(window).bind('touchmove', function(e) {
-				e.preventDefault();
-				var touch = e.originalEvent.changedTouches[0];
-				_moveX = touch.pageX;
-			});
+			$j(window).bind('touchstart', function(e) {
+				var x = e.originalEvent.touches[0].pageX;
+				if (x < this.canvasMiddle) {
+					this.MoveLeft();
+				} else {
+					this.MoveRight();
+				}
+			}.bind(this));
+
+			$j(window).bind('touchend', function(e) {
+				this.moveX = 0;
+			}.bind(this));
 
 			this.isJumping = false;
 
@@ -191,173 +199,174 @@ var Game = Class.create({
 			this.obstacles.push(obstacle);
 		},
 		MainLoop : function() {
-			try {
-				this.context.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
+			// try {
+			this.context.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
 
-				var l = this.obstacles.length;
-				var currentSpeed = this.speed;
-				var currentSkier = this.skier;
+			var l = this.obstacles.length;
+			var currentSpeed = this.speed;
+			var currentSkier = this.skier;
 
-				var skierImg = this.chosenSkier;
+			var skierImg = this.chosenSkier;
 
-				var skierRot = this.rot;
+			var skierRot = this.rot;
 
-				var currentMoveX = _moveX;
-				moveMod = .8;
+			var currentMoveX = this.moveX;
+			moveMod = .8;
 
-				var holdLeft = this.rotLeft;
-				this.rotLeft = currentMoveX;
+			var holdLeft = this.rotLeft;
+			var xToMove = Math.floor(currentMoveX * moveMod);
+			this.rotLeft += xToMove;
 
-				var maxRight = 310;
-				if (jQuery(window).height() > 700)
-					maxRight = 1014;
+			var maxRight = 310;
+			if (jQuery(window).height() > 700)
+				maxRight = 1014;
 
-				if (this.rotLeft > -1 && this.rotLeft < (maxRight - currentSkier.width)) {
-					currentSkier.x = currentMoveX;
-					var currentLeft = this.rotLeft;
-				} else {
-					this.rotLeft = holdLeft;
-					this.moveX = 0;
-					currentMoveX = 0;
+			if (this.rotLeft > -1 && this.rotLeft < (maxRight - currentSkier.width)) {
+				currentSkier.x += xToMove;
+				var currentLeft = this.rotLeft;
+			} else {
+				this.rotLeft = holdLeft;
+				this.moveX = 0;
+				currentMoveX = 0;
+			}
+
+			var currentRotTop = this.rotTop - 35;
+			// to rotate the skier, I'll take half of the width of the
+			// canvas, then, if less, rotate left, if higher, rotate right
+			// var rotMod = 5;
+			// if (jQuery(window).height() > 700)
+			// rotMod = -5;
+			// if (skierRot && !this.isJumping) {
+			// skierRot[0].rotateAnimation(currentMoveX * rotMod);
+			// }
+
+			var skierMiddleY = (currentRotTop + currentSkier.height) / 2;
+
+			// draw obstacles
+			for ( var i = 1; i < l; i++) {
+				var currentObs = this.obstacles[i];
+
+				// check for obstacle collision
+				var x = ((currentObs.x + 3) < currentSkier.x) && ((currentObs.x + (currentObs.width - 3)) > currentSkier.x);
+
+				if (!x) {
+					x = (((currentObs.x + 3) < (currentSkier.x + currentSkier.width)) && ((currentObs.x + (currentObs.width - 3)) > (currentSkier.x + currentSkier.width)));
 				}
 
-				var currentRotTop = this.rotTop - 35;
-				// to rotate the skier, I'll take half of the width of the
-				// canvas, then, if less, rotate left, if higher, rotate right
-				// var rotMod = 5;
-				// if (jQuery(window).height() > 700)
-				// rotMod = -5;
-				// if (skierRot && !this.isJumping) {
-				// skierRot[0].rotateAnimation(currentMoveX * rotMod);
-				// }
+				var y = (currentObs.y <= currentRotTop) && ((currentObs.y + currentObs.height) >= currentRotTop);
 
-				var skierMiddleY = (currentRotTop + currentSkier.height) / 2;
+				switch (currentObs.name) {
+				case "ramp":
+					if (!this.isJumping) {
+						if (x && y) {
+							this.isJumping = true;
 
-				// draw obstacles
-				for ( var i = 1; i < l; i++) {
-					var currentObs = this.obstacles[i];
+							skierRot[0].rotate(0);
+							jQuery(skierRot[0].context).animate({
+								top : [ '14', 'swing' ]
+							});
+							skierRot[0].rotateAnimation(360);
+							jQuery(skierRot[0].context).animate({
+								top : '160'
+							}, 1500);
 
-					// check for obstacle collision
-					var x = ((currentObs.x + 3) < currentSkier.x) && ((currentObs.x + (currentObs.width - 3)) > currentSkier.x);
-
-					if (!x) {
-						x = (((currentObs.x + 3) < (currentSkier.x + currentSkier.width)) && ((currentObs.x + (currentObs.width - 3)) > (currentSkier.x + currentSkier.width)));
+							var unjump = setTimeout(this.StopJump.bind(this), 2000);
+						} else {
+							skierRot[0].context.style.left = currentLeft + 'px';
+						}
+					} else {
+						skierRot[0].context.style.left = currentLeft + 'px';
 					}
-
-					var y = (currentObs.y <= currentRotTop) && ((currentObs.y + currentObs.height) >= currentRotTop);
-
-					switch (currentObs.name) {
-					case "ramp":
-						if (!this.isJumping) {
-							if (x && y) {
-								this.isJumping = true;
-
-								skierRot[0].rotate(0);
-								jQuery(skierRot[0].context).animate({
-									top : [ '14', 'swing' ]
-								});
-								skierRot[0].rotateAnimation(360);
-								jQuery(skierRot[0].context).animate({
-									top : '160'
-								}, 1500);
-
-								var unjump = setTimeout(this.StopJump.bind(this), 2000);
-							} else {
-								skierRot[0].context.style.left = currentLeft + 'px';
-							}
-						} else {
-							skierRot[0].context.style.left = currentLeft + 'px';
-						}
-						break;
-					case "abom_h":
-						if (!this.isF) {
-							if (x && y && !this.isJumping) {
-								this.StopMainLoop();
-								this.Collide(currentSkier, currentObs);
-							} else {
-								skierRot[0].context.style.left = currentLeft + 'px';
-							}
-						} else {
-							skierRot[0].context.style.left = currentLeft + 'px';
-						}
-						break;
-
-					default:
+					break;
+				case "abom_h":
+					if (!this.isF) {
 						if (x && y && !this.isJumping) {
 							this.StopMainLoop();
 							this.Collide(currentSkier, currentObs);
 						} else {
 							skierRot[0].context.style.left = currentLeft + 'px';
 						}
+					} else {
+						skierRot[0].context.style.left = currentLeft + 'px';
 					}
+					break;
 
-					this.context.drawImage(currentObs.img, currentObs.x, currentObs.y, currentObs.width, currentObs.height);
-					// this.context.drawImage(currentObs.img, 0, 0);
+				default:
+					if (x && y && !this.isJumping) {
+						this.StopMainLoop();
+						this.Collide(currentSkier, currentObs);
+					} else {
+						skierRot[0].context.style.left = currentLeft + 'px';
+					}
+				}
 
-					if (currentObs.vDir) {
-						if (currentObs.name == "abom_h" && !this.isF) {
-							if (currentObs.y <= this.chase) {
-								this.chase += .7;
-								currentObs.x = currentSkier.x;
-								currentObs.y = this.chase;
-							} else {
-								currentObs.y -= currentSpeed;
-							}
+				this.context.drawImage(currentObs.img, currentObs.x, currentObs.y, currentObs.width, currentObs.height);
+				// this.context.drawImage(currentObs.img, 0, 0);
+
+				if (currentObs.vDir) {
+					if (currentObs.name == "abom_h" && !this.isF) {
+						if (currentObs.y <= this.chase) {
+							this.chase += .7;
+							currentObs.x = currentSkier.x;
+							currentObs.y = this.chase;
 						} else {
 							currentObs.y -= currentSpeed;
 						}
 					} else {
-						var randomObstacle = this.GetRandomObsNum();
-
-						var currentObstacle = this.obsArray[randomObstacle];
-						currentObs.img.src = currentObstacle.imgSrc;
-						currentObs.height = currentObstacle.height;
-						currentObs.width = currentObstacle.width;
-
-						currentObs.y = currentObs.maxY + currentObs.height + Math.floor(Math.random() * 100);
-						currentObs.x = Math.floor(Math.random() * (this.canvasWidth - currentObs.width - 2));
-						currentObs.vDir = this.canvasHeight;
-						currentObs.name = currentObstacle.name;
+						currentObs.y -= currentSpeed;
 					}
+				} else {
+					var randomObstacle = this.GetRandomObsNum();
 
-					if (currentObs.y <= -currentObs.height) {
-						currentObs.vDir = !currentObs.vDir;
-						if (currentObs.name == "abom_h") {
-							this.chase = 0;
-						}
-					}
+					var currentObstacle = this.obsArray[randomObstacle];
+					currentObs.img.src = currentObstacle.imgSrc;
+					currentObs.height = currentObstacle.height;
+					currentObs.width = currentObstacle.width;
+
+					currentObs.y = currentObs.maxY + currentObs.height + Math.floor(Math.random() * 100);
+					currentObs.x = Math.floor(Math.random() * (this.canvasWidth - currentObs.width - 2));
+					currentObs.vDir = this.canvasHeight;
+					currentObs.name = currentObstacle.name;
 				}
 
-				if (currentSpeed > 0) {
-					if (this.isJumping) {
-						this.score += (this.speed / 10) + 5.3;
-					} else {
-						this.score += (this.speed / 10);
+				if (currentObs.y <= -currentObs.height) {
+					currentObs.vDir = !currentObs.vDir;
+					if (currentObs.name == "abom_h") {
+						this.chase = 0;
 					}
 				}
-
-				var printScore = Math.round(this.score);
-				this.divScoreBoard.innerHTML = "Score: " + Math.round(printScore);
-
-				if (printScore >= this.increaseDiffScore) {
-					this.StopMainLoop();
-					this.AddObstacle(1);
-					this.StartMainLoop();
-
-					this.increaseDiffScore += 500;
-				}
-
-				if (printScore >= this.drawAbom) {
-					this.StopMainLoop();
-					this.GetAbom();
-					this.StartMainLoop();
-
-					this.drawAbom += 300;
-				}
-			} catch (Err) {
-				this.StopMainLoop();
-				console.log('Error starting Main Loop:\n\n' + printObjProps(Err));
 			}
+
+			if (currentSpeed > 0) {
+				if (this.isJumping) {
+					this.score += (this.speed / 10) + 5.3;
+				} else {
+					this.score += (this.speed / 10);
+				}
+			}
+
+			var printScore = Math.round(this.score);
+			this.divScoreBoard.innerHTML = "Score: " + Math.round(printScore);
+
+			if (printScore >= this.increaseDiffScore) {
+				this.StopMainLoop();
+				this.AddObstacle(1);
+				this.StartMainLoop();
+
+				this.increaseDiffScore += 500;
+			}
+
+			if (printScore >= this.drawAbom) {
+				this.StopMainLoop();
+				this.GetAbom();
+				this.StartMainLoop();
+
+				this.drawAbom += 300;
+			}
+			// } catch (Err) {
+			// this.StopMainLoop();
+			// console.log('Error in Main Loop:\n\n' + printObjProps(Err));
+			// }
 		},
 		MoveLeft : function() {
 			if (this.skier.x > 2)
