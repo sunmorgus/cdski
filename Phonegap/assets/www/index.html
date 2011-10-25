@@ -14,6 +14,7 @@
 		</script>
 		<script type="text/javascript" src="js/jquery.mobile.min.js"></script>
 		<script type="text/javascript" src="js/snowstormv14_20091115/snowstorm.js"></script>
+		<script type="text/javascript" src="js/sprintf.js"></script>
 		<script type="text/javascript" src="js/index.js"></script>
 		<script type="text/javascript" src="js/game.js"></script>
 		<script type="text/javascript" src="js/hs.js"></script>
@@ -47,9 +48,7 @@
 			</div>
 		</div>
 		<div data-role="page" id="hs">
-			<div data-role="header" id="hsHeader">
-				
-			</div>
+			<div data-role="header" id="hsHeader"></div>
 			<div data-role="content">
 				<ol data-role="listview" id="localHsList"></ol>
 				<ol data-role="listview" id="globalHsList"></ol>
@@ -95,6 +94,9 @@
 					<li>
 						Hit ramps <img src="images/obstacles/ramp.png" />to avoid obstacles and increase your score.
 					</li>
+					<li>
+						If you see an * next to your score on the local High Score list, then that score was not submitted to the global High Score list (usually means there was a network error of some sort).
+					</li>
 				</ol>
 				<div>
 					Obstacles:
@@ -109,6 +111,14 @@
 						</tr>
 					</table>
 				</div>
+			</div>
+		</div>
+		<div data-role="page" id="entry">
+			<div data-role="header" style="text-align: center;">
+				New High Score!
+			</div>
+			<div data-role="content">
+				<div id="congrats"></div>
 			</div>
 		</div>
 	</body>

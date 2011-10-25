@@ -1,9 +1,8 @@
-$(function() {
-
-});
 // var _storage = window.localStorage;
 var _gameObj;
-var _moveX = null;
+var _moveX = null; // do i use this?
+var _score = null;
+var _db;
 
 /*
  * Begin jQuery Events
@@ -33,14 +32,20 @@ $j('#game').live("pagehide", function(e, data) {
 		_gameObj.StopMainLoop();
 		_gameObj = null;
 	}
-})
+});
 
 $j('#hs').live("pageshow", function(e, data) {
 	$j.mobile.showPageLoadingMsg();
 	$j('#globalHsList').hide();
-	BuildLocalList();
-	BuildGlobalList();
-})
+	if (_score != null) {
+		console.log(sprintf('check score: %s', _score));
+		var score = Math.round(_score + .3);
+		CheckScore(score);
+	} else {
+		console.log('no score');
+		GetLocalHsList();
+	}
+});
 /*
  * End jQuery Events
  */
@@ -57,6 +62,15 @@ function onDeviceReady() {
 	document.addEventListener("pause", onPause, false);
 	document.addEventListener("resume", onResume, false);
 	document.addEventListener("backbutton", onBack, true);
+
+	// open the hs db
+	_db = window.openDatabase("hsdb", "1.0", "SkiPre High Score Database", 200000);
+	_db.transaction(function(tx) {
+		var queryString = 'CREATE TABLE IF NOT EXISTS highScore (id TEXT PRIMARY KEY DESC DEFAULT "nothing", name TEXT NOT NULL DEFAULT "nothing", score INTEGER NOT NULL DEFAULT "nothing", global_id INTEGER NULL DEFAULT "0"); GO;'
+		tx.executeSql(queryString);
+	}, DbError, function(tx, results) {
+		console.log("Created Database!");
+	});
 
 	// start the snow
 	snowStorm.show();
@@ -118,6 +132,9 @@ function printObjProps(obj) {
 		str += prop + " value: " + obj[prop] + "\n";
 	}
 	return str; // Show all properties and its value
+}
+function DbError(err) {
+	alert("Error processing SQL: " + err.code);
 }
 /*
  * End Utility Functions

@@ -411,6 +411,7 @@ var Game = Class.create({
 			var t = setTimeout(this.CheckHighScore.bind(this), 1000);
 		},
 		CheckHighScore : function() {
+			_score = this.score;
 			$j.mobile.changePage($j('#hs'));
 		},
 		StartMainLoop : function() {
