@@ -4,27 +4,41 @@ var Game = Class.create({
 		},
 
 		SetupCanvas : function(params) {
-			// setup initial global variables
+			/*
+			 * Setup Globals
+			 */
+			// constants
+			this.chase = 0;
+			this.fSpeedMod = 1;
 			this.mediaPath = "/android_asset/www/";
+			this.treeWidth = 44;
+			this.crashElem = document.getElementById('crash');
+			this.score = 0;
+			this.increaseDiffScore = 50;
+			this.drawAbom = 300;
+			this.divScoreBoard = document.getElementById('scoreboard');
+			// end constants
+
+			// variables
 			this.chosenSkier = params.chosen;
 			this.obsArray = new Array();
 			this.obstacles = new Array();
-			this.isJumping = false
-			this.hsDB = params.db;
-			this.fSpeedMod = 1;
-			this.fButtonVisible = params.fButtonVisible;
-			this.tilt = params.tilt;
-			this.chase = 0;
-			this.leftKey = params.leftKey;
-			this.rightKey = params.rightKey;
-			this.fastKey = params.fastKey;
-			this.treeWidth = 44;
+			this.isJumping = false;
+			this.isPaused = false;
 
 			// change when testing
 			this.speed = 10; // default null
 			this.moveX = null; // default null
 			this.isF = null; // default null
+			// end variables
+			/*
+			 * End Setup Globals
+			 */
 
+			/*
+			 * Init the canvas
+			 */
+			this.crashElem.style.visibility = 'hidden';
 			var windowWidth = window.innerWidth;
 			var windowHeight = window.innerHeight;
 
@@ -41,13 +55,9 @@ var Game = Class.create({
 			this.canvasWidth = w;
 			this.canvasHeight = h;
 			this.canvasMiddle = w / 2;
-
-			this.isPaused = false;
-
-			this.divScoreBoard = document.getElementById('scoreboard');
-			this.score = 0;
-			this.increaseDiffScore = 50;
-			this.drawAbom = 300;
+			/*
+			 * end canvas init
+			 */
 
 			this.SetupObstacles();
 			this.SetupSkierEasy("initial");
@@ -65,8 +75,6 @@ var Game = Class.create({
 			$j(window).bind('touchend', function(e) {
 				this.moveX = 0;
 			}.bind(this));
-
-			this.isJumping = false;
 
 			this.StartMainLoop();
 		},
@@ -381,7 +389,7 @@ var Game = Class.create({
 			var skierImg = this.chosenSkier;
 
 			this.context.fillRect(currentSkier.x, currentSkier.y, currentSkier.width, currentSkier.height);
-			var crashElem = document.getElementById('crash');
+			var crashElem = this.crashElem;
 			if (currentObs.name == "abom_h") {
 				crashElem.src = this.mediaPath + "images/obstacles/abom_eat.gif";
 				crashElem.style.left = currentSkier.x + 'px';
@@ -400,7 +408,10 @@ var Game = Class.create({
 
 			crashElem.style.visibility = 'visible';
 
-			// var t = setTimeout(CheckHighScore(), 1000);
+			var t = setTimeout(this.CheckHighScore.bind(this), 1000);
+		},
+		CheckHighScore : function() {
+			$j.mobile.changePage($j('#hs'));
 		},
 		StartMainLoop : function() {
 			this.mainLoopInterval = setInterval(this.MainLoop.bind(this), 33);

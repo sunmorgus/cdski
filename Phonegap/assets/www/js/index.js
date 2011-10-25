@@ -5,38 +5,49 @@ $(function() {
 var _gameObj;
 var _moveX = null;
 
-$j(document).bind("pagebeforechange", function(e, data) {
-	if (typeof data.toPage === "string") {
-		var u = $j.mobile.path.parseUrl(data.toPage);
-		switch (u.hash) {
-		case "#game":
-			break;
-		default:
-			_gameObj.StopMainLoop();
-			_gameObj = null;
-			break;
-		}
-	}
+/*
+ * Begin jQuery Events
+ */
+$j('#newGameButton').live('tap', function(e) {
+	StopDefaults(e);
+
+	StartNewGame();
 });
 
-$j(document).bind("pagechange", function(e, data) {
-	if (typeof data.toPage.selector === "string") {
-		if (data.toPage.selector.indexOf("game") >= 0) {
-			snowStorm.stop();
-			snowStorm.freeze();
+$j('#hsButton').live('tap', function(e) {
+	StopDefaults(e);
 
-			var params = {
-				chosen : "riley"
-			}
-
-			_gameObj = new Game();
-			_gameObj.SetupCanvas(params);
-			$j(window).resize(function() {
-				_gameObj.SetupCanvas(params)
-			});
-		}
-	}
+	$j.mobile.changePage($j('#hs'));
 });
+
+$j('#helpButton').live('tap', function(e) {
+	StopDefaults(e);
+
+	$j.mobile.changePage($j('#help'));
+});
+
+// if coming from the game page, stop game loop, make the _gameObj null, and
+// remove game page from dom.
+$j('#game').live("pagehide", function(e, data) {
+	if (_gameObj != null) {
+		_gameObj.StopMainLoop();
+		_gameObj = null;
+	}
+})
+
+$j('#hs').live("pageshow", function(e, data) {
+	$j.mobile.showPageLoadingMsg();
+	$j('#globalHsList').hide();
+	BuildLocalList();
+	BuildGlobalList();
+})
+/*
+ * End jQuery Events
+ */
+
+/*
+ * Begin phonegap events
+ */
 function onLoad() {
 	document.addEventListener("deviceready", onDeviceReady, false);
 }
@@ -45,6 +56,7 @@ function onDeviceReady() {
 	// Register the event listener
 	document.addEventListener("pause", onPause, false);
 	document.addEventListener("resume", onResume, false);
+	document.addEventListener("backbutton", onBack, true);
 
 	// start the snow
 	snowStorm.show();
@@ -59,12 +71,54 @@ function onPause() {
 // app open
 function onResume() {
 	// StartMainLoop();
+	$j.mobile.changePage($j('#index'));
 }
 
+// back button
+function onBack() {
+	$j.mobile.changePage($j('#index'));
+}
+/*
+ * End phonegap Events
+ */
+
+/*
+ * Begin Methods
+ */
+function StartNewGame() {
+	snowStorm.stop();
+	snowStorm.freeze();
+
+	var params = {
+		chosen : "riley"
+	}
+
+	_gameObj = new Game();
+	_gameObj.SetupCanvas(params);
+	$j(window).resize(function() {
+		_gameObj.SetupCanvas(params);
+	});
+
+	$j.mobile.changePage($j('#game'));
+}
+/*
+ * End Methods
+ */
+
+/*
+ * Begin Utility Functions
+ */
+function StopDefaults(e) {
+	e.stopImmediatePropagation();
+	e.preventDefault();
+}
 function printObjProps(obj) {
 	var str = "";
 	for (prop in obj) {
 		str += prop + " value: " + obj[prop] + "\n";
 	}
-	console.log(str); // Show all properties and its value
+	return str; // Show all properties and its value
 }
+/*
+ * End Utility Functions
+ */
