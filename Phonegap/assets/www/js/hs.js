@@ -1,6 +1,7 @@
 var getGlobalHsUrl = 'http://monstertrucks.rjamdev.info/skiprehs.php?method=s';
 
 function BuildLocalList() {
+	$j('#localHsList').listview('empty');
 	for ( var i = 1; i <= 7; i++) {
 		var listItem = '<li>Name<span style="float: right;">' + i + "</span></li>";
 		$j(listItem).appendTo($j('#localHsList'));
@@ -14,12 +15,9 @@ function BuildGlobalList() {
 	$j.ajax({
 			url : getGlobalHsUrl,
 			success : function(data) {
-				alert('success: ' + data);
 				$j.mobile.hidePageLoadingMsg();
 			},
 			error : function(jqXHR, textStatus, errorThrown) {
-				alert('error: ' + textStatus + ' ' + errorThrown);
-				console.log(printObjProps(jqXHR));
 				$j.mobile.hidePageLoadingMsg();
 			}
 	})
