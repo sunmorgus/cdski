@@ -45,7 +45,7 @@ var Game = Class.create({
 			var w = windowWidth - 2;
 			var h = windowHeight - 38;
 
-			var canvasString = '<canvas id="slope" width="' + w + '" height="' + h + '" style="border: solid 1px black" class="slope"></canvas>';
+			var canvasString = '<canvas id="slope" width="' + w + '" height="' + h + '" class="slope"></canvas>';
 
 			$j('#contentHolder').empty();
 			$j(canvasString).appendTo('#contentHolder');
