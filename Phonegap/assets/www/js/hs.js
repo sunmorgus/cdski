@@ -36,6 +36,7 @@ function BuildGlobalList() {
 			url : sprintf(globalHsUrl, 's'),
 			dataType: 'json',
 			success : function(data) {
+				$j('#globalHsList').empty();
 				var len = data.length;
 				for(var i = 0; i < len; i++){
 					var item = data[i];
@@ -43,6 +44,7 @@ function BuildGlobalList() {
 					$j(listItem).appendTo($j('#globalHsList'));
 				}
 				SetHeaderMessage("hasRank");
+				$j('#globalHsList').listview('refresh');
 				$j.mobile.hidePageLoadingMsg();
 			},
 			error : function(jqXHR, textStatus, errorThrown) {
