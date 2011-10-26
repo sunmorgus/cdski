@@ -34,8 +34,9 @@ function BuildLocalList(tx, results) {
 function BuildGlobalList() {
 	$j.ajax({
 			url : sprintf(globalHsUrl, 's'),
+			dataType: 'json',
 			success : function(data) {
-				alert(data[0].id);
+				alert(data);
 				SetHeaderMessage("hasRank", data);
 				$j.mobile.hidePageLoadingMsg();
 			},
