@@ -54,6 +54,7 @@ function BuildGlobalList() {
 }
 
 function GetLocalHsList() {
+	_score = null;
 	_db.transaction(function(tx) {
 		tx.executeSql(getScoresQuery, [], BuildLocalList, DbError);
 	}, DbError);
@@ -75,13 +76,18 @@ function CheckScore(score) {
 
 function IsHighScore(tx, results) {
 	var len = results.rows.length;
+	var score = _score;
 	if (results.rows.length > 0 || $j('#localHsList').html() == "") {
 		var congratsMsg = sprintf("Congratulations!\r\n%s is a new High Score!\r\n\r\nEnter your name below to submit your score!", _score);
 		var storedName = _local.getItem("name");
 		var name = prompt(congratsMsg, storedName);
 		if (name != null && name != "") {
 			_local.setItem("name", name);
-			InsertGlobalHighScore(name, _score);
+			InsertGlobalHighScore(name, score);
+		}
+		else{
+			_score = null;
+			GetLocalHsList();
 		}
 	} else {
 		GetLocalHsList();
@@ -107,6 +113,16 @@ function InsertHighScore(name, score, global_id) {
 	_db.transaction(function(tx) {
 		tx.executeSql(insertHighScoreQuery, [ Math.random(), name, score, global_id ], function(tx, results) {
 			GetLocalHsList();
+			var getRankQuery = sprintf('r&g=%s', global_id);
+			var getRankUrl = sprintf(globalHsUrl, getRankQuery);
+			$j.ajax({
+				url: getRankUrl,
+				dataType: 'json',
+				success: function(data){
+					var message = sprintf('Your highest score of %s ranks %s out of %s other scores!', score, data[0].rank, data[0].count);
+					SetHeaderMessage(message);
+				}
+			})
 		}, DbError);
 	}, DbError);
 }
@@ -124,8 +140,8 @@ function SetHeaderMessage(type) {
 		$j('#hsHeader').html('You have no high scores!');
 		document.getElementById('noScores').style.display = 'block';
 		break;
-	case "gotGlobal":
-		$j('#hsHeader').html('Your highest score of {0} ranks {1} out of {2} other scores!');
+	default:
+		$j('#hsHeader').html(type);
 		document.getElementById('noScores').style.display = 'none';
 		break;
 	}

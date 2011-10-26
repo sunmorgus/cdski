@@ -26,11 +26,25 @@ $j('#helpButton').live('tap', function(e) {
 	$j.mobile.changePage($j('#help'));
 });
 
-$j('#globalHsButton').live('tap', function(e){
+$j('#globalHsButton').live('tap', function(e) {
 	$j('#localHsList').hide();
+	$j('#localHsButton').removeClass('ui-btn-active');
+	
 	$j('#globalHsList').show();
+	$j('#globalHsButton').addClass('ui-btn-active');
+	
 	BuildGlobalList();
 });
+
+$j('#localHsButton').live('tap', function(e){
+		$j('#localHsList').show();
+	$j('#localHsButton').addClass('ui-btn-active');
+	
+	$j('#globalHsList').hide();
+	$j('#globalHsButton').removeClass('ui-btn-active');
+	
+	GetLocalHsList();
+})
 
 // if coming from the game page, stop game loop, make the _gameObj null, and
 // remove game page from dom.
@@ -53,7 +67,7 @@ $j('#hs').live("pageshow", function(e, data) {
 	}
 });
 
-$j(document).bind('mobileinit', function(){
+$j(document).bind('mobileinit', function() {
 	$j.mobile.loadingMessage = "Loading Local & Global Scores";
 })
 /*
@@ -88,13 +102,18 @@ function onDeviceReady() {
 
 // app exit
 function onPause() {
-	_gameObj.StopMainLoop();
+	if (_gameObj != null)
+		_gameObj.StopMainLoop();
+	
+	snowStorm.stop();
+	snowStorm.freeze();
 }
 
 // app open
 function onResume() {
-	// StartMainLoop();
 	$j.mobile.changePage($j('#index'));
+	snowStorm.show();
+	snowStorm.resume();
 }
 
 // back button
