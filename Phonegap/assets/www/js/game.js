@@ -63,7 +63,7 @@ var Game = Class.create({
 			this.SetupSkierEasy("initial");
 
 			// set events
-			$j(window).bind('touchstart', function(e) {
+			$j('#contentHolder').bind('touchstart', function(e) {
 				var x = e.originalEvent.touches[0].pageX;
 				if (x < this.canvasMiddle) {
 					this.MoveLeft();
@@ -72,7 +72,7 @@ var Game = Class.create({
 				}
 			}.bind(this));
 
-			$j(window).bind('touchend', function(e) {
+			$j('#contentHolder').bind('touchend', function(e) {
 				this.moveX = 0;
 			}.bind(this));
 
