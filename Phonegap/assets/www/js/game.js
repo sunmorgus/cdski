@@ -239,14 +239,15 @@ var Game = Class.create({
 			}
 
 			var currentRotTop = this.rotTop - 35;
-			// to rotate the skier, I'll take half of the width of the
-			// canvas, then, if less, rotate left, if higher, rotate right
-			// var rotMod = 5;
-			// if (jQuery(window).height() > 700)
-			// rotMod = -5;
-			// if (skierRot && !this.isJumping) {
-			// skierRot[0].rotateAnimation(currentMoveX * rotMod);
-			// }
+			if (skierRot && !this.isJumping) {
+				var rotMod = 20;
+				if (currentMoveX > 0)
+					skierRot[0].rotateAnimation(-rotMod);
+				else if (currentMoveX < 0)
+					skierRot[0].rotateAnimation(rotMod);
+				else
+					skierRot[0].rotate(0);
+			}
 
 			var skierMiddleY = (currentRotTop + currentSkier.height) / 2;
 
@@ -276,7 +277,9 @@ var Game = Class.create({
 							skierRot[0].rotateAnimation(360);
 							jQuery(skierRot[0].context).animate({
 								top : '160'
-							}, 1500);
+							}, 1500, function() {
+								skierRot[0].rotate(0);
+							});
 
 							var unjump = setTimeout(this.StopJump.bind(this), 2000);
 						} else {
