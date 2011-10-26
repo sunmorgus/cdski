@@ -2,7 +2,7 @@ var globalHsUrl = 'http://monstertrucks.rjamdev.info/skiprehs.php?method=%s';
 /*
  * Start SQL Queries
  */
-var getScoresQuery = 'select name, score, global_id from highScore order by score desc, id asc limit 10;';
+var getScoresQuery = 'select name, score, global_id from highScore order by score desc, id asc limit 100;';
 var checkScoreQuery = 'select score from highScore where %s > (select score from (select score from highScore order by score desc limit 10) order by score asc limit 1);';
 var insertHighScoreQuery = 'INSERT INTO highScore (id, name, score, global_id) VALUES (?,?,?,?); GO;'
 /*
@@ -36,7 +36,7 @@ function BuildGlobalList() {
 			url : sprintf(globalHsUrl, 's'),
 			dataType: 'json',
 			success : function(data) {
-				alert(data[0]);
+				alert(data[0].id);
 				SetHeaderMessage("hasRank", data);
 				$j.mobile.hidePageLoadingMsg();
 			},
