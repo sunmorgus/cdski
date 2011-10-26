@@ -86,7 +86,6 @@ function InsertGlobalHighScore(name, score) {
 	$j.ajax({
 			url : insertUrl,
 			success : function(data) {
-				alert(data);
 				var globalId = data;
 				InsertHighScore(name, score, globalId);
 			},

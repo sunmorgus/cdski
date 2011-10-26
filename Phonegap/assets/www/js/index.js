@@ -26,6 +26,12 @@ $j('#helpButton').live('tap', function(e) {
 	$j.mobile.changePage($j('#help'));
 });
 
+$j('#globalHsButton').live('tap', function(e){
+	$j('#localHsList').hide();
+	$j('#globalHsList').show();
+	BuildGlobalList();
+});
+
 // if coming from the game page, stop game loop, make the _gameObj null, and
 // remove game page from dom.
 $j('#game').live("pagehide", function(e, data) {
@@ -42,6 +48,7 @@ $j('#hs').live("pageshow", function(e, data) {
 		var score = Math.round(_score + .3);
 		CheckScore(score);
 	} else {
+		$j('#globalHsList').hide();
 		GetLocalHsList();
 	}
 });
