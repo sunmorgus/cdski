@@ -87,7 +87,7 @@ function InsertGlobalHighScore(name, score) {
 			url : insertUrl,
 			success : function(data) {
 				alert(data);
-				var globalId = data.responseText;
+				var globalId = data;
 				InsertHighScore(name, score, globalId);
 			},
 			error : function(jqXHR, textStatus, errorThrown) {
