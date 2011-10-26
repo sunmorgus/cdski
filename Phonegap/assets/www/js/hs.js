@@ -35,7 +35,7 @@ function BuildGlobalList() {
 	$j.ajax({
 			url : sprintf(globalHsUrl, 's'),
 			success : function(data) {
-				alert(data);
+				alert(data[0].id);
 				SetHeaderMessage("hasRank", data);
 				$j.mobile.hidePageLoadingMsg();
 			},
