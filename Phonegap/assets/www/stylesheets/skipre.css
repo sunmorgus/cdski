@@ -11,19 +11,19 @@ html, body {
 	text-align: center;
 }
 .slope {
-    position: absolute;
-    left: 0px;
-    top: 35px;
+	position: absolute;
+	left: 0px;
+	top: 35px;
 }
 .startSkier {
 	position: absolute;
-	top: 60px;
+	top: 100px;
 	left: 150px;
 }
 .ski {
-	position: absolute;
-	top: 10px;
-	left: 5px;
+	position: fixed;
+	left: 50%;
+	margin-left: -80px;
 }
 .pre {
 	position: absolute;

@@ -1,4 +1,4 @@
-package com.csbctech.skipre;
+package com.csbctech.ski;
 
 import com.phonegap.*;
 
