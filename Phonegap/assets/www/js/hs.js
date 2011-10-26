@@ -25,7 +25,7 @@ function BuildLocalList(tx, results) {
 	}
 	$j('#localHsList').listview('refresh');
 	if(len == 0)
-		SetHeaderMessage("noScores", null);
+		SetHeaderMessage("noScores");
 	else
 		document.getElementById('noScores').style.display = 'none';
 	$j.mobile.hidePageLoadingMsg();
@@ -36,8 +36,13 @@ function BuildGlobalList() {
 			url : sprintf(globalHsUrl, 's'),
 			dataType: 'json',
 			success : function(data) {
-				alert(data[0].id);
-				SetHeaderMessage("hasRank", data);
+				var len = data.length;
+				for(var i = 0; i < len; i++){
+					var item = data[i];
+					var listItem = sprintf('<li>%s<span style="float: right;">%s</span></li>"', item.name, item.score);
+					$j(listItem).appendTo($j('#globalHsList'));
+				}
+				SetHeaderMessage("hasRank");
 				$j.mobile.hidePageLoadingMsg();
 			},
 			error : function(jqXHR, textStatus, errorThrown) {
@@ -111,13 +116,13 @@ function InsertHighScore(name, score, global_id) {
 /*
  * Start Utility Functions
  */
-function SetHeaderMessage(type, data) {
+function SetHeaderMessage(type) {
 	switch(type){
 	case "noScores":
 		$j('#hsHeader').html('You have no high scores!');
 		document.getElementById('noScores').style.display = 'block';
 		break;
-	case "hasRank":
+	case "gotGlobal":
 		$j('#hsHeader').html('Your highest score of {0} ranks {1} out of {2} other scores!');
 		document.getElementById('noScores').style.display = 'none';
 		break;
