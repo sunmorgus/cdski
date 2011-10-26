@@ -36,7 +36,7 @@ function BuildGlobalList() {
 			url : sprintf(globalHsUrl, 's'),
 			dataType: 'json',
 			success : function(data) {
-				alert(data);
+				alert(data[0]);
 				SetHeaderMessage("hasRank", data);
 				$j.mobile.hidePageLoadingMsg();
 			},
