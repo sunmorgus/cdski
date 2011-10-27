@@ -89,6 +89,7 @@ function onLoad() {
 }
 
 function onDeviceReady() {
+	console.log('ondeviceready');
 	// Register the event listener
 	document.addEventListener("pause", onPause, false);
 	document.addEventListener("resume", onResume, false);
