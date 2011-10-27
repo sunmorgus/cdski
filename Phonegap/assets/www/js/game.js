@@ -65,20 +65,35 @@ var Game = Class.create({
 			this.SetupSkierEasy("initial");
 
 			// set events
-			$j('#contentHolder').bind('touchstart', function(e) {
-				var x = e.originalEvent.touches[0].pageX;
-				if (x < this.canvasMiddle) {
-					this.MoveLeft();
-				} else {
-					this.MoveRight();
-				}
-			}.bind(this));
+			if (IsTouchDevice()) {
+				$j('#contentHolder').bind('touchstart', function(e) {
+					var x = e.originalEvent.touches[0].pageX;
+					if (x < this.canvasMiddle) {
+						this.MoveLeft();
+					} else {
+						this.MoveRight();
+					}
+				}.bind(this));
 
-			$j('#contentHolder').bind('touchend', function(e) {
-				this.moveX = 0;
-			}.bind(this));
-			
-			this.WatchForShake(0.5);
+				$j('#contentHolder').bind('touchend', function(e) {
+					this.moveX = 0;
+				}.bind(this));
+
+				this.WatchForShake(0.5);
+			}else{
+				$j('#contentHolder').bind('mousedown', function(e) {
+					var x = e.originalEvent.touches[0].pageX;
+					if (x < this.canvasMiddle) {
+						this.MoveLeft();
+					} else {
+						this.MoveRight();
+					}
+				}.bind(this));
+
+				$j('#contentHolder').bind('mouseup', function(e) {
+					this.moveX = 0;
+				}.bind(this));
+			}
 
 			this.StartMainLoop();
 		},

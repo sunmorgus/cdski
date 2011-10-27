@@ -10,8 +10,8 @@ var _local = window.localStorage;
  */
 $j('#newGameButton').live('tap', function(e) {
 	StopDefaults(e);
-	console.log(IsTouchDevice());
-//	StartNewGame();
+
+	StartNewGame();
 });
 
 $j('#hsButton').live('tap', function(e) {
