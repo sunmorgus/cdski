@@ -127,13 +127,11 @@ var Game = Class.create({
 			this.skierImgTag.style.visibility = 'visible';
 
 			var setupRot = $j('#skierImg').rotate({
-					angle : 0,
-					maxAngle : 80,
-					minAngle : -80
+					angle : 0
 			});
 
 			this.rotTop = 160;
-			this.rotLeft = 140;
+			this.rotLeft = this.canvasMiddle;
 			try {
 				setupRot[0].context.style.position = 'absolute';
 				setupRot[0].context.style.top = this.rotTop + 'px';
