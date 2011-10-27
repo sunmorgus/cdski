@@ -80,7 +80,7 @@ var Game = Class.create({
 				}.bind(this));
 
 				this.WatchForShake(0.5);
-			}else{
+			} else {
 				$j('#contentHolder').bind('mousedown', function(e) {
 					var x = e.pageX;
 					if (x < this.canvasMiddle) {
@@ -127,7 +127,7 @@ var Game = Class.create({
 			this.skierImgTag.style.visibility = 'visible';
 
 			var setupRot = $j('#skierImg').rotate({
-					angle : 0
+				angle : 0
 			});
 
 			this.rotTop = 160;
@@ -242,7 +242,7 @@ var Game = Class.create({
 			var xToMove = Math.floor(currentMoveX * moveMod);
 			this.rotLeft += xToMove;
 
-//			var maxRight = 310;
+			// var maxRight = 310;
 			var maxRight = currentSkier.maxX;
 
 			if (this.rotLeft > -1 && this.rotLeft < (maxRight - currentSkier.width)) {
@@ -450,8 +450,12 @@ var Game = Class.create({
 			var t = setTimeout(this.CheckHighScore.bind(this), 1000);
 		},
 		CheckHighScore : function() {
-			_score = this.score;
-			$j.mobile.changePage($j('#hs'));
+			if (_db != null) {
+				_score = this.score;
+				$j.mobile.changePage($j('#hs'));
+			} else {
+				$j.mobile.changePage($j('#index'));
+			}
 		},
 		StartMainLoop : function() {
 			this.mainLoopInterval = setInterval(this.MainLoop.bind(this), 33);
