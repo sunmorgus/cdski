@@ -95,8 +95,15 @@ var Game = Class.create({
 				}.bind(this));
 				
 				$j(document).keydown(function(e){
-					console.log(e.keyCode);
-				});
+					if(e.keyCode === 70){
+						this.isF = true;
+						this.fSpeedMod = 2;
+					}
+				}.bind(this));
+				
+				$j(document).keydown(function(e){
+					this.NoF();
+				}.bind(this));
 			}
 
 			this.StartMainLoop();
