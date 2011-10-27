@@ -103,7 +103,7 @@ var Game = Class.create({
 
 			switch (state) {
 			case "initial":
-				this.SetupSkier(150, 160, 14, 32, chosen + "_down");
+				this.SetupSkier(this.canvasMiddle, 160, 14, 32, chosen + "_down");
 				break;
 			case "crash":
 				var currentX = this.skier.x;
@@ -244,7 +244,7 @@ var Game = Class.create({
 			var xToMove = Math.floor(currentMoveX * moveMod);
 			this.rotLeft += xToMove;
 
-			var maxRight = 310;
+//			var maxRight = 310;
 
 			if (this.rotLeft > -1 && this.rotLeft < (maxRight - currentSkier.width)) {
 				currentSkier.x += xToMove;

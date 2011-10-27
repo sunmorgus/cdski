@@ -53,6 +53,9 @@ $j('#game').live("pagehide", function(e, data) {
 		_gameObj.StopMainLoop();
 		_gameObj = null;
 	}
+	
+	snowStorm.show();
+	snowStorm.resume();
 });
 
 $j('#hs').live("pageshow", function(e, data) {
