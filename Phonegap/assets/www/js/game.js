@@ -261,8 +261,10 @@ var Game = Class.create({
 					skierRot[0].rotateAnimation(-rotMod);
 				else if (currentMoveX < 0)
 					skierRot[0].rotateAnimation(rotMod);
-				else if(currentMoveX === 0)
+				else if(currentMoveX == 0 || currentMoveX == null){
+					console.log('0');
 					skierRot[0].rotate(0);
+				}
 			}
 
 			var skierMiddleY = (currentRotTop + currentSkier.height) / 2;
