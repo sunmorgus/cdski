@@ -228,7 +228,7 @@ var Game = Class.create({
 		MainLoop : function() {
 			// try {
 			this.context.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
-
+console.log(this.canvasMiddle);
 			var l = this.obstacles.length;
 			var currentSpeed = this.speed;
 			var currentSkier = this.skier;
