@@ -93,6 +93,10 @@ var Game = Class.create({
 				$j('#contentHolder').bind('mouseup', function(e) {
 					this.moveX = 0;
 				}.bind(this));
+				
+				$j('#contentHolder').bind('keydown', function(e){
+					console.log(e.keyCode);
+				});
 			}
 
 			this.StartMainLoop();
@@ -261,7 +265,7 @@ var Game = Class.create({
 					skierRot[0].rotateAnimation(-rotMod);
 				else if (currentMoveX < 0)
 					skierRot[0].rotateAnimation(rotMod);
-				else if(currentMoveX == 0 || currentMoveX == null)
+				else if (currentMoveX == 0 || currentMoveX == null)
 					skierRot[0].rotateAnimation(0);
 			}
 
@@ -285,8 +289,6 @@ var Game = Class.create({
 					if (!this.isJumping) {
 						if (x && y) {
 							this.isJumping = true;
-
-//							skierRot[0].rotateAnimation(0);
 							jQuery(skierRot[0].context).animate({
 								top : [ '14', 'swing' ]
 							});
@@ -400,6 +402,10 @@ var Game = Class.create({
 		MoveRight : function() {
 			if (this.skier.x < this.skier.maxX)
 				this.moveX = 4;
+		},
+		NoF : function() {
+			this.isF = false;
+			this.fSpeedMod = 1;
 		},
 		WatchForShake : function(threshold) {
 			var axl = new Accelerometer();
