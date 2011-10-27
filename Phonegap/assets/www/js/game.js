@@ -293,9 +293,7 @@ var Game = Class.create({
 							skierRot[0].rotateAnimation(360);
 							jQuery(skierRot[0].context).animate({
 								top : '160'
-							}, 1500, function() {
-								skierRot[0].rotate(0);
-							});
+							}, 1500);
 
 							var unjump = setTimeout(this.StopJump.bind(this), 2000);
 						} else {
