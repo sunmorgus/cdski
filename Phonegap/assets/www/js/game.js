@@ -245,6 +245,7 @@ var Game = Class.create({
 			this.rotLeft += xToMove;
 
 //			var maxRight = 310;
+			var maxRight = currentSkier.maxX;
 
 			if (this.rotLeft > -1 && this.rotLeft < (maxRight - currentSkier.width)) {
 				currentSkier.x += xToMove;
