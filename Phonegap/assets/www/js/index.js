@@ -82,10 +82,8 @@ $j(document).bind('mobileinit', function() {
  */
 function onLoad() {
 	document.addEventListener("deviceready", onDeviceReady, false);
-	
-	document.addEventListener("load", function(){
-		onDeviceReady();
-	});
+
+	onDeviceReady();
 }
 
 function onDeviceReady() {
@@ -103,7 +101,7 @@ function onDeviceReady() {
 			tx.executeSql(queryString);
 		}, DbError, function(tx, results) {
 		});
-	}else{
+	} else {
 		alert('no db support');
 	}
 
