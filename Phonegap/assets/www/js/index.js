@@ -16,8 +16,8 @@ $j('#newGameButton').live('tap', function(e) {
 
 $j('#hsButton').live('tap', function(e) {
 	StopDefaults(e);
-
-	$j.mobile.changePage($j('#hs'));
+	if (_db != null)
+		$j.mobile.changePage($j('#hs'));
 });
 
 $j('#helpButton').live('tap', function(e) {
@@ -82,12 +82,9 @@ $j(document).bind('mobileinit', function() {
  */
 function onLoad() {
 	document.addEventListener("deviceready", onDeviceReady, false);
-
-	onDeviceReady();
 }
 
 function onDeviceReady() {
-	console.log('ondeviceready');
 	// Register the event listener
 	document.addEventListener("pause", onPause, false);
 	document.addEventListener("resume", onResume, false);
