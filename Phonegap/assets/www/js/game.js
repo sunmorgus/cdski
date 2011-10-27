@@ -254,7 +254,6 @@ var Game = Class.create({
 				currentMoveX = 0;
 			}
 
-			console.log(currentMoveX);
 			var currentRotTop = this.rotTop - 35;
 			if (skierRot && !this.isJumping) {
 				var rotMod = 20;
@@ -262,7 +261,7 @@ var Game = Class.create({
 					skierRot[0].rotateAnimation(-rotMod);
 				else if (currentMoveX < 0)
 					skierRot[0].rotateAnimation(rotMod);
-				else
+				else if(currentMoveX === 0)
 					skierRot[0].rotate(0);
 			}
 
