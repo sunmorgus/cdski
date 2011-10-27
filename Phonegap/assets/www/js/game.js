@@ -82,7 +82,7 @@ var Game = Class.create({
 				this.WatchForShake(0.5);
 			}else{
 				$j('#contentHolder').bind('mousedown', function(e) {
-					var x = e.originalEvent.touches[0].pageX;
+					var x = e.pageX;
 					if (x < this.canvasMiddle) {
 						this.MoveLeft();
 					} else {
