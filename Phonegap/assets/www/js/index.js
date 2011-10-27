@@ -53,7 +53,7 @@ $j('#game').live("pagehide", function(e, data) {
 		_gameObj.StopMainLoop();
 		_gameObj = null;
 	}
-	
+
 	snowStorm.show();
 	snowStorm.resume();
 });
@@ -90,13 +90,17 @@ function onDeviceReady() {
 	document.addEventListener("resume", onResume, false);
 	document.addEventListener("backbutton", onBack, true);
 
-	// open the hs db
-	_db = window.openDatabase("hsdb", "1.0", "SkiPre High Score Database", 200000);
-	_db.transaction(function(tx) {
-		var queryString = 'CREATE TABLE IF NOT EXISTS highScore (id TEXT PRIMARY KEY DESC DEFAULT "nothing", name TEXT NOT NULL DEFAULT "nothing", score INTEGER NOT NULL DEFAULT "nothing", global_id INTEGER NULL DEFAULT "0"); GO;'
-		tx.executeSql(queryString);
-	}, DbError, function(tx, results) {
-	});
+	if (window.openDatabase) {
+		// open the hs db
+		_db = window.openDatabase("hsdb", "1.0", "SkiPre High Score Database", 200000);
+		_db.transaction(function(tx) {
+			var queryString = 'CREATE TABLE IF NOT EXISTS highScore (id TEXT PRIMARY KEY DESC DEFAULT "nothing", name TEXT NOT NULL DEFAULT "nothing", score INTEGER NOT NULL DEFAULT "nothing", global_id INTEGER NULL DEFAULT "0"); GO;'
+			tx.executeSql(queryString);
+		}, DbError, function(tx, results) {
+		});
+	}else{
+		alert('no db support');
+	}
 
 	// start the snow
 	snowStorm.show();
