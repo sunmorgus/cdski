@@ -82,6 +82,10 @@ $j(document).bind('mobileinit', function() {
  */
 function onLoad() {
 	document.addEventListener("deviceready", onDeviceReady, false);
+	
+	window.addEventListener("load", function(){
+		PhoneGap.onDeviceReady.fire();
+	});
 }
 
 function onDeviceReady() {
