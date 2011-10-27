@@ -10,8 +10,8 @@ var _local = window.localStorage;
  */
 $j('#newGameButton').live('tap', function(e) {
 	StopDefaults(e);
-
-	StartNewGame();
+	console.log(IsTouchDevice());
+//	StartNewGame();
 });
 
 $j('#hsButton').live('tap', function(e) {
@@ -86,8 +86,6 @@ function onDeviceReady() {
 	document.addEventListener("pause", onPause, false);
 	document.addEventListener("resume", onResume, false);
 	document.addEventListener("backbutton", onBack, true);
-	
-	console.log(IsTouchDevice());
 
 	// open the hs db
 	_db = window.openDatabase("hsdb", "1.0", "SkiPre High Score Database", 200000);
