@@ -101,7 +101,7 @@ var Game = Class.create({
 					}
 				}.bind(this));
 				
-				$j(document).keydown(function(e){
+				$j(document).keyup(function(e){
 					this.NoF();
 				}.bind(this));
 			}
