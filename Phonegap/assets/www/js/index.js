@@ -19,7 +19,7 @@ $j('#hsButton').live('tap', function(e) {
 	if (_db != null)
 		$j.mobile.changePage($j('#hs'));
 	else
-		alert('High Scores are only available to users of the Mobile Application (Android and/or webOS');
+		alert('High Scores are only available to users of the Mobile Application (Android and/or webOS)');
 });
 
 $j('#helpButton').live('tap', function(e) {
