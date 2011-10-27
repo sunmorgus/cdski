@@ -286,7 +286,7 @@ var Game = Class.create({
 						if (x && y) {
 							this.isJumping = true;
 
-							skierRot[0].rotate(0);
+//							skierRot[0].rotateAnimation(0);
 							jQuery(skierRot[0].context).animate({
 								top : [ '14', 'swing' ]
 							});
