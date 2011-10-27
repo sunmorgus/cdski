@@ -239,7 +239,7 @@ var Game = Class.create({
 			this.context.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
 
 			var l = this.obstacles.length;
-			var currentSpeed = this.speed;
+			var currentSpeed = this.speed * this.fSpeedMod;
 			var currentSkier = this.skier;
 
 			var skierImg = this.chosenSkier;
