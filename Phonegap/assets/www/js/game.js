@@ -94,7 +94,7 @@ var Game = Class.create({
 					this.moveX = 0;
 				}.bind(this));
 				
-				$j('#contentHolder').bind('keydown', function(e){
+				$j('#contentHolder').keydown(function(e){
 					console.log(e.keyCode);
 				});
 			}
