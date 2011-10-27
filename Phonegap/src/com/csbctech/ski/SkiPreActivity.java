@@ -7,9 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.view.Display;
 import android.view.WindowManager;
-import android.webkit.WebSettings.RenderPriority;
 
 public class SkiPreActivity extends DroidGap {
 	protected float ORIG_APP_W = 320;

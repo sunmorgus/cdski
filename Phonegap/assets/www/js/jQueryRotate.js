@@ -1,4 +1,4 @@
-jQuery.fn.extend({
+$j.fn.extend({
 		ImageRotate : function(a) {
 			if (this.Wilq32 && this.Wilq32.PhotoEffect)
 				return;
@@ -16,7 +16,7 @@ jQuery.fn.extend({
 			var b = [];
 			for ( var c = 0, d = this.length; c < d; c++) {
 				var e = this.get(c);
-				b.push(jQuery(jQuery(e).ImageRotate(a)))
+				b.push($j($j(e).ImageRotate(a)))
 			}
 			return b
 		},
@@ -33,7 +33,7 @@ jQuery.fn.extend({
 			for ( var c = 0, d = this.length; c < d; c++) {
 				var e = this.get(c);
 				if (typeof e.Wilq32 == "undefined")
-					b.push(jQuery(jQuery(e).ImageRotate(a)));
+					b.push($j($j(e).ImageRotate(a)));
 				else {
 					e.Wilq32.PhotoEffect._parameters.animateAngle = a.angle;
 					e.Wilq32.PhotoEffect._parameters.callback = a.callback || function() {
@@ -65,15 +65,15 @@ Wilq32.PhotoEffect = function(a, b) {
 	this._img = new Image;
 	this._img.src = c;
 	this._img._ref = this;
-	jQuery(this._img).bind("load", function() {
+	$j(this._img).bind("load", function() {
 		this._ref._Loader.call(this._ref)
 	});
-	if (jQuery.browser.msie)
+	if ($j.browser.msie)
 		if (this._img.complete)
 			this._Loader()
 };
 Wilq32.PhotoEffect.prototype._Loader = function() {
-	if (jQuery.browser.msie)
+	if ($j.browser.msie)
 		return function() {
 			var a = this._IEfix.src;
 			this._IEfix.parentNode.removeChild(this._IEfix);
@@ -98,7 +98,7 @@ Wilq32.PhotoEffect.prototype._Loader = function() {
 					if (this._parameters.bind.hasOwnProperty(e))
 						for ( var f in this._parameters.bind[e])
 							if (this._parameters.bind[e].hasOwnProperty(f))
-								jQuery(this._temp).bind(f, this._parameters.bind[e][f])
+								$j(this._temp).bind(f, this._parameters.bind[e][f])
 			}
 			this._rotate(this._parameters.angle)
 		};
@@ -123,7 +123,7 @@ Wilq32.PhotoEffect.prototype._Loader = function() {
 					if (this._parameters.bind.hasOwnProperty(d))
 						for ( var e in this._parameters.bind[d])
 							if (this._parameters.bind[d].hasOwnProperty(e))
-								jQuery(this._canvas).bind(e, this._parameters.bind[d][e])
+								$j(this._canvas).bind(e, this._parameters.bind[d][e])
 			}
 			this._cnv = this._canvas.getContext("2d");
 			this._rotate(this._parameters.angle)
@@ -157,7 +157,7 @@ Wilq32.PhotoEffect.prototype._animate = function() {
 	}
 };
 Wilq32.PhotoEffect.prototype._rotate = function() {
-	if (jQuery.browser.msie)
+	if ($j.browser.msie)
 		return function(a) {
 			this._vimage.style.rotation = a;
 			var b = a * Math.PI / 180;

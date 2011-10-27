@@ -25,6 +25,7 @@ var Game = Class.create({
 			this.obstacles = new Array();
 			this.isJumping = false;
 			this.isPaused = false;
+			this.prevX = 1.0;
 
 			// change when testing
 			this.speed = 10; // default null
@@ -38,6 +39,7 @@ var Game = Class.create({
 			/*
 			 * Init the canvas
 			 */
+
 			this.crashElem.style.visibility = 'hidden';
 			var windowWidth = window.innerWidth;
 			var windowHeight = window.innerHeight;
@@ -75,6 +77,8 @@ var Game = Class.create({
 			$j('#contentHolder').bind('touchend', function(e) {
 				this.moveX = 0;
 			}.bind(this));
+			
+			this.WatchForShake(0.5);
 
 			this.StartMainLoop();
 		},
@@ -226,8 +230,6 @@ var Game = Class.create({
 			this.rotLeft += xToMove;
 
 			var maxRight = 310;
-			if (jQuery(window).height() > 700)
-				maxRight = 1014;
 
 			if (this.rotLeft > -1 && this.rotLeft < (maxRight - currentSkier.width)) {
 				currentSkier.x += xToMove;
@@ -386,6 +388,26 @@ var Game = Class.create({
 		MoveRight : function() {
 			if (this.skier.x < this.skier.maxX)
 				this.moveX = 4;
+		},
+		WatchForShake : function(threshold) {
+			var axl = new Accelerometer();
+			axl.watchAcceleration(function(Accel) {
+				if (true === Accel.is_updating) {
+					return;
+				}
+
+				var diffX = Math.abs(Accel.x) - this.prevX;
+
+				if (diffX >= threshold) {
+					// The user has shaken their device. Do something
+					alert("You have made a milkshake!");
+				}
+
+				this.prevX = Math.abs(Accel.x);
+			}, function() {
+			}, {
+				frequency : 100
+			});
 		},
 		Collide : function(currentSkier, currentObs) {
 			this.StopMainLoop();
