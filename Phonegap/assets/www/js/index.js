@@ -29,20 +29,20 @@ $j('#helpButton').live('tap', function(e) {
 $j('#globalHsButton').live('tap', function(e) {
 	$j('#localHsList').hide();
 	$j('#localHsButton').removeClass('ui-btn-active');
-	
+
 	$j('#globalHsList').show();
 	$j('#globalHsButton').addClass('ui-btn-active');
-	
+
 	BuildGlobalList();
 });
 
-$j('#localHsButton').live('tap', function(e){
-		$j('#localHsList').show();
+$j('#localHsButton').live('tap', function(e) {
+	$j('#localHsList').show();
 	$j('#localHsButton').addClass('ui-btn-active');
-	
+
 	$j('#globalHsList').hide();
 	$j('#globalHsButton').removeClass('ui-btn-active');
-	
+
 	GetLocalHsList();
 })
 
@@ -86,6 +86,8 @@ function onDeviceReady() {
 	document.addEventListener("pause", onPause, false);
 	document.addEventListener("resume", onResume, false);
 	document.addEventListener("backbutton", onBack, true);
+	
+	console.log(IsTouchDevice());
 
 	// open the hs db
 	_db = window.openDatabase("hsdb", "1.0", "SkiPre High Score Database", 200000);
@@ -104,7 +106,7 @@ function onDeviceReady() {
 function onPause() {
 	if (_gameObj != null)
 		_gameObj.StopMainLoop();
-	
+
 	snowStorm.stop();
 	snowStorm.freeze();
 }
@@ -163,6 +165,14 @@ function printObjProps(obj) {
 }
 function DbError(err) {
 	alert("Error processing SQL: " + err.code);
+}
+function IsTouchDevice() {
+	try {
+		document.createEvent("TouchEvent");
+		return true;
+	} catch (e) {
+		return false;
+	}
 }
 /*
  * End Utility Functions
