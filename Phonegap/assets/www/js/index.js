@@ -48,8 +48,7 @@ $j('#localHsButton').live('tap', function(e) {
 	GetLocalHsList();
 })
 
-// if coming from the game page, stop game loop, make the _gameObj null, and
-// remove game page from dom.
+// if coming from the game page, stop game loop, make the _gameObj null
 $j('#game').live("pagehide", function(e, data) {
 	if (_gameObj != null) {
 		_gameObj.StopMainLoop();
@@ -62,9 +61,15 @@ $j('#game').live("pagehide", function(e, data) {
 
 $j('#hs').live("pageshow", function(e, data) {
 	$j.mobile.showPageLoadingMsg();
+	
+	$j('#localHsList').show();
+	$j('#localHsButton').addClass('ui-btn-active');
+
 	$j('#globalHsList').hide();
+	$j('#globalHsButton').removeClass('ui-btn-active');
+	
 	if (_score != null) {
-		var score = Math.round(_score + .3);
+		var score = Math.round(_score);
 		CheckScore(score);
 	} else {
 		$j('#globalHsList').hide();

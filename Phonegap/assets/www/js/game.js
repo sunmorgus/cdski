@@ -93,15 +93,15 @@ var Game = Class.create({
 				$j('#contentHolder').bind('mouseup', function(e) {
 					this.moveX = 0;
 				}.bind(this));
-				
-				$j(document).keydown(function(e){
-					if(e.keyCode === 70){
+
+				$j(document).keydown(function(e) {
+					if (e.keyCode === 70) {
 						this.isF = true;
 						this.fSpeedMod = 2;
 					}
 				}.bind(this));
-				
-				$j(document).keyup(function(e){
+
+				$j(document).keyup(function(e) {
 					this.NoF();
 				}.bind(this));
 			}
@@ -235,7 +235,6 @@ var Game = Class.create({
 			this.obstacles.push(obstacle);
 		},
 		MainLoop : function() {
-			// try {
 			this.context.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
 
 			var l = this.obstacles.length;
@@ -397,10 +396,6 @@ var Game = Class.create({
 
 				this.drawAbom += 300;
 			}
-			// } catch (Err) {
-			// this.StopMainLoop();
-			// console.log('Error in Main Loop:\n\n' + printObjProps(Err));
-			// }
 		},
 		MoveLeft : function() {
 			if (this.skier.x > 2)
@@ -425,7 +420,10 @@ var Game = Class.create({
 
 				if (diffX >= threshold) {
 					// The user has shaken their device. Do something
-					alert("You have made a milkshake!");
+					this.isF = true;
+					this.fSpeedMod = 2;
+				} else {
+					this.NoF();
 				}
 
 				this.prevX = Math.abs(Accel.x);
