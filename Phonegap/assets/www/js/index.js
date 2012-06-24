@@ -16,10 +16,11 @@ $j('#newGameButton').live('tap', function(e) {
 
 $j('#hsButton').live('tap', function(e) {
 	StopDefaults(e);
-	if (_db != null)
-		$j.mobile.changePage($j('#hs'));
-	else
-		alert('High Scores are only available to users of the Mobile Application (Android and/or webOS)');
+	// if (_db != null)
+	$j.mobile.changePage($j('#hs'));
+	// else
+	// alert('High Scores are only available to users of the Mobile Application
+	// (Android and/or webOS)');
 });
 
 $j('#helpButton').live('tap', function(e) {
@@ -61,19 +62,33 @@ $j('#game').live("pagehide", function(e, data) {
 
 $j('#hs').live("pageshow", function(e, data) {
 	$j.mobile.showPageLoadingMsg();
-	
-	$j('#localHsList').show();
-	$j('#localHsButton').addClass('ui-btn-active');
 
-	$j('#globalHsList').hide();
-	$j('#globalHsButton').removeClass('ui-btn-active');
-	
+	if (_db != null) {
+		$j('#localHsList').show();
+		$j('#localHsButton').addClass('ui-btn-active');
+
+		$j('#globalHsList').hide();
+		$j('#globalHsButton').removeClass('ui-btn-active');
+	} else {
+
+		$j('#localHsList').hide();
+		$j('#localHsButton').removeClass('ui-btn-active');
+
+		$j('#globalHsList').show();
+		$j('#globalHsButton').addClass('ui-btn-active');
+	}
+
 	if (_score != null) {
 		var score = Math.round(_score);
 		CheckScore(score);
 	} else {
-		$j('#globalHsList').hide();
-		GetLocalHsList();
+		if(_db != null){
+			$j('#globalHsList').hide();
+			GetLocalHsList();
+		} else {
+			$j('#localHsList').hide();
+			BuildGlobalList();
+		}
 	}
 });
 
@@ -99,16 +114,19 @@ function onDeviceReady() {
 
 	if (window.openDatabase) {
 		// open the hs db
-		_db = window.openDatabase("hsdb", "1.0", "SkiPre High Score Database", 200000);
-		_db.transaction(function(tx) {
-			var queryString = 'CREATE TABLE IF NOT EXISTS highScore (id TEXT PRIMARY KEY DESC DEFAULT "nothing", name TEXT NOT NULL DEFAULT "nothing", score INTEGER NOT NULL DEFAULT "nothing", global_id INTEGER NULL DEFAULT "0"); GO;'
-			tx.executeSql(queryString);
-		}, DbError, function(tx, results) {
-		});
+		_db = window.openDatabase("hsdb", "1.0", "SkiPre High Score Database",
+				200000);
+		_db
+				.transaction(
+						function(tx) {
+							var queryString = 'CREATE TABLE IF NOT EXISTS highScore (id TEXT PRIMARY KEY DESC DEFAULT "nothing", name TEXT NOT NULL DEFAULT "nothing", score INTEGER NOT NULL DEFAULT "nothing", global_id INTEGER NULL DEFAULT "0"); GO;'
+							tx.executeSql(queryString);
+						}, DbError, function(tx, results) {
+						});
 	} else {
 		alert('no db support');
 	}
-
+	
 	// start the snow
 	snowStorm.show();
 	snowStorm.resume();

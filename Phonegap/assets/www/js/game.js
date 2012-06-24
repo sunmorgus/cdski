@@ -231,7 +231,7 @@ var Game = Class.create({
 					name : 'abom_h'
 			};
 
-			obstacle.img.src = this.mediaPath + "images/obstacles/abom_h.gif";
+			obstacle.img.src = "images/obstacles/abom_h.gif";
 			this.obstacles.push(obstacle);
 		},
 		MainLoop : function() {
@@ -439,7 +439,7 @@ var Game = Class.create({
 			this.context.fillRect(currentSkier.x, currentSkier.y, currentSkier.width, currentSkier.height);
 			var crashElem = this.crashElem;
 			if (currentObs.name == "abom_h") {
-				crashElem.src = this.mediaPath + "images/obstacles/abom_eat.gif";
+				crashElem.src = "images/obstacles/abom_eat.gif";
 				crashElem.style.left = currentSkier.x + 'px';
 				crashElem.style.top = (this.rotTop) + 'px';
 				crashElem.style.left = currentObs.x + 'px';
@@ -447,7 +447,7 @@ var Game = Class.create({
 				currentSkier.img.src = "";
 				this.rot[0].context.style.display = "none";
 			} else {
-				crashElem.src = this.mediaPath + "images/sprites/" + skierImg.substr(0, 1) + "/" + "riley_crash.png";
+				crashElem.src = "images/sprites/" + skierImg.substr(0, 1) + "/" + "riley_crash.png";
 				crashElem.style.top = (this.rotTop) + 'px';
 				crashElem.style.left = currentSkier.x + 'px';
 				currentSkier.img.src = "";

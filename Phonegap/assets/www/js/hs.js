@@ -1,4 +1,4 @@
-var globalHsUrl = 'http://monstertrucks.rjamdev.info/skiprehs.php?method=%s';
+var globalHsUrl = 'http://hide.rjamdev.info/monstertrucks/skiprehs.php?method=%s';
 /*
  * Start SQL Queries
  */
@@ -73,10 +73,12 @@ function BuildGlobalList() {
 }
 
 function GetLocalHsList() {
-	_score = null;
-	_db.transaction(function(tx) {
-		tx.executeSql(getScoresQuery, [], BuildLocalList, DbError);
-	}, DbError);
+	if(_db != null){
+		_score = null;
+		_db.transaction(function(tx) {
+			tx.executeSql(getScoresQuery, [], BuildLocalList, DbError);
+		}, DbError);
+	}
 }
 /*
  * End List Binding
@@ -87,10 +89,14 @@ function GetLocalHsList() {
  */
 
 function CheckScore(score) {
-	var query = sprintf(checkScoreQuery, score);
-	_db.transaction(function(tx) {
-		tx.executeSql(query, [], IsHighScore, DbError);
-	}, DbError);
+	if(_db != null){
+		var query = sprintf(checkScoreQuery, score);
+		_db.transaction(function(tx) {
+			tx.executeSql(query, [], IsHighScore, DbError);
+		}, DbError);
+	} else {
+		//insert score globally, skipping local score
+	}
 }
 
 function IsHighScore(tx, results) {
