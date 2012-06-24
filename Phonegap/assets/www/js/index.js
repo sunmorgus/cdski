@@ -73,6 +73,7 @@ $j('#hs').live("pageshow", function(e, data) {
 
 		$j('#localHsList').hide();
 		$j('#localHsButton').removeClass('ui-btn-active');
+		$j('#localHsButton').hide();
 
 		$j('#globalHsList').show();
 		$j('#globalHsButton').addClass('ui-btn-active');

@@ -459,12 +459,12 @@ var Game = Class.create({
 			var t = setTimeout(this.CheckHighScore.bind(this), 1000);
 		},
 		CheckHighScore : function() {
-			if (_db != null) {
+			//if (_db != null) {
 				_score = this.score;
 				$j.mobile.changePage($j('#hs'));
-			} else {
-				$j.mobile.changePage($j('#index'));
-			}
+			//} else {
+				//$j.mobile.changePage($j('#index'));
+			//}
 		},
 		StartMainLoop : function() {
 			this.mainLoopInterval = setInterval(this.MainLoop.bind(this), 33);

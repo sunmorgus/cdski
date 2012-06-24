@@ -96,11 +96,12 @@ function CheckScore(score) {
 		}, DbError);
 	} else {
 		//insert score globally, skipping local score
+		IsHighScore(null, {rows: []});
 	}
 }
 
 function IsHighScore(tx, results) {
-	var len = results.rows.length;
+	//var len = results.rows.length;
 	var score = _score;
 	if (results.rows.length > 0 || $j('#localHsList').html() == "") {
 		var congratsMsg = sprintf("Congratulations!\r\n%s is a new High Score!\r\n\r\nEnter your name below to submit your score!", _score);
@@ -125,7 +126,8 @@ function InsertGlobalHighScore(name, score) {
 			url : insertUrl,
 			success : function(data) {
 				var globalId = data;
-				InsertHighScore(name, score, globalId);
+				if(_db != null)
+					InsertHighScore(name, score, globalId);
 			},
 			error : function(jqXHR, textStatus, errorThrown) {
 				InsertHighScore(name, score, 0);

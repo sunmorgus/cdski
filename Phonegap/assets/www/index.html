@@ -1,126 +1,137 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<title></title>
-		<link href="stylesheets/jquery.mobile-1.0rc1.min.css" rel="stylesheet" type="text/css">
-		<link href="stylesheets/skipre.css" media="screen" rel="stylesheet" type="text/css">
-		<script type="text/javascript" charset="utf-8" src="js/phonegap-1.1.0.js"></script>
-		<script type="text/javascript" src="js/prototype.js"></script>
-		<script type="text/javascript" src="js/jquery.min.js"></script>
-		<script type="text/javascript">
-			jQuery.noConflict();
-			var $j = jQuery;
-
-		</script>
-		<script type="text/javascript" src="js/jquery.mobile.min.js"></script>
-		<script type="text/javascript" src="js/snowstormv14_20091115/snowstorm.js"></script>
-		<script type="text/javascript" src="js/sprintf.js"></script>
-		<script type="text/javascript" src="js/index.js"></script>
-		<script type="text/javascript" src="js/game.js"></script>
-		<script type="text/javascript" src="js/hs.js"></script>
-		<script type="text/javascript" src="js/jQueryRotate.js"></script>
-	</head>
-	<body onload="onLoad()">
-		<div data-role="page" id="index">
-			<div data-role="content">
-				<div id="main">
-					<div style="position: fixed; left: 50%; margin-left: -160px;">
-						<img src="images/ski.png" class="ski" /><img id="skier" src="images/sprites/r/riley_down.png" class="startSkier" />
-					</div>
-					<div style="position: fixed; left: 50%; margin-left: -160px; bottom: 0px; width: 315px;">
-						<a id="newGameButton" data-role="button">Start New Game</a>
-						<!-- 						<a data-role="button" data-transition="pop" data-prefetch>Options</a> -->
-						<div>
-							<a id="hsButton" data-role="button" style="width: 148px; position: absolute;">High Scores</a>
-							<a id="helpButton" data-role="button" style="width: 148px; float: right;">Help</a>
-						</div>
+<head>
+<title></title>
+<link href="stylesheets/jquery.mobile-1.0rc1.min.css" rel="stylesheet"
+	type="text/css">
+<link href="stylesheets/skipre.css" media="screen" rel="stylesheet"
+	type="text/css">
+<script type="text/javascript" charset="utf-8"
+	src="js/phonegap-1.1.0.js"></script>
+<script type="text/javascript" src="js/prototype.js"></script>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript">
+	jQuery.noConflict();
+	var $j = jQuery;
+</script>
+<script type="text/javascript" src="js/jquery.mobile.min.js"></script>
+<script type="text/javascript"
+	src="js/snowstormv14_20091115/snowstorm.js"></script>
+<script type="text/javascript" src="js/sprintf.js"></script>
+<script type="text/javascript" src="js/index.js"></script>
+<script type="text/javascript" src="js/game.js"></script>
+<script type="text/javascript" src="js/hs.js"></script>
+<script type="text/javascript" src="js/jQueryRotate.js"></script>
+</head>
+<body onload="onLoad()">
+	<div data-role="page" id="index">
+		<div data-role="content">
+			<div id="main">
+				<script type="text/javascript">
+				<!--
+					google_ad_client = "ca-pub-8096045116441588";
+					/* Ski */
+					google_ad_slot = "2208599376";
+					google_ad_width = 468;
+					google_ad_height = 60;
+				//-->
+				</script>
+				<script type="text/javascript"
+					src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+					
+				</script>
+				<div style="position: fixed; left: 50%; margin-left: -160px;">
+					<img src="images/ski.png" class="ski" /><img id="skier"
+						src="images/sprites/r/riley_down.png" class="startSkier" />
+				</div>
+				<div
+					style="position: fixed; left: 50%; margin-left: -160px; bottom: 0px; width: 315px;">
+					<a id="newGameButton" data-role="button">Start New Game</a>
+					<!-- 						<a data-role="button" data-transition="pop" data-prefetch>Options</a> -->
+					<div>
+						<a id="hsButton" data-role="button"
+							style="width: 148px; position: absolute;">High Scores</a> <a
+							id="helpButton" data-role="button"
+							style="width: 148px; float: right;">Help</a>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div data-role="page" id="game">
-			<div data-role="header" style="text-align: center;">
-				<div id="scoreboard"></div>
-			</div>
-			<div data-role="content">
-				<div id="contentHolder" style="margin: 0; padding: 0;"></div>
-				<img id="skierImg" src="" style="visibility: hidden;"/><img id="crash" src="" style="position: absolute; top: 0px; left: 0px; visibility: hidden;"/>
+	</div>
+	<div data-role="page" id="game">
+		<div data-role="header" style="text-align: center;">
+			<div id="scoreboard"></div>
+		</div>
+		<div data-role="content">
+			<div id="contentHolder" style="margin: 0; padding: 0;"></div>
+			<img id="skierImg" src="" style="visibility: hidden;" /><img
+				id="crash" src=""
+				style="position: absolute; top: 0px; left: 0px; visibility: hidden;" />
+		</div>
+	</div>
+	<div data-role="page" id="hs">
+		<div data-role="header" id="hsHeader"></div>
+		<div data-role="content">
+			<ol data-role="listview" id="localHsList"></ol>
+			<ol data-role="listview" id="globalHsList"></ol>
+			<img src="images/obstacles/abom_h.gif"
+				style="position: fixed; top: 50%; left: 50%; margin-top: -23px; margin-left: -18px; display: none;"
+				id="noScores" />
+		</div>
+		<div data-role="footer" data-position="fixed">
+			<div data-role="navbar">
+				<ul>
+					<li><a id="localHsButton"
+						class="ui-btn-active ui-state-persist">Local</a></li>
+					<li><a id="globalHsButton">Global</a></li>
+				</ul>
 			</div>
 		</div>
-		<div data-role="page" id="hs">
-			<div data-role="header" id="hsHeader"></div>
-			<div data-role="content">
-				<ol data-role="listview" id="localHsList"></ol>
-				<ol data-role="listview" id="globalHsList"></ol>
-				<img src="images/obstacles/abom_h.gif" style="position: fixed; top: 50%; left: 50%; margin-top: -23px; margin-left: -18px; display: none;" id="noScores" />
-			</div>
-			<div data-role="footer" data-position="fixed">
-				<div data-role="navbar">
+	</div>
+	<div data-role="page" id="help">
+		<div data-role="header" style="text-align: center;">Help</div>
+		<div data-role="content">
+			<ol>
+				<li>Controls:
 					<ul>
-						<li>
-							<a id="localHsButton" class="ui-btn-active ui-state-persist">Local</a>
-						</li>
-						<li>
-							<a id="globalHsButton">Global</a>
+						<li>Touch:
+							<ol>
+								<li>Touch the left side of the screen to move left, right
+									side to move right.</li>
+								<li>Tilt the device forward or back to increase/decrease
+									your speed.</li>
+							</ol>
 						</li>
 					</ul>
-				</div>
+				</li>
+				<li>You can shake the device for a temporary speed boost (could
+					be helpful in sticky situations).</li>
+				<li>Hit ramps <img src="images/obstacles/ramp.png" />to avoid
+					obstacles and increase your score.
+				</li>
+				<li>If you see an * next to your score on the local High Score
+					list, then that score was not submitted to the global High Score
+					list (usually means there was a network error of some sort).</li>
+			</ol>
+			<div>Obstacles:</div>
+			<div>
+				<table width="100%" style="margin-left: 7px; margin-top: 5px;">
+					<tr>
+						<td align="center"><img src="images/obstacles/snowman.png" /></td>
+						<td align="center"><img src="images/obstacles/stone.png" /></td>
+						<td align="center"><img src="images/obstacles/tree.png" /></td>
+						<td align="center"><img src="images/obstacles/abom_h.gif" /></td>
+					</tr>
+				</table>
 			</div>
 		</div>
-		<div data-role="page" id="help">
-			<div data-role="header" style="text-align: center;">
-				Help
-			</div>
-			<div data-role="content">
-				<ol>
-					<li>
-						Controls:
-						<ul>
-							<li>
-								Touch:
-								<ol>
-									<li>
-										Touch the left side of the screen to move left, right side to move right.
-									</li>
-									<li>
-										Tilt the device forward or back to increase/decrease your speed.
-									</li>
-								</ol>
-							</li>
-						</ul>
-					</li>
-					<li>
-						You can shake the device for a temporary speed boost (could be helpful in sticky situations).
-					</li>
-					<li>
-						Hit ramps <img src="images/obstacles/ramp.png" />to avoid obstacles and increase your score.
-					</li>
-					<li>
-						If you see an * next to your score on the local High Score list, then that score was not submitted to the global High Score list (usually means there was a network error of some sort).
-					</li>
-				</ol>
-				<div>
-					Obstacles:
-				</div>
-				<div>
-					<table width="100%" style="margin-left: 7px; margin-top: 5px;">
-						<tr>
-							<td align="center"><img src="images/obstacles/snowman.png" /></td>
-							<td align="center"><img src="images/obstacles/stone.png" /></td>
-							<td align="center"><img src="images/obstacles/tree.png" /></td>
-							<td align="center"><img src="images/obstacles/abom_h.gif" /></td>
-						</tr>
-					</table>
-				</div>
-			</div>
+	</div>
+	<div data-role="page" id="entry">
+		<div data-role="header" style="text-align: center;">New High
+			Score!</div>
+		<div data-role="content">
+			<div id="congrats"></div>
 		</div>
-		<div data-role="page" id="entry">
-			<div data-role="header" style="text-align: center;">
-				New High Score!
-			</div>
-			<div data-role="content">
-				<div id="congrats"></div>
-			</div>
-		</div>
-	</body>
+	</div>
+</body>
 </html>
