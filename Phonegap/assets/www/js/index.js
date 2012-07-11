@@ -49,6 +49,12 @@ $j('#localHsButton').live('tap', function(e) {
 	GetLocalHsList();
 })
 
+$j('#homeButton').live('tap', function(e) {
+	StopDefaults(e);
+
+	$j.mobile.changePage($j('#index'));
+})
+
 // if coming from the game page, stop game loop, make the _gameObj null
 $j('#game').live("pagehide", function(e, data) {
 	if (_gameObj != null) {
@@ -80,10 +86,12 @@ $j('#hs').live("pageshow", function(e, data) {
 	}
 
 	if (_score != null) {
-		var score = Math.round(_score);
+		var score = _score;
+		var score = Math.floor(Math.round(score));
 		CheckScore(score);
+		_score = null;
 	} else {
-		if(_db != null){
+		if (_db != null) {
 			$j('#globalHsList').hide();
 			GetLocalHsList();
 		} else {
@@ -103,7 +111,7 @@ $j(document).bind('mobileinit', function() {
 /*
  * Begin phonegap events
  */
-function onLoad() {
+function onLoad() {	
 	document.addEventListener("deviceready", onDeviceReady, false);
 }
 
@@ -127,7 +135,7 @@ function onDeviceReady() {
 	} else {
 		alert('no db support');
 	}
-	
+
 	// start the snow
 	snowStorm.show();
 	snowStorm.resume();
@@ -204,6 +212,15 @@ function IsTouchDevice() {
 	} catch (e) {
 		return false;
 	}
+}
+function getQueryString() {
+	var result = {}, queryString = location.search.substring(1), re = /([^&=]+)=([^&]*)/g, m;
+
+	while (m = re.exec(queryString)) {
+		result[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+	}
+
+	return result;
 }
 /*
  * End Utility Functions

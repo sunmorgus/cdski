@@ -1,4 +1,4 @@
-var globalHsUrl = 'http://hide.rjamdev.info/monstertrucks/skiprehs.php?method=%s';
+var globalHsUrl = window.location.protocol + '//ski.csbctech.com/skiprehs.php?method=%s';
 /*
  * Start SQL Queries
  */
@@ -112,7 +112,7 @@ function IsHighScore(tx, results) {
 			InsertGlobalHighScore(name, score);
 		} else {
 			_score = null;
-			GetLocalHsList();
+			BuildGlobalList();
 		}
 	} else {
 		GetLocalHsList();
@@ -122,17 +122,51 @@ function IsHighScore(tx, results) {
 function InsertGlobalHighScore(name, score) {
 	var urlQuery = sprintf("i&n=%s&s=%s", name, score);
 	var insertUrl = sprintf(globalHsUrl, urlQuery);
+	
+	//Post score to facebook
+	// calling the API ...
+	FB.init({appId: "199847523475065", status: true, cookie: true});
+	//alert(FB.init);
+	var obj = {
+      method: 'feed',
+      redirect_uri: window.location.protocol + '//ski.csbctech.com',
+      link: window.location.protocol + '//ski.csbctech.com/',
+      picture: 'http://ski.csbctech.com/images/ski.png',
+      name: 'Ski by CSBC Technologies',
+      caption: 'I Just Got a New High Score!',
+      description: 'I posted a score of ' + score + ' on Ski! Can you beat that!?!'
+    };
+
+    function callback(response) {
+    	alert(response);
+      //document.getElementById('msg').innerHTML = "Post ID: " + response['post_id'];
+    }
+
+    FB.ui(obj, callback);
+
 	$j.ajax({
 			url : insertUrl,
+			dataType: 'html',
 			success : function(data) {
 				var globalId = data;
 				if(_db != null)
 					InsertHighScore(name, score, globalId);
 			},
 			error : function(jqXHR, textStatus, errorThrown) {
-				InsertHighScore(name, score, 0);
+				//InsertHighScore(name, score, 0);
 			}
 	});
+	
+	if(_db == null){
+		$j('#localHsList').hide();
+		$j('#localHsButton').removeClass('ui-btn-active');
+		$j('#localHsButton').hide();
+
+		$j('#globalHsList').show();
+		$j('#globalHsButton').addClass('ui-btn-active');
+		
+		BuildGlobalList();
+	}
 }
 
 function InsertHighScore(name, score, global_id) {
