@@ -26,6 +26,7 @@ var Game = Class.create({
 			this.isJumping = false;
 			this.isPaused = false;
 			this.prevX = 1.0;
+			this.holdHeaderScore = "";
 
 			// change when testing
 			this.speed = 10; // default null
@@ -95,14 +96,50 @@ var Game = Class.create({
 				}.bind(this));
 
 				$j(document).keydown(function(e) {
+					if(e.keyCode === 37){
+						//left arrow = move left
+						this.MoveLeft();
+						return false;
+					}
+					if(e.keyCode === 39){
+						//right arrow = move right
+						this.MoveRight();
+						return false;
+					}
 					if (e.keyCode === 70) {
+						//f = go faster
 						this.isF = true;
 						this.fSpeedMod = 2;
+						return false;
+					}
+					if(e.keyCode === 80){
+						//p = pause
+						if(!this.isPaused){
+							this.StopMainLoop();
+							this.isPaused = true;
+							
+							this.holdHeaderScore = this.divScoreBoard.innerHTML;
+							this.divScoreBoard.innerHTML = "Paused";
+						} else {
+							this.StartMainLoop();
+							this.isPaused = false;
+							
+							this.divScoreBoard.innerHTML = this.holdHeaderScore;
+						}
+
+						return false;
+					}
+					if(e.keyCode === 81){
+						//q = quit
+						this.StopMainLoop();
+						$j.mobile.changePage($j('#index'));
+						return false;
 					}
 				}.bind(this));
 
 				$j(document).keyup(function(e) {
 					this.NoF();
+					this.moveX = 0;
 				}.bind(this));
 			}
 
@@ -180,8 +217,10 @@ var Game = Class.create({
 					width : 24,
 					height : 44
 			}
-
-			this.AddObstacle(6);
+			if(this.canvasWidth > 800 && this.canvasHeight > 600)
+				this.AddObstacle(12);
+			else
+				this.AddObstacle(6);
 		},
 		GetRandomObsNum : function() {
 			var num = Math.floor(Math.random() * (this.obsArray.length));
@@ -383,7 +422,12 @@ var Game = Class.create({
 
 			if (printScore >= this.increaseDiffScore) {
 				this.StopMainLoop();
-				this.AddObstacle(1);
+
+				if(this.canvasWidth > 800 && this.canvasHeight > 600)
+					this.AddObstacle(6);
+				else
+					this.AddObstacle(1);
+
 				this.StartMainLoop();
 
 				this.increaseDiffScore += 500;

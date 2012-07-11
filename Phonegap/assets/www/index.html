@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<title></title>
+<title>Ski by CSBC Technologies!</title>
 <link href="stylesheets/jquery.mobile-1.0rc1.min.css" rel="stylesheet"
 	type="text/css">
 <link href="stylesheets/skipre.css" media="screen" rel="stylesheet"
@@ -22,9 +22,26 @@
 <script type="text/javascript" src="js/game.js"></script>
 <script type="text/javascript" src="js/hs.js"></script>
 <script type="text/javascript" src="js/jQueryRotate.js"></script>
+<!-- Share This Scripts -->
 <script type="text/javascript">var switchTo5x=true;</script>
 <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
 <script type="text/javascript">stLight.options({publisher: "fadea35b-c993-40e2-9c1c-6f40f309a8b9"}); </script>
+<!-- Facebook SDK -->
+<script src='http://connect.facebook.net/en_US/all.js'></script>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-32902340-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
 </head>
 <body onload="onLoad()">
 	<div data-role="page" id="index">
@@ -44,20 +61,13 @@
 					src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
 					
 				</script>
-				<br />
-				<span class='st_facebook_hcount' displayText='Facebook'></span> 
-				<span class='st_fblike_hcount' displayText='Facebook Like'></span> 
-				<span class='st_twitter_hcount' displayText='Tweet'></span> 
-				<span class='st_plusone_hcount' displayText='Google +1'></span> 
-				<span class='st_digg_hcount' displayText='Digg'></span> 
-				<span class='st_email_hcount' displayText='Email'></span>
 			</div>
 				<div style="position: fixed; left: 50%; margin-left: -160px;">
 					<img src="images/ski.png" class="ski" /><img id="skier"
 						src="images/sprites/r/riley_down.png" class="startSkier" />
 				</div>
 				<div
-					style="position: fixed; left: 50%; margin-left: -160px; bottom: 0px; width: 315px;">
+					style="position: fixed; left: 50%; margin-left: -160px; bottom: 30px; width: 315px;">
 					<a id="newGameButton" data-role="button">Start New Game</a>
 					<!-- 						<a data-role="button" data-transition="pop" data-prefetch>Options</a> -->
 					<div>
@@ -66,13 +76,27 @@
 							id="helpButton" data-role="button"
 							style="width: 148px; float: right;">Help</a>
 					</div>
+					<div style="width: 100%; text-align: center;">
+						<a href="http://www.csbctech.com" target="_blank"><img src="images/logo.png" alt="CSBC Technologies"></a>
+					</div>
+				</div>
+				<div style="position: fixed; width: 100%; bottom: 5px;">
+					<div style="width: 100%; text-align: center;">
+						<span class='st_facebook_hcount' displayText='Facebook'></span> 
+						<span class='st_fblike_hcount' displayText='Facebook Like'></span> 
+						<span class='st_twitter_hcount' displayText='Tweet'></span> 
+						<span class='st_plusone_hcount' displayText='Google +1'></span> 
+						<span class='st_digg_hcount' displayText='Digg'></span> 
+						<span class='st_email_hcount' displayText='Email'></span>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 	<div data-role="page" id="game">
-		<div data-role="header" style="text-align: center;">
-			<div id="scoreboard"></div>
+		<div data-role="header">
+			<div style="float: right;">Left/Right Arrow Keys to Move | Hold "F" for a Speed Boost | P to Pause/Un-Pause | Q to Quit</div>
+			<div id="scoreboard" style="float: left;"></div>
 		</div>
 		<div data-role="content">
 			<div id="contentHolder" style="margin: 0; padding: 0;"></div>
@@ -93,6 +117,7 @@
 		<div data-role="footer" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
+					<li><a id="homeButton">Home</a></li>
 					<li><a id="localHsButton"
 						class="ui-btn-active ui-state-persist">Local</a></li>
 					<li><a id="globalHsButton">Global</a></li>
@@ -108,22 +133,18 @@
 					<ul>
 						<li>Touch:
 							<ol>
+								<li>Use the left and right arrows, or:</li>
 								<li>Touch the left side of the screen to move left, right
 									side to move right.</li>
-								<li>Tilt the device forward or back to increase/decrease
-									your speed.</li>
 							</ol>
 						</li>
 					</ul>
 				</li>
 				<li>You can shake the device for a temporary speed boost (could
-					be helpful in sticky situations).</li>
+					be helpful in sticky situations) or hit the 'F' key if you have a keyboard.</li>
 				<li>Hit ramps <img src="images/obstacles/ramp.png" />to avoid
 					obstacles and increase your score.
 				</li>
-				<li>If you see an * next to your score on the local High Score
-					list, then that score was not submitted to the global High Score
-					list (usually means there was a network error of some sort).</li>
 			</ol>
 			<div>Obstacles:</div>
 			<div>
