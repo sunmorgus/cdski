@@ -129,7 +129,7 @@ function InsertGlobalHighScore(name, score) {
 	//alert(FB.init);
 	var obj = {
       method: 'feed',
-      redirect_uri: window.location.protocol + '//ski.csbctech.com',
+      redirect_uri: window.location.protocol + '//ski.csbctech.com/closefb.html',
       link: window.location.protocol + '//ski.csbctech.com/',
       picture: 'http://ski.csbctech.com/images/ski.png',
       name: 'Ski by CSBC Technologies',
