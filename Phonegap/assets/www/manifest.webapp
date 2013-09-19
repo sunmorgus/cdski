@@ -5,7 +5,8 @@
   "fullscreen": "true",
   "launch_path": "/index.html",
   "icons": {
-    "48": "/img/icons/icon.png"
+    "48": "/img/icons/icon.png",
+    "128": "/img/icons/icon.png"
   },
   "developer": {
     "name": "Nicklas DeMayo",
