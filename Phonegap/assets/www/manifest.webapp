@@ -1,0 +1,18 @@
+{
+  "version": "0.1",
+  "name": "Ski",
+  "description": "",
+  "launch_path": "/index.html",
+  "icons": {
+    "16": "/img/icons/mortar-16.png",
+    "48": "/img/icons/mortar-48.png",
+    "128": "/img/icons/mortar-128.png"
+  },
+  "developer": {
+    "name": "Nicklas DeMayo",
+    "url": "http://www.csbctech.com"
+  },
+  "installs_allowed_from": ["*"],
+  "appcache_path": "/cache.manifest",
+  "default_locale": "en"
+}

@@ -1,6 +1,7 @@
 // var _storage = window.localStorage;
 var _gameObj;
-var _moveX = null; // do i use this?
+var _moveX = null;
+// do i use this?
 var _score = null;
 var _db;
 var _local = window.localStorage;
@@ -8,6 +9,11 @@ var _local = window.localStorage;
 /*
  * Begin jQuery Events
  */
+$j('#quit').live('tap', function(e) {
+	//this.StopMainLoop();
+	$j.mobile.changePage($j('#index'));
+});
+
 $j('#newGameButton').live('tap', function(e) {
 	StopDefaults(e);
 
@@ -47,13 +53,13 @@ $j('#localHsButton').live('tap', function(e) {
 	$j('#globalHsButton').removeClass('ui-btn-active');
 
 	GetLocalHsList();
-})
+});
 
 $j('#homeButton').live('tap', function(e) {
 	StopDefaults(e);
 
 	$j.mobile.changePage($j('#index'));
-})
+});
 
 // if coming from the game page, stop game loop, make the _gameObj null
 $j('#game').live("pagehide", function(e, data) {
@@ -103,7 +109,7 @@ $j('#hs').live("pageshow", function(e, data) {
 
 $j(document).bind('mobileinit', function() {
 	$j.mobile.loadingMessage = "Loading Local & Global Scores";
-})
+});
 /*
  * End jQuery Events
  */
@@ -111,7 +117,7 @@ $j(document).bind('mobileinit', function() {
 /*
  * Begin phonegap events
  */
-function onLoad() {	
+function onLoad() {
 	document.addEventListener("deviceready", onDeviceReady, false);
 }
 
@@ -119,21 +125,20 @@ function onDeviceReady() {
 	// Register the event listener
 	document.addEventListener("pause", onPause, false);
 	document.addEventListener("resume", onResume, false);
-	document.addEventListener("backbutton", onBack, true);
+	//document.addEventListener("backbutton", onBack, false);
+
+	$j.mobile.changePage($j('#index'));
 
 	if (window.openDatabase) {
 		// open the hs db
-		_db = window.openDatabase("hsdb", "1.0", "SkiPre High Score Database",
-				200000);
-		_db
-				.transaction(
-						function(tx) {
-							var queryString = 'CREATE TABLE IF NOT EXISTS highScore (id TEXT PRIMARY KEY DESC DEFAULT "nothing", name TEXT NOT NULL DEFAULT "nothing", score INTEGER NOT NULL DEFAULT "nothing", global_id INTEGER NULL DEFAULT "0"); GO;'
-							tx.executeSql(queryString);
-						}, DbError, function(tx, results) {
-						});
+		_db = window.openDatabase("hsdb", "1.0", "SkiPre High Score Database", 200000);
+		_db.transaction(function(tx) {
+			var queryString = 'CREATE TABLE IF NOT EXISTS highScore (id TEXT PRIMARY KEY DESC DEFAULT "nothing", name TEXT NOT NULL DEFAULT "nothing", score INTEGER NOT NULL DEFAULT "nothing", global_id INTEGER NULL DEFAULT "0"); GO;';
+			tx.executeSql(queryString);
+		}, DbError, function(tx, results) {
+		});
 	} else {
-		alert('no db support');
+		//alert('no db support');
 	}
 
 	// start the snow
@@ -161,6 +166,7 @@ function onResume() {
 function onBack() {
 	$j.mobile.changePage($j('#index'));
 }
+
 /*
  * End phonegap Events
  */
@@ -174,7 +180,7 @@ function StartNewGame() {
 
 	var params = {
 		chosen : "riley"
-	}
+	};
 
 	_gameObj = new Game();
 	_gameObj.SetupCanvas(params);
@@ -184,6 +190,7 @@ function StartNewGame() {
 
 	$j.mobile.changePage($j('#game'));
 }
+
 /*
  * End Methods
  */
@@ -195,16 +202,20 @@ function StopDefaults(e) {
 	e.stopImmediatePropagation();
 	e.preventDefault();
 }
+
 function printObjProps(obj) {
 	var str = "";
 	for (prop in obj) {
 		str += prop + " value: " + obj[prop] + "\n";
 	}
-	return str; // Show all properties and its value
+	return str;
+	// Show all properties and its value
 }
+
 function DbError(err) {
 	alert("Error processing SQL: " + err.code);
 }
+
 function IsTouchDevice() {
 	try {
 		document.createEvent("TouchEvent");
@@ -213,15 +224,17 @@ function IsTouchDevice() {
 		return false;
 	}
 }
+
 function getQueryString() {
 	var result = {}, queryString = location.search.substring(1), re = /([^&=]+)=([^&]*)/g, m;
 
-	while (m = re.exec(queryString)) {
+	while ( m = re.exec(queryString)) {
 		result[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
 	}
 
 	return result;
 }
+
 /*
  * End Utility Functions
  */

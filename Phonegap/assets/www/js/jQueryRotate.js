@@ -1,48 +1,49 @@
 $j.fn.extend({
-		ImageRotate : function(a) {
-			if (this.Wilq32 && this.Wilq32.PhotoEffect)
-				return;
-			return (new Wilq32.PhotoEffect(this.get(0), a))._temp
-		},
-		rotate : function(a) {
-			if (this.length === 0)
-				return;
-			if (typeof a == "undefined")
-				return;
-			if (typeof a == "number")
-				a = {
-					angle : a
-				};
-			var b = [];
-			for ( var c = 0, d = this.length; c < d; c++) {
-				var e = this.get(c);
-				b.push($j($j(e).ImageRotate(a)))
-			}
-			return b
-		},
-		rotateAnimation : function(a) {
-			if (this.length === 0)
-				return;
-			if (typeof a == "undefined")
-				return;
-			if (typeof a == "number")
-				a = {
-					angle : a
-				};
-			var b = [];
-			for ( var c = 0, d = this.length; c < d; c++) {
-				var e = this.get(c);
-				if (typeof e.Wilq32 == "undefined")
-					b.push($j($j(e).ImageRotate(a)));
-				else {
-					e.Wilq32.PhotoEffect._parameters.animateAngle = a.angle;
-					e.Wilq32.PhotoEffect._parameters.callback = a.callback || function() {
-					};
-					e.Wilq32.PhotoEffect._animateStart()
-				}
-			}
-			return b
+	ImageRotate : function(a) {
+		if (this.Wilq32 && this.Wilq32.PhotoEffect)
+			return;
+		return (new Wilq32.PhotoEffect(this.get(0), a))._temp;
+	},
+	rotate : function(a) {
+		if (this.length === 0)
+			return;
+		if ( typeof a == "undefined")
+			return;
+		if ( typeof a == "number")
+			a = {
+				angle : a
+			};
+		var b = [];
+		for (var c = 0, d = this.length; c < d; c++) {
+			var e = this.get(c);
+			b.push($j($j(e).ImageRotate(a)));
 		}
+		return b;
+	},
+	rotateAnimation : function(a) {
+		if (this.length === 0)
+			return;
+		if ( typeof a == "undefined")
+			return;
+		if ( typeof a == "number")
+			a = {
+				angle : a
+			};
+		var b = [];
+		for (var c = 0, d = this.length; c < d; c++) {
+			var e = this.get(c);
+			if ( typeof e.Wilq32 == "undefined")
+				b.push($j($j(e).ImageRotate(a)));
+			else {
+				e.Wilq32.PhotoEffect._parameters.animateAngle = a.angle;
+				e.Wilq32.PhotoEffect._parameters.callback = a.callback ||
+				function() {
+				};
+				e.Wilq32.PhotoEffect._animateStart();
+			}
+		}
+		return b;
+	}
 });
 Wilq32 = {};
 Wilq32.PhotoEffect = function(a, b) {
@@ -66,11 +67,11 @@ Wilq32.PhotoEffect = function(a, b) {
 	this._img.src = c;
 	this._img._ref = this;
 	$j(this._img).bind("load", function() {
-		this._ref._Loader.call(this._ref)
+		this._ref._Loader.call(this._ref);
 	});
 	if ($j.browser.msie)
 		if (this._img.complete)
-			this._Loader()
+			this._Loader();
 };
 Wilq32.PhotoEffect.prototype._Loader = function() {
 	if ($j.browser.msie)
@@ -94,13 +95,13 @@ Wilq32.PhotoEffect.prototype._Loader = function() {
 			this._temp.appendChild(this._vimage);
 			var d = this;
 			if (this._parameters.bind) {
-				for ( var e in this._parameters.bind)
-					if (this._parameters.bind.hasOwnProperty(e))
-						for ( var f in this._parameters.bind[e])
-							if (this._parameters.bind[e].hasOwnProperty(f))
-								$j(this._temp).bind(f, this._parameters.bind[e][f])
+				for (var e in this._parameters.bind)
+				if (this._parameters.bind.hasOwnProperty(e))
+					for (var f in this._parameters.bind[e])
+					if (this._parameters.bind[e].hasOwnProperty(f))
+						$j(this._temp).bind(f, this._parameters.bind[e][f]);
 			}
-			this._rotate(this._parameters.angle)
+			this._rotate(this._parameters.angle);
 		};
 	else
 		return function() {
@@ -119,41 +120,41 @@ Wilq32.PhotoEffect.prototype._Loader = function() {
 			this._temp.appendChild(this._canvas);
 			var c = this;
 			if (this._parameters.bind) {
-				for ( var d in this._parameters.bind)
-					if (this._parameters.bind.hasOwnProperty(d))
-						for ( var e in this._parameters.bind[d])
-							if (this._parameters.bind[d].hasOwnProperty(e))
-								$j(this._canvas).bind(e, this._parameters.bind[d][e])
+				for (var d in this._parameters.bind)
+				if (this._parameters.bind.hasOwnProperty(d))
+					for (var e in this._parameters.bind[d])
+					if (this._parameters.bind[d].hasOwnProperty(e))
+						$j(this._canvas).bind(e, this._parameters.bind[d][e]);
 			}
 			this._cnv = this._canvas.getContext("2d");
-			this._rotate(this._parameters.angle)
-		}
+			this._rotate(this._parameters.angle);
+		};
 }();
 Wilq32.PhotoEffect.prototype._animateStart = function() {
 	if (this._timer)
 		clearTimeout(this._timer);
-	this._animate()
+	this._animate();
 };
 Wilq32.PhotoEffect.prototype._animate = function() {
 	if (this._canvas || this._vimage)
 		this._angle -= (this._angle - this._parameters.animateAngle) * .1;
-	if (typeof this._parameters.minAngle != "undefined")
+	if ( typeof this._parameters.minAngle != "undefined")
 		if (this._angle < this._parameters.minAngle)
 			this._angle = this._parameters.minAngle;
-	if (typeof this._parameters.maxAngle != "undefined")
+	if ( typeof this._parameters.maxAngle != "undefined")
 		if (this._angle > this._parameters.maxAngle)
 			this._angle = this._parameters.maxAngle;
 	if (Math.round(this._angle * 100 - this._parameters.animateAngle * 100) == 0 && this._timer) {
 		clearTimeout(this._timer);
 		if (this._parameters.callback)
-			this._parameters.callback()
+			this._parameters.callback();
 	} else {
 		if (this._canvas || this._vimage)
 			this._rotate(this._angle);
 		var a = this;
 		this._timer = setTimeout(function() {
-			a._animate.call(a)
-		}, 2)
+			a._animate.call(a);
+		}, 2);
 	}
 };
 Wilq32.PhotoEffect.prototype._rotate = function() {
@@ -162,13 +163,13 @@ Wilq32.PhotoEffect.prototype._rotate = function() {
 			this._vimage.style.rotation = a;
 			var b = a * Math.PI / 180;
 			this._vimage.style.top = (this._img._heightMax - this._img.height) / 2 - (this._vimage.offsetHeight - this._img.height) / 2 + "px";
-			this._vimage.style.left = (this._img._widthMax - this._img.width) / 2 - (this._vimage.offsetWidth - this._img.width) / 2 + "px"
+			this._vimage.style.left = (this._img._widthMax - this._img.width) / 2 - (this._vimage.offsetWidth - this._img.width) / 2 + "px";
 		};
 	else
 		return function(a) {
 			if (!this._img.width)
 				return;
-			if (typeof a != "number")
+			if ( typeof a != "number")
 				return;
 			a = a % 360 * Math.PI / 180;
 			var b = this._img.width;
@@ -183,6 +184,6 @@ Wilq32.PhotoEffect.prototype._rotate = function() {
 			this._cnv.rotate(a);
 			this._cnv.translate(-b / 2, -c / 2);
 			this._cnv.drawImage(this._img, 0, 0, b, c);
-			this._cnv.restore()
-		}
-}()
+			this._cnv.restore();
+		};
+}(); 
