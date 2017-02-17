@@ -475,9 +475,9 @@ var Game = Class.create({
 	},
 	WatchForShake : function(threshold) {
 		window.addEventListener('deviceorientation', function(event){
-			var diffX = Math.asb(event.beta) - this.prevX;
+			var diffX = Math.abs(event.beta) - this.prevX;
 			
-			if(diffX >= threshhold){
+			if(diffX >= threshold){
 				this.isF = true;
 				this.fSpeedMod = 2;
 			} else {
