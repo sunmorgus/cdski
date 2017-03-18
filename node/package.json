@@ -1,0 +1,23 @@
+{
+  "name": "cdski",
+  "productName": "Ski",
+  "version": "1.0.0",
+  "main": "main.js",
+  "license": "ISC",
+  "author": "Nicklas DeMayo",
+  "scripts": {
+    "start": "electron .",
+    "package": "electron-packager ./ --platform=darwin --arch=x64 --out=out --icon=./icon.icns --overwrite"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sunmorgus/cdski.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sunmorgus/cdski/issues"
+  },
+  "devDependencies": {
+    "electron-packager": "^7.3.0",
+    "electron-prebuilt": "^1.2.7"
+  }
+}
