@@ -1,0 +1,47 @@
+html, body {
+	background: #FFFFFF;
+}
+.ui-page {
+	background: #FFFFFF;
+}
+#contentHolder {
+	width: 99%;
+	height: 99%;
+	margin: 0 auto;
+	text-align: center;
+}
+.slope {
+	position: absolute;
+	left: 0px;
+	top: 35px;
+}
+.startSkier {
+	position: absolute;
+	top: 100px;
+	left: 150px;
+}
+.ski {
+	position: fixed;
+	left: 50%;
+	margin-left: -80px;
+}
+.pre {
+	position: absolute;
+	top: 10px;
+	left: 180px;
+}
+.the {
+	position: absolute;
+	top: 40px;
+	left: 140px;
+}
+.pixi {
+	position: absolute;
+	top: 98px;
+	left: 95px;
+}
+#noScores {
+	position: absolute;
+	top: 190px;
+	left: 140px;
+}

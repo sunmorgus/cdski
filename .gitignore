@@ -252,3 +252,5 @@ logs/
 
 # Ignore deployment zips
 *.zip
+
+**/out

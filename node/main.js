@@ -1,4 +1,4 @@
-const {app, BrowserWindow, ipcMain, Tray} = require('electron')
+const { app, BrowserWindow, ipcMain, Tray } = require('electron')
 const path = require('path')
 
 const assetsDirectory = path.join(__dirname, 'assets')
@@ -30,7 +30,7 @@ const createTray = () => {
 
     // Show devtools when command clicked
     if (window.isVisible() && process.defaultApp && event.metaKey) {
-      window.openDevTools({mode: 'detach'})
+      window.openDevTools({ mode: 'detach' })
     }
   })
 }
@@ -45,7 +45,7 @@ const getWindowPosition = () => {
   // Position window 4 pixels vertically below the tray icon
   const y = Math.round(trayBounds.y + trayBounds.height + 4)
 
-  return {x: x, y: y}
+  return { x: x, y: y }
 }
 
 const createWindow = () => {
